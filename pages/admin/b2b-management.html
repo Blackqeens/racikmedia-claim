@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Operasional B2B — Admin Racik Media</title>
+  <script src="../../api/auth.js"></script>
+  <script>BobAuth.requireRole(['admin', 'master_admin']);</script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../../assets/js/supabase-config.js"></script>
+  <script src="../../assets/js/b2b-portal.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../../assets/css/shared.css">
+  <link rel="stylesheet" href="/assets/css/public-layout.css" />
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-800">
+  <div id="rm-navbar-root"></div>
+  <header class="border-b bg-white"><div class="mx-auto flex max-w-6xl justify-between px-4 py-4"><a class="font-bold text-emerald-900" href="dashboard.html">Admin Racik Media</a><a href="dashboard.html">Kembali ke admin</a></div></header>
+  <main class="mx-auto max-w-6xl space-y-6 px-4 py-8">
+    <div><p class="text-xs font-bold uppercase tracking-wide text-violet-800">Operasional korporat</p><h1 class="mt-2 text-3xl font-bold">Manajemen B2B</h1><p class="mt-2 text-sm text-slate-600">Verifikasi perusahaan dan seller, terbitkan invoice serta siapkan perjanjian transaksi.</p></div>
+    <div id="message" class="hidden rounded-xl px-4 py-3 text-sm" role="status" aria-live="polite"></div>
+    <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+      <div class="flex items-center justify-between gap-3"><h2 class="text-xl font-bold">Pengajuan klien korporat</h2><button data-refresh class="rounded-lg border px-3 py-2 text-sm">Muat ulang</button></div>
+      <div id="clients" class="mt-4 space-y-3"></div>
+    </section>
+    <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+      <h2 class="text-xl font-bold">Pengajuan verifikasi seller</h2><div id="sellers" class="mt-4 space-y-3"></div>
+    </section>
+    <section class="grid gap-6 lg:grid-cols-2">
+      <form id="invoiceForm" class="space-y-3 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+        <h2 class="text-xl font-bold">Terbitkan invoice B2B</h2>
+        <label class="block text-sm font-medium">Perusahaan terverifikasi<select required name="client_id" class="mt-1 w-full rounded-lg border p-2.5"></select></label>
+        <label class="block text-sm font-medium">Seller terverifikasi<select required name="seller_id" class="mt-1 w-full rounded-lg border p-2.5"></select></label>
+        <label class="block text-sm font-medium">Deskripsi transaksi<input required maxlength="1000" name="description" class="mt-1 w-full rounded-lg border p-2.5"></label>
+        <div class="grid grid-cols-2 gap-3"><label class="text-sm font-medium">Kuantitas<input required min="1" type="number" name="quantity" value="1" class="mt-1 w-full rounded-lg border p-2.5"></label><label class="text-sm font-medium">Harga satuan (Rp)<input required min="0" step="1" type="number" name="unit_price" class="mt-1 w-full rounded-lg border p-2.5"></label></div>
+        <div class="grid grid-cols-2 gap-3"><label class="text-sm font-medium">PPN (%)<input required min="0" max="100" step="0.01" type="number" name="tax_pct" value="11" class="mt-1 w-full rounded-lg border p-2.5"></label><label class="text-sm font-medium">Jatuh tempo<input required type="date" name="due_date" class="mt-1 w-full rounded-lg border p-2.5"></label></div>
+        <button class="rounded-lg bg-emerald-800 px-4 py-3 text-sm font-bold text-white">Terbitkan invoice</button>
+      </form>
+      <form id="agreementForm" class="space-y-3 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+        <h2 class="text-xl font-bold">Buat perjanjian</h2>
+        <label class="block text-sm font-medium">Perusahaan terverifikasi<select required name="client_id" class="mt-1 w-full rounded-lg border p-2.5"></select></label>
+        <label class="block text-sm font-medium">Invoice transaksi<select required name="invoice_id" class="mt-1 w-full rounded-lg border p-2.5"></select></label>
+        <label class="block text-sm font-medium">Seller terverifikasi<select required name="seller_id" class="mt-1 w-full rounded-lg border p-2.5"></select></label>
+        <label class="block text-sm font-medium">Judul<input required maxlength="200" name="title" class="mt-1 w-full rounded-lg border p-2.5"></label>
+        <label class="block text-sm font-medium">Ketentuan<textarea required minlength="20" maxlength="20000" rows="8" name="agreement_text" class="mt-1 w-full rounded-lg border p-2.5"></textarea></label>
+        <p class="text-xs text-amber-800">Persetujuan digital sederhana; bukan tanda tangan elektronik tersertifikasi. Pastikan isi perjanjian ditinjau pihak berwenang.</p>
+        <button class="rounded-lg bg-violet-800 px-4 py-3 text-sm font-bold text-white">Kirim untuk persetujuan kedua pihak</button>
+      </form>
+    </section>
+  </main>
+  <script>
+    (async function () {
+      const client = B2BPortal.getClient();
+      const message = document.getElementById('message');
+      const agreementForm = document.getElementById('agreementForm');
+      const auth = await client.auth.getUser();
+      if (auth.error || !auth.data.user) { B2BPortal.showMessage(message, 'Sesi admin tidak valid.', true); return; }
+      const profile = await client.from('profiles').select('role').eq('id', auth.data.user.id).single();
+      if (profile.error || !['admin', 'master_admin'].includes(profile.data && profile.data.role)) {
+        B2BPortal.showMessage(message, 'Akses hanya untuk admin.', true);
+        return;
+      }
+      let verifiedClients = [];
+      let verifiedSellers = [];
+      let availableInvoices = [];
+      function makeCard(title, detail, id, kind, status, note) {
+        return '<article class="rounded-xl border p-4"><div class="flex flex-wrap items-start justify-between gap-3"><div><h3 class="font-bold">' + B2BPortal.escapeHtml(title) + '</h3><p class="mt-1 whitespace-pre-line text-sm text-slate-600">' + B2BPortal.escapeHtml(detail) + '</p>' + (note ? '<p class="mt-2 text-sm text-rose-700">Catatan sebelumnya: ' + B2BPortal.escapeHtml(note) + '</p>' : '') + '</div><span class="rounded-full bg-amber-100 px-3 py-1 text-xs font-bold text-amber-800">' + B2BPortal.escapeHtml(status) + '</span></div>' + (status === 'pending' ? '<div class="mt-3 flex flex-wrap gap-2"><input data-review-note="' + id + '" placeholder="Catatan (wajib jika ditolak)" class="min-w-48 flex-1 rounded-lg border px-3 py-2 text-sm"><button data-review="' + kind + '" data-id="' + id + '" data-status="verified" class="rounded-lg bg-emerald-800 px-3 py-2 text-sm font-bold text-white">Setujui</button><button data-review="' + kind + '" data-id="' + id + '" data-status="rejected" class="rounded-lg border border-rose-300 px-3 py-2 text-sm font-semibold text-rose-800">Tolak</button></div>' : '') + '</article>';
+      }
+      async function load() {
+        const [clientsResult, sellersResult] = await Promise.all([
+          client.from('corporate_clients').select('*').order('created_at', { ascending: false }),
+          client.from('seller_verifications').select('*').order('created_at', { ascending: false }),
+        ]);
+        if (clientsResult.error) throw clientsResult.error;
+        if (sellersResult.error) throw sellersResult.error;
+        verifiedClients = clientsResult.data.filter(function (row) { return row.status === 'verified'; });
+        verifiedSellers = sellersResult.data.filter(function (row) { return row.status === 'verified'; });
+        const invoicesResult = await client.from('b2b_invoices').select('id, invoice_number, client_id, seller_id').order('created_at', { ascending: false });
+        if (invoicesResult.error) throw invoicesResult.error;
+        availableInvoices = invoicesResult.data;
+        document.getElementById('clients').innerHTML = clientsResult.data.length ? clientsResult.data.map(function (row) {
+          return makeCard(row.company_name, 'NPWP ' + row.npwp + ' · ' + row.address + '\nPIC ' + row.pic_name + ' · ' + row.pic_phone + '\nAkun ID ' + row.user_id, row.id, 'corporate_clients', row.status, row.review_note);
+        }).join('') : '<p class="text-sm text-slate-500">Belum ada pengajuan perusahaan.</p>';
+        document.getElementById('sellers').innerHTML = sellersResult.data.length ? sellersResult.data.map(function (row) {
+          const card = makeCard(row.business_name, 'NIB/izin ' + row.registration_number + '\nAkun ID ' + row.user_id, row.id, 'seller_verifications', row.status, row.review_note);
+          const documentButtons = [
+            ['dokumen legal', row.document_path],
+            ['e-KTP', row.identity_document_path],
+            ['selfie', row.selfie_document_path],
+          ].filter(function (entry) { return entry[1]; }).map(function (entry) {
+            return '<button data-open-document="' + B2BPortal.escapeHtml(entry[1]) + '" class="mt-3 mr-2 rounded-lg border px-3 py-2 text-sm font-semibold">Lihat ' + B2BPortal.escapeHtml(entry[0]) + '</button>';
+          }).join('');
+          return card.replace('</article>', documentButtons + '</article>');
+        }).join('') : '<p class="text-sm text-slate-500">Belum ada pengajuan seller.</p>';
+        const options = '<option value="">Pilih perusahaan</option>' + verifiedClients.map(function (row) {
+          return '<option value="' + B2BPortal.escapeHtml(row.id) + '">' + B2BPortal.escapeHtml(row.company_name) + ' · ' + B2BPortal.escapeHtml(row.id) + '</option>';
+        }).join('');
+        document.querySelectorAll('select[name="client_id"]').forEach(function (select) { select.innerHTML = options; });
+        const sellerOptions = '<option value="">Pilih seller</option>' + verifiedSellers.map(function (seller) {
+          return '<option value="' + B2BPortal.escapeHtml(seller.user_id) + '">' + B2BPortal.escapeHtml(seller.business_name) + ' · ' + B2BPortal.escapeHtml(seller.user_id) + '</option>';
+        }).join('');
+        document.querySelectorAll('select[name="seller_id"]').forEach(function (select) { select.innerHTML = sellerOptions; });
+        const agreementClient = document.querySelector('#agreementForm select[name="client_id"]');
+        const agreementInvoice = document.querySelector('#agreementForm select[name="invoice_id"]');
+        agreementClient.onchange = function () {
+          const matchingInvoices = availableInvoices.filter(function (invoice) { return invoice.client_id === agreementClient.value; });
+          agreementInvoice.innerHTML = '<option value="">Pilih invoice transaksi</option>' + matchingInvoices.map(function (invoice) {
+            return '<option value="' + B2BPortal.escapeHtml(invoice.id) + '" data-seller-id="' + B2BPortal.escapeHtml(invoice.seller_id) + '">' + B2BPortal.escapeHtml(invoice.invoice_number) + '</option>';
+          }).join('');
+          const selected = agreementInvoice.selectedOptions[0];
+          if (selected && selected.dataset.sellerId) agreementForm.elements.seller_id.value = selected.dataset.sellerId;
+        };
+        agreementInvoice.onchange = function () {
+          const selected = agreementInvoice.selectedOptions[0];
+          if (selected && selected.dataset.sellerId) agreementForm.elements.seller_id.value = selected.dataset.sellerId;
+        };
+        document.querySelectorAll('[data-review]').forEach(function (button) {
+          button.addEventListener('click', function () { review(button.dataset.review, button.dataset.id, button.dataset.status); });
+        });
+        document.querySelectorAll('[data-open-document]').forEach(function (button) {
+          button.addEventListener('click', async function () {
+            const documentWindow = window.open('about:blank', '_blank');
+            if (!documentWindow) { B2BPortal.showMessage(message, 'Izinkan pop-up untuk membuka dokumen privat.', true); return; }
+            try {
+              const result = await client.storage.from('seller-verification').createSignedUrl(button.dataset.openDocument, 300);
+              if (result.error) throw result.error;
+              documentWindow.opener = null;
+              documentWindow.location.href = result.data.signedUrl;
+            } catch (error) {
+              documentWindow.close();
+              B2BPortal.showMessage(message, error.message || 'Dokumen tidak dapat dibuka.', true);
+            }
+          });
+        });
+      }
+      async function review(table, id, status) {
+        const note = document.querySelector('[data-review-note="' + id + '"]').value.trim();
+        if (status === 'rejected' && !note) { B2BPortal.showMessage(message, 'Isi alasan penolakan agar pemohon dapat memperbaiki dokumennya.', true); return; }
+        const result = table === 'seller_verifications'
+          ? await client.rpc('review_b2b_seller_verification', {
+            target_verification_id: id,
+            approved: status === 'verified',
+            admin_note: note || null,
+          })
+          : await client.from(table).update({
+            status: status,
+            review_note: note || null,
+            reviewed_by: auth.data.user.id,
+            reviewed_at: new Date().toISOString(),
+          }).eq('id', id);
+        const error = result.error;
+        if (error) { B2BPortal.showMessage(message, error.message, true); return; }
+        B2BPortal.showMessage(message, 'Keputusan verifikasi tersimpan.', false);
+        await load();
+      }
+      document.getElementById('invoiceForm').addEventListener('submit', async function (event) {
+        event.preventDefault();
+        const form = event.currentTarget;
+        const values = Object.fromEntries(new FormData(form).entries());
+        if (!values.client_id || !verifiedClients.some(function (row) { return row.id === values.client_id; })) {
+          B2BPortal.showMessage(message, 'Pilih perusahaan yang sudah terverifikasi.', true); return;
+        }
+        const now = new Date();
+        const number = 'B2B-' + now.toISOString().slice(0, 7).replace('-', '') + '-' + crypto.randomUUID().slice(0, 8).toUpperCase();
+        const { error } = await client.from('b2b_invoices').insert({
+          invoice_number: number, client_id: values.client_id, seller_id: values.seller_id,
+          issued_by: auth.data.user.id, description: values.description.trim(),
+          quantity: Number(values.quantity), unit_price: Number(values.unit_price),
+          tax_pct: Number(values.tax_pct), due_date: values.due_date,
+        });
+        if (error) { B2BPortal.showMessage(message, error.message, true); return; }
+        B2BPortal.showMessage(message, 'Invoice ' + number + ' diterbitkan. Buyer dapat membuat PDF dari portal B2B.', false);
+        form.reset();
+        form.elements.tax_pct.value = '11';
+        await load();
+      });
+      document.getElementById('agreementForm').addEventListener('submit', async function (event) {
+        event.preventDefault();
+        const form = event.currentTarget;
+        const values = Object.fromEntries(new FormData(form).entries());
+        if (!values.client_id || !verifiedClients.some(function (row) { return row.id === values.client_id; })) {
+          B2BPortal.showMessage(message, 'Pilih perusahaan yang sudah terverifikasi.', true); return;
+        }
+        const linkedInvoice = availableInvoices.find(function (invoice) {
+          return invoice.id === values.invoice_id && invoice.client_id === values.client_id && invoice.seller_id === values.seller_id;
+        });
+        if (!linkedInvoice) { B2BPortal.showMessage(message, 'Pilih invoice yang terkait dengan perusahaan dan seller tersebut.', true); return; }
+        const number = 'AGR-' + new Date().toISOString().slice(0, 10).replace(/-/g, '') + '-' + crypto.randomUUID().slice(0, 8).toUpperCase();
+        const { error } = await client.from('b2b_agreements').insert({
+          agreement_number: number, client_id: values.client_id, invoice_id: values.invoice_id, seller_id: values.seller_id,
+          created_by: auth.data.user.id, title: values.title.trim(),
+          agreement_text: values.agreement_text.trim(), status: 'awaiting_signatures',
+        });
+        if (error) { B2BPortal.showMessage(message, error.message, true); return; }
+        B2BPortal.showMessage(message, 'Perjanjian ' + number + ' dikirim ke portal buyer dan seller untuk disetujui.', false);
+        form.reset();
+        await load();
+      });
+      document.querySelector('[data-refresh]').addEventListener('click', function () { load().catch(function (error) { B2BPortal.showMessage(message, error.message, true); }); });
+      load().catch(function (error) { B2BPortal.showMessage(message, error.message || 'Data B2B gagal dimuat.', true); });
+    })();
+  </script>
+  <script src="../../assets/js/lang.js"></script>
+  <script src="/assets/js/layout.js"></script>
+  <script src="/assets/js/public-layout.js"></script>
+</body>
+</html>

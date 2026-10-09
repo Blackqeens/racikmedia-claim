@@ -1,0 +1,444 @@
+:root {
+  --rm-public-motion-duration: 12s;
+  --rm-public-motion-delay: 20s;
+  --rm-public-motion-timing: ease;
+  --rm-login-gradient: linear-gradient(110deg, #064e3b 0%, #047857 35%, #0369a1 70%, #064e3b 100%);
+  --rm-login-gradient-size: 240% 240%;
+}
+
+html.public-layout-page,
+body.public-layout-page {
+  overflow-x: clip;
+}
+
+.public-hero {
+  position: relative;
+  display: grid;
+  min-height: 390px;
+  height: 390px;
+  align-items: center;
+  overflow: hidden;
+  padding: 2.5rem 1rem;
+}
+
+.public-hero::before {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  background: var(--rm-login-gradient);
+  background-size: var(--rm-login-gradient-size);
+  animation: loginGradientFlow var(--rm-public-motion-duration) var(--rm-public-motion-timing) var(--rm-public-motion-delay) infinite;
+  content: "";
+}
+
+.public-hero__content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 64rem;
+  margin-inline: auto;
+  text-align: center;
+}
+
+.public-hero-pattern {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  background-image: radial-gradient(#fff 1px, transparent 1px);
+  background-size: 16px 16px;
+  pointer-events: none;
+}
+
+.public-hero--journal .public-hero-pattern {
+  background-image: url("../images/journal-data-journey.png");
+  background-position: center 45%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  mix-blend-mode: screen;
+  opacity: 0.48;
+}
+
+.public-hero--events .public-hero-pattern {
+  background-image: url("../images/events-agenda-route.svg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: min(100vw, 1200px) auto;
+  opacity: 0.34;
+}
+
+.public-hero--showcase .public-hero-pattern {
+  background-image:
+    linear-gradient(90deg, rgba(4, 78, 59, 0.42), rgba(2, 22, 35, 0.66) 52%, rgba(2, 20, 39, 0.38)),
+    url("../images/etalase-global-trade-optimized.jpg");
+  background-position: center, center 56%;
+  background-repeat: no-repeat;
+  background-size: cover, cover;
+}
+
+.public-hero--indonesia .public-hero-pattern {
+  background-image: url("../images/indonesia-map.svg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: min(130vw, 1100px) auto;
+  opacity: 0.16;
+}
+
+#rm-navbar-root {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 100;
+}
+
+body.rm-has-public-navbar { padding-top: 65px; }
+
+.rm-public-header {
+  position: relative;
+  background: #fff;
+  border-bottom: 1px solid #e5e7eb;
+  transition: box-shadow 0.2s ease;
+}
+
+.rm-public-header__inner {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.75rem, 2vw, 2rem);
+  min-height: 64px;
+  padding: 0 clamp(1rem, 3vw, 2.5rem);
+}
+
+.rm-public-header__logo {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+}
+
+.rm-public-header__logo img {
+  display: block;
+  width: auto;
+  height: 36px;
+  max-width: clamp(6rem, 10vw, 9rem);
+}
+
+.rm-public-header__nav {
+  position: relative;
+  display: flex;
+  align-self: stretch;
+  align-items: center;
+  gap: clamp(0.75rem, 2vw, 1.75rem);
+  min-width: 0;
+  padding: 0 0 8px;
+}
+
+.rm-public-header__nav::after {
+  position: absolute;
+  right: 0;
+  bottom: 14px;
+  left: 0;
+  height: 1px;
+  background: #111827;
+  content: "";
+}
+
+.rm-public-header__nav a {
+  color: #374151;
+  font-size: clamp(0.7rem, 0.9vw, 0.875rem);
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.rm-public-header__nav a:hover,
+.rm-public-header__nav a.text-emerald-800 {
+  color: #065f46;
+}
+
+.rm-public-header__actions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 0.75rem;
+  margin-left: auto;
+}
+
+.rm-public-header__language-label { color: #0f766e; }
+
+.rm-public-header__back {
+  display: inline-flex;
+  min-height: 34px;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.375rem 0.7rem;
+  border: 1px solid #0f766e;
+  border-radius: 999px;
+  background: #fff;
+  color: #0f766e;
+  font: 600 0.75rem/1 'Inter', system-ui, sans-serif;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s, color 0.15s;
+}
+
+.rm-public-header__back svg {
+  width: 15px;
+  height: 15px;
+  flex: 0 0 auto;
+}
+
+.rm-public-header__back:hover {
+  border-color: #047857;
+  background: #f0fdf4;
+  color: #065f46;
+  box-shadow: 0 0 0 2px rgba(5, 150, 105, 0.12);
+}
+
+.rm-public-header__back:focus-visible {
+  outline: 2px solid #0f766e;
+  outline-offset: 2px;
+}
+
+.rm-public-header__login,
+.rm-public-header__mobile-login {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: var(--rm-login-gradient);
+  background-size: var(--rm-login-gradient-size);
+  color: #fff;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  animation: loginGradientFlow var(--rm-public-motion-duration) var(--rm-public-motion-timing) var(--rm-public-motion-delay) infinite;
+}
+
+.rm-public-header__login {
+  min-height: 34px;
+  padding: 0.375rem 1rem;
+}
+
+.rm-public-header__login:hover,
+.rm-public-header__mobile-login:hover {
+  box-shadow: 0 4px 14px rgba(14, 165, 233, 0.28);
+  transform: translateY(-1px);
+}
+
+.rm-public-header__login:focus-visible,
+.rm-public-header__mobile-login:focus-visible {
+  outline: 2px solid #0f766e;
+  outline-offset: 2px;
+}
+
+.rm-public-header__mobile-toggle {
+  display: none;
+  width: 38px;
+  height: 38px;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: #374151;
+  cursor: pointer;
+}
+
+.rm-public-header__mobile-toggle .rm-menu-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.rm-public-header__mobile-menu { display: none; }
+
+.rm-account-overlay[hidden],
+.rm-account-dialog__stage[hidden] { display: none !important; }
+
+.rm-account-overlay {
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgba(15, 23, 42, 0.48);
+}
+
+.rm-account-dialog {
+  position: relative;
+  width: min(100%, 25rem);
+  max-height: min(90vh, 42rem);
+  overflow-y: auto;
+  padding: 1.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 1rem;
+  background: #fff;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.24);
+  color: #1f2937;
+}
+
+.rm-account-dialog h2 {
+  margin: 0 2rem 0.4rem 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.rm-account-dialog h3 {
+  margin: 0 0 0.75rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.rm-account-dialog p {
+  margin: 0 0 1rem;
+  color: #64748b;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.rm-account-dialog__current {
+  overflow-wrap: anywhere;
+  font-weight: 600;
+}
+
+.rm-account-dialog__close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.9rem;
+  border: 0;
+  background: transparent;
+  color: #64748b;
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.rm-account-dialog__stage {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  margin-top: 1.1rem;
+}
+
+.rm-account-dialog__action,
+.rm-account-dialog__account,
+.rm-account-dialog__back {
+  min-height: 2.6rem;
+  padding: 0.6rem 0.85rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.65rem;
+  background: #fff;
+  color: #1f2937;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+
+.rm-account-dialog__action:hover,
+.rm-account-dialog__account:hover,
+.rm-account-dialog__back:hover { background: #f0fdf4; }
+
+.rm-account-dialog__action--logout {
+  border-color: #fecaca;
+  color: #be123c;
+}
+
+.rm-account-dialog__action--logout:hover { background: #fff1f2; }
+
+.rm-account-dialog__accounts {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  max-height: 12rem;
+  overflow-y: auto;
+}
+
+.rm-account-dialog__account { overflow-wrap: anywhere; }
+.rm-account-dialog__empty { margin-bottom: 0 !important; }
+.rm-account-dialog__register { color: #047857; font-size: 0.875rem; font-weight: 600; }
+.rm-account-dialog__message { color: #b91c1c; font-size: 0.8rem; }
+
+.public-hero .animate-pulse { animation: none; }
+
+@keyframes loginGradientFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@media (max-width: 767px) {
+  .public-hero {
+    height: 440px;
+    min-height: 440px;
+    padding: 2rem 1rem;
+  }
+
+  .rm-public-header__inner { gap: 0.5rem; padding: 0 1rem; }
+  .rm-public-header__nav,
+  .rm-public-header__login { display: none; }
+  .rm-public-header__logo img {
+    width: clamp(6rem, 32vw, 8rem);
+    height: auto;
+    max-width: 100%;
+    object-fit: contain;
+  }
+  .rm-public-header__actions { gap: 0.375rem; }
+  .rm-public-header__back { min-height: 32px; padding: 0.35rem 0.55rem; }
+  .rm-public-header__language-label { display: none; }
+  .rm-public-header__mobile-toggle {
+    display: inline-flex;
+    border: 1px solid #0f766e;
+    border-radius: 999px;
+    color: #0f766e;
+    transition: border-color 0.15s, background 0.15s, box-shadow 0.15s, color 0.15s;
+  }
+  .rm-public-header__mobile-toggle:hover,
+  .rm-public-header__mobile-toggle[aria-expanded="true"] {
+    border-color: #047857;
+    background: #f0fdf4;
+    color: #065f46;
+    box-shadow: 0 0 0 2px rgba(5, 150, 105, 0.12);
+  }
+  .rm-public-header__mobile-toggle:focus-visible {
+    outline: 2px solid #0f766e;
+    outline-offset: 2px;
+  }
+  .rm-public-header__mobile-menu:not(.hidden) {
+    display: block;
+    border-top: 1px solid #f3f4f6;
+    background: #fff;
+  }
+  .rm-public-header__mobile-menu nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.5rem 1rem 1rem;
+  }
+  .rm-public-header__mobile-menu nav a:not(.rm-public-header__mobile-login) {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f3f4f6;
+    color: #374151;
+    font-size: 0.875rem;
+    text-decoration: none;
+  }
+  .rm-public-header__mobile-login { margin-top: 0.5rem; padding: 0.625rem 1rem; }
+}
+
+@media (max-width: 360px) {
+  .public-hero {
+    height: 520px;
+    min-height: 520px;
+  }
+
+  .rm-public-header__back span { display: none; }
+  .rm-public-header__back { width: 32px; padding: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .public-hero::before { animation: none; }
+  .rm-public-header__login,
+  .rm-public-header__mobile-login { animation: none; }
+}

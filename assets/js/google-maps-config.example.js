@@ -1,0 +1,3 @@
+window.GOOGLE_MAPS_CONFIG = {
+  apiKey: 'ADD_YOUR_RESTRICTED_BROWSER_KEY'
+};

@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Master Admin Control Center — BOB Racik Media Nusantara</title>
+  <!-- ROUTE GUARD: Hanya Master Admin yang berhak mengakses -->
+  <script src="../../api/auth.js"></script>
+  <script>BobAuth.requireRole('master_admin');</script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../../assets/css/shared.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+/* ── Master Sidebar ── */
+    .master-sidebar {
+      position: fixed; top: 0; left: 0; bottom: 0;
+      width: 250px; background: #0b0f19;
+      border-right: 1px solid rgba(255,255,255,.07);
+      display: flex; flex-direction: column;
+      z-index: 40; overflow-y: auto;
+    }
+    .master-logo {
+      padding: 22px 20px 20px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .master-badge {
+      font-size: 10px; font-weight: 800; letter-spacing: .08em;
+      background: linear-gradient(135deg, #a855f7, #6366f1);
+      color: #fff; padding: 3px 9px; border-radius: 99px;
+      box-shadow: 0 0 12px rgba(168,85,247,.35);
+    }
+    .m-section {
+      font-size: 10px; font-weight: 800; color: rgba(255,255,255,.3);
+      letter-spacing: .09em; text-transform: uppercase;
+      padding: 18px 20px 6px;
+    }
+    .m-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 20px; font-size: 13px; color: rgba(255,255,255,.65);
+      text-decoration: none; border-left: 3px solid transparent;
+      transition: all .15s ease; cursor: pointer;
+    }
+    .m-item:hover { color: #fff; background: rgba(255,255,255,.05); }
+    .m-item.active { color: #fff; background: rgba(168,85,247,.12); border-left-color: #a855f7; font-weight: 600; }
+    .m-item svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+    /* ── Master Topbar ── */
+    .master-topbar {
+      position: fixed; top: 0; left: 250px; right: 0; height: 60px;
+      background: #0b0f19; border-bottom: 1px solid rgba(255,255,255,.07);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 32px; z-index: 30;
+    }
+
+    /* ── Content Layout ── */
+    .main-wrap { margin-left: 250px; padding-top: 60px; min-height: 100vh; }
+    .content   { padding: 32px 36px 60px; }
+
+    .m-card {
+      background: #1e293b; border: 1px solid rgba(255,255,255,.08);
+      border-radius: 14px; box-shadow: 0 4px 20px rgba(0,0,0,.25);
+    }
+
+    .tab-btn-master {
+      padding: 10px 18px; font-size: 13px; font-weight: 600; color: #94a3b8;
+      border-bottom: 2px solid transparent; transition: all .15s ease; cursor: pointer;
+    }
+    .tab-btn-master.active { color: #c084fc; border-bottom-color: #c084fc; }
+
+    /* ── B2B Module Styles (Isolated) ── */
+    #bob-kyc-modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,.65);
+      z-index: 200; display: none; align-items: center; justify-content: center;
+      backdrop-filter: blur(4px);
+    }
+    #bob-kyc-modal-overlay.is-open { display: flex; }
+    #bob-kyc-modal-box {
+      background: #1e293b; border: 1px solid rgba(168,85,247,.3);
+      border-radius: 16px; width: 560px; max-width: 95vw; max-height: 90vh;
+      overflow-y: auto; padding: 28px 32px; box-shadow: 0 20px 60px rgba(0,0,0,.5);
+    }
+    .b2b-doc-card {
+      background: #0f172a; border: 1px solid rgba(255,255,255,.08);
+      border-radius: 12px; padding: 16px; transition: border-color .2s;
+    }
+    .b2b-doc-card:hover { border-color: rgba(168,85,247,.3); }
+    .b2b-badge-pending { background: #422006; color: #fbbf24; border: 1px solid #92400e; }
+    .b2b-badge-verified { background: #052e16; color: #4ade80; border: 1px solid #166534; }
+    .b2b-badge-rejected { background: #450a0a; color: #fca5a5; border: 1px solid #991b1b; }
+  </style>
+  <link rel="stylesheet" href="/assets/css/public-layout.css" />
+</head>
+<body data-chat-context="master_admin_dashboard">
+  <div id="rm-navbar-root"></div>
+
+<!-- ══════════════════════════════════════
+     SIDEBAR MASTER ADMIN
+     ══════════════════════════════════════ -->
+<aside class="master-sidebar">
+  <div class="master-logo">
+    <div>
+      <span class="font-serif text-xl font-bold text-white tracking-tight">BOB</span>
+      <p class="text-[10px] text-purple-400 font-semibold uppercase tracking-widest">Racik Media Nusantara</p>
+    </div>
+    <span class="master-badge">MASTER</span>
+  </div>
+
+  <div class="m-section">Kontrol Platform</div>
+  <a onclick="switchMasterTab('tab-overview')" class="m-item active" id="menu-overview">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+    Overview Sistem
+  </a>
+  <a onclick="switchMasterTab('tab-admin-mgmt')" class="m-item" id="menu-admin-mgmt">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+    Kelola Akun Admin
+  </a>
+  <a href="kurasi-headline.html" class="m-item" id="menu-headline">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
+    Kurasi Headline Beranda
+    <span class="ml-auto text-[10px] bg-purple-600 px-2 py-0.5 rounded-full font-bold text-white">2 Siap</span>
+  </a>
+
+  <div class="m-section">Modul B2B & Keuangan</div>
+  <a onclick="switchMasterTab('tab-b2b-verification')" class="m-item" id="menu-b2b-verification">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+    Verifikasi Dokumen B2B
+    <span class="ml-auto text-[10px] bg-amber-600 px-2 py-0.5 rounded-full font-bold text-white">3 Antre</span>
+  </a>
+  <a onclick="switchMasterTab('tab-tax-monitor')" class="m-item" id="menu-tax-monitor">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    Monitor Pajak & Dana
+  </a>
+
+  <a href="../admin/financial-report.html" class="m-item">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    Laporan Transaksi
+  </a>
+  <a href="../admin/moderation-audit.html" class="m-item">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 12h6m-6 4h6"/></svg>
+    Audit Moderasi
+  </a>
+  <div class="m-section">Akses Khusus</div>
+  <a href="../admin/dashboard.html" class="m-item">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+    Buka Meja Admin Biasa
+  </a>
+  <a href="../main/dashboard.html" class="m-item">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0h6"/></svg>
+    Lihat Tampilan Pembeli
+  </a>
+
+  <div class="mt-auto p-4 border-t border-slate-800/80">
+    <button onclick="BobAuth.logout()" class="w-full flex items-center justify-center gap-2 py-2 px-3 text-xs font-semibold text-rose-400 hover:text-white hover:bg-rose-900/40 rounded-lg transition-colors">
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+      Keluar Sesi Master
+    </button>
+  </div>
+</aside>
+
+<!-- ══════════════════════════════════════
+     TOPBAR MASTER ADMIN
+     ══════════════════════════════════════ -->
+<header class="master-topbar">
+  <div class="flex items-center gap-3">
+    <span class="w-2.5 h-2.5 rounded-full bg-purple-500 animate-pulse"></span>
+    <span class="text-xs font-medium text-slate-300">Sistem Berjalan Normal · Blackqeens's Org</span>
+  </div>
+
+  <div class="flex items-center gap-4">
+    <div class="text-right">
+      <p class="text-xs font-bold text-white" id="master-user-name">Deni Pratama (Master)</p>
+      <p class="text-[11px] text-purple-300" id="master-user-email">master@bob.id</p>
+    </div>
+    <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-purple-600 to-indigo-500 text-white flex items-center justify-center font-bold text-xs shadow-lg shadow-purple-500/30">
+      👑
+    </div>
+  </div>
+</header>
+
+<!-- ══════════════════════════════════════
+     MAIN WRAPPER
+     ══════════════════════════════════════ -->
+<main class="main-wrap">
+  <div class="content">
+
+    <!-- Header Section -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-7">
+      <div>
+        <h1 class="text-2xl font-bold text-white">Master Admin Control Panel</h1>
+        <p class="text-sm text-slate-400 mt-1">Otoritas tertinggi pengelolaan akun admin, penentuan headline beranda, dan parameter keamanan.</p>
+      </div>
+      <div class="flex gap-2">
+        <button onclick="switchMasterTab('tab-admin-mgmt')" class="px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-bold rounded-lg shadow-lg shadow-purple-900/30 transition-all">
+          + Buat Akun Admin Baru
+        </button>
+      </div>
+    </div>
+
+    <!-- ── STATS STRIP ── -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div class="m-card p-5 border-l-4 border-l-purple-500">
+        <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Total Akun Admin</p>
+        <p class="text-2xl font-bold text-white mt-1" id="stat-admin-count">2 <span class="text-xs font-normal text-slate-400">Moderator</span></p>
+        <p class="text-xs text-purple-400 font-medium mt-2">Diberikan hak kelola toko &amp; artikel</p>
+      </div>
+      <div class="m-card p-5 border-l-4 border-l-emerald-500">
+        <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Headline Beranda</p>
+        <p class="text-2xl font-bold text-white mt-1">3 <span class="text-xs font-normal text-slate-400">Artikel Terpilih</span></p>
+        <p class="text-xs text-emerald-400 font-medium mt-2">Tampil di banner teratas publik</p>
+      </div>
+      <div class="m-card p-5 border-l-4 border-l-blue-500">
+        <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Total Pengguna Terdaftar</p>
+        <p class="text-2xl font-bold text-white mt-1">1,420 <span class="text-xs font-normal text-slate-400">User</span></p>
+        <p class="text-xs text-blue-400 font-medium mt-2">Pembeli, Penjual &amp; Penulis</p>
+      </div>
+      <div class="m-card p-5 border-l-4 border-l-amber-500">
+        <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Penyimpanan Terhubung</p>
+        <p class="text-2xl font-bold text-white mt-1">Supabase &amp; Astra</p>
+        <p class="text-xs text-amber-400 font-medium mt-2">Relational &amp; User History Active</p>
+      </div>
+    </div>
+
+    <!-- ── TAB NAVIGASI ── -->
+    <div class="flex items-center gap-2 border-b border-slate-700 mb-6">
+      <button class="tab-btn-master active" id="btn-master-overview" onclick="switchMasterTab('tab-overview')">Overview Sistem</button>
+      <button class="tab-btn-master" id="btn-master-admin-mgmt" onclick="switchMasterTab('tab-admin-mgmt')">Manajemen Akun Admin (2)</button>
+      <button class="tab-btn-master" id="btn-master-headline" onclick="switchMasterTab('tab-headline-curation')">Kurasi Headline Halaman Depan</button>
+      <button class="tab-btn-master" id="btn-master-b2b-verification" onclick="switchMasterTab('tab-b2b-verification')">Verifikasi B2B</button>
+      <button class="tab-btn-master" id="btn-master-tax-monitor" onclick="switchMasterTab('tab-tax-monitor')">Pajak & Pencairan</button>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         PANEL 1: OVERVIEW SISTEM
+         ══════════════════════════════════════ -->
+    <div id="tab-overview" class="master-tab-content">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Kolom Kiri: 2/3 -->
+        <div class="lg:col-span-2 flex flex-col gap-6">
+          <div class="m-card p-6">
+            <h2 class="text-base font-bold text-white mb-2">Alur Moderasi Dua Tahap (Two-Tier Flow)</h2>
+            <p class="text-xs text-slate-400 mb-5 leading-relaxed">
+              Penulis mengajukan draf $\rightarrow$ <strong>Admin</strong> memeriksa kelayakan isi, tata letak visual tanpa mengubah esensi isi $\rightarrow$ <strong>Master Admin</strong> menerima berkas yang lolos untuk ditayangkan pada *headline* beranda utama.
+            </p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+              <div class="p-4 bg-slate-800/80 border border-slate-700 rounded-xl">
+                <span class="text-xl">✍️</span>
+                <p class="text-xs font-bold text-white mt-2">1. Penulis</p>
+                <p class="text-[11px] text-slate-400 mt-1">Draf diajukan oleh Member/Penulis</p>
+              </div>
+              <div class="p-4 bg-emerald-950/40 border border-emerald-800/60 rounded-xl">
+                <span class="text-xl">🔍</span>
+                <p class="text-xs font-bold text-emerald-300 mt-2">2. Review Admin</p>
+                <p class="text-[11px] text-slate-400 mt-1">Format visual &amp; bebas plagiasi</p>
+              </div>
+              <div class="p-4 bg-purple-950/40 border border-purple-800/60 rounded-xl">
+                <span class="text-xl">👑</span>
+                <p class="text-xs font-bold text-purple-300 mt-2">3. Master Approval</p>
+                <p class="text-[11px] text-slate-400 mt-1">Penetapan tayang di Headline</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="m-card p-6">
+            <h2 class="text-base font-bold text-white mb-4">Log Keamanan &amp; Autentikasi Pengguna</h2>
+            <div class="space-y-2 text-xs font-mono">
+              <div class="p-2.5 bg-slate-900/80 rounded border border-slate-800 flex justify-between text-slate-300">
+                <span>[AUTH] master@bob.id login sukses via Session Guard</span>
+                <span class="text-slate-500">Baru saja</span>
+              </div>
+              <div class="p-2.5 bg-slate-900/80 rounded border border-slate-800 flex justify-between text-slate-300">
+                <span>[ADMIN] admin@bob.id menyetujui draf "Panen Raya Nusantara"</span>
+                <span class="text-slate-500">10 mnt lalu</span>
+              </div>
+              <div class="p-2.5 bg-slate-900/80 rounded border border-slate-800 flex justify-between text-slate-300">
+                <span>[STORE] Permohonan toko "Kopi Gayo Mandiri" masuk ke antrean verifikasi</span>
+                <span class="text-slate-500">25 mnt lalu</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Kolom Kanan: 1/3 -->
+        <div class="flex flex-col gap-6">
+          <div class="m-card p-6">
+            <h2 class="text-base font-bold text-white mb-3">Parameter Global Platform</h2>
+            <div class="space-y-4 text-xs">
+              <div class="flex justify-between items-center pb-3 border-b border-slate-700">
+                <span class="text-slate-400">Registrasi Toko Baru</span>
+                <span class="px-2 py-0.5 bg-emerald-950 text-emerald-400 border border-emerald-800 rounded font-bold">Terbuka</span>
+              </div>
+              <div class="flex justify-between items-center pb-3 border-b border-slate-700">
+                <span class="text-slate-400">Pengajuan Jalur B2B</span>
+                <span class="px-2 py-0.5 bg-purple-950 text-purple-400 border border-purple-800 rounded font-bold">Aktif (Via Kurasi)</span>
+              </div>
+              <div class="flex justify-between items-center pb-3 border-b border-slate-700">
+                <span class="text-slate-400">Batas Minimal Kata Artikel</span>
+                <span class="font-bold text-white">400 Kata</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         PANEL 2: MANAJEMEN AKUN ADMIN
+         ══════════════════════════════════════ -->
+    <div id="tab-admin-mgmt" class="master-tab-content hidden">
+      <div class="m-card p-6">
+        
+        <!-- Form Tambah Admin -->
+        <div class="p-5 bg-slate-900/90 border border-purple-500/30 rounded-xl mb-6">
+          <h3 class="text-sm font-bold text-purple-300 mb-1">Tambah Admin / Moderator Baru</h3>
+          <p class="text-xs text-slate-400 mb-4">Masukkan nama, email, dan password untuk mendelegasikan tugas moderasi harian.</p>
+
+          <form onsubmit="handleCreateAdmin(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-300 mb-1">Nama Lengkap Admin</label>
+              <input type="text" id="new-admin-name" required placeholder="Contoh: Budi Moderasi" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-purple-500" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-300 mb-1">Email Resmi Admin</label>
+              <input type="email" id="new-admin-email" required placeholder="admin.baru@bob.id" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-purple-500" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-300 mb-1">Password Akses</label>
+              <div class="flex gap-2">
+                <input type="password" id="new-admin-pass" required placeholder="Minimal 6 karakter" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-purple-500" />
+                <button type="submit" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold rounded-lg transition-colors whitespace-nowrap">+ Buat</button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Tabel Daftar Admin -->
+        <h3 class="text-sm font-bold text-white mb-3">Daftar Admin Aktif</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-900/60 text-slate-400 uppercase font-semibold border-b border-slate-700">
+              <tr>
+                <th class="p-3">Nama Admin</th>
+                <th class="p-3">Email</th>
+                <th class="p-3">Role Otoritas</th>
+                <th class="p-3">Status</th>
+                <th class="p-3 text-right">Aksi Master</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-800" id="admin-table-body">
+              <tr>
+                <td class="p-3 font-semibold text-white">Admin BOB (Utama)</td>
+                <td class="p-3 text-slate-400">admin@bob.id</td>
+                <td class="p-3"><span class="px-2 py-0.5 bg-emerald-950 text-emerald-400 border border-emerald-800 rounded font-bold">admin</span></td>
+                <td class="p-3 text-emerald-400 font-bold">Aktif</td>
+                <td class="p-3 text-right">
+                  <button onclick="alert('Password admin direset!')" class="text-xs text-purple-400 hover:underline mr-3">Reset Password</button>
+                  <button onclick="removeAdminRow(this)" class="text-xs text-rose-400 hover:underline">Hapus</button>
+                </td>
+              </tr>
+              <tr>
+                <td class="p-3 font-semibold text-white">Admin Kedua (Regional Bandung)</td>
+                <td class="p-3 text-slate-400">admin2@bob.id</td>
+                <td class="p-3"><span class="px-2 py-0.5 bg-emerald-950 text-emerald-400 border border-emerald-800 rounded font-bold">admin</span></td>
+                <td class="p-3 text-emerald-400 font-bold">Aktif</td>
+                <td class="p-3 text-right">
+                  <button onclick="alert('Password admin direset!')" class="text-xs text-purple-400 hover:underline mr-3">Reset Password</button>
+                  <button onclick="removeAdminRow(this)" class="text-xs text-rose-400 hover:underline">Hapus</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         PANEL 3: KURASI HEADLINE BERANDA
+         ══════════════════════════════════════ -->
+    <div id="tab-headline-curation" class="master-tab-content hidden">
+      <div class="m-card p-6">
+        <div class="flex justify-between items-center mb-4">
+          <div>
+            <h2 class="text-base font-bold text-white">Artikel Siap Tayang di Headline Beranda</h2>
+            <p class="text-xs text-slate-400 mt-0.5">Artikel yang telah lolos saring dari Admin dan siap dipilih oleh Master Admin untuk posisi teratas homepage.</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          
+          <div class="p-4 bg-slate-900/80 border border-slate-700 rounded-xl flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between">
+                <span class="px-2 py-0.5 bg-emerald-950 text-emerald-400 text-[10px] font-bold rounded">Disetujui Admin</span>
+                <span class="text-[11px] text-slate-500">Oleh: Sinta Maharani</span>
+              </div>
+              <h3 class="font-serif text-base font-bold text-white mt-2">Menjaga Napas Tenun Tradisional di Ranah Minang</h3>
+              <p class="text-xs text-slate-400 mt-1 line-clamp-2">Eksplorasi mendalam tentang pengrajin tenun yang mempertahankan pewarna alami dari akar pohon dan getah kayu hutan.</p>
+            </div>
+            <div class="flex items-center justify-between mt-4 pt-3 border-t border-slate-800">
+              <span class="text-xs text-purple-300 font-semibold">Tampil di Headline?</span>
+              <button onclick="toggleHeadlineStatus(this)" class="px-3.5 py-1.5 bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold rounded-lg transition-colors">
+                ★ Jadikan Headline Utama
+              </button>
+            </div>
+          </div>
+
+          <div class="p-4 bg-slate-900/80 border border-slate-700 rounded-xl flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between">
+                <span class="px-2 py-0.5 bg-emerald-950 text-emerald-400 text-[10px] font-bold rounded">Disetujui Admin</span>
+                <span class="text-[11px] text-slate-500">Oleh: Reza Pratama</span>
+              </div>
+              <h3 class="font-serif text-base font-bold text-white mt-2">Kopi Robusta Lereng Kelud: Aroma Tanah Vulkanik</h3>
+              <p class="text-xs text-slate-400 mt-1 line-clamp-2">Perjalanan petani muda membudidayakan kopi dengan metode ramah lingkungan dan pasca panen fermentasi alami.</p>
+            </div>
+            <div class="flex items-center justify-between mt-4 pt-3 border-t border-slate-800">
+              <span class="text-xs text-purple-300 font-semibold">Tampil di Headline?</span>
+              <button onclick="toggleHeadlineStatus(this)" class="px-3.5 py-1.5 bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold rounded-lg transition-colors">
+                ★ Jadikan Headline Utama
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         PANEL 4: VERIFIKASI DOKUMEN B2B
+         ══════════════════════════════════════ -->
+    <div id="tab-b2b-verification" class="master-tab-content hidden">
+      <div class="m-card p-6 mb-6">
+        <div class="flex justify-between items-center mb-5">
+          <div>
+            <h2 class="text-base font-bold text-white">Ruang Verifikasi Dokumen Perusahaan (KYC B2B)</h2>
+            <p class="text-xs text-slate-400 mt-0.5">Validasi SIUP, NIB, dan NPWP untuk pendaftaran Toko Jalur B2B.</p>
+          </div>
+          <span class="px-3 py-1 text-[10px] font-bold uppercase tracking-wider b2b-badge-pending rounded-full">3 Menunggu Verifikasi</span>
+        </div>
+
+        <!-- B2B Company Queue -->
+        <div class="space-y-4">
+
+          <!-- Company 1 -->
+          <div class="b2b-doc-card">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
+              <div>
+                <h3 class="text-sm font-bold text-white notranslate" data-proper-noun="true">PT Maju Bersama Komoditas</h3>
+                <p class="text-[11px] text-slate-400 mt-0.5">PIC: <span class="notranslate">Ahmad Fauzi</span> · ahmad@majubersama.co.id</p>
+              </div>
+              <span class="px-2.5 py-1 text-[10px] font-bold b2b-badge-pending rounded-full self-start">⏳ Menunggu</span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs mb-4">
+              <div class="p-3 bg-slate-800/60 rounded-lg">
+                <p class="text-slate-500 font-semibold mb-1">SIUP</p>
+                <p class="text-white font-bold notranslate">503/0412/SIUP/2024</p>
+                <p class="text-[10px] text-slate-500 mt-1">Masa berlaku: 2024–2029</p>
+              </div>
+              <div class="p-3 bg-slate-800/60 rounded-lg">
+                <p class="text-slate-500 font-semibold mb-1">NIB</p>
+                <p class="text-white font-bold notranslate">9120412381234</p>
+                <p class="text-[10px] text-slate-500 mt-1">OSS RBA Verified</p>
+              </div>
+              <div class="p-3 bg-slate-800/60 rounded-lg">
+                <p class="text-slate-500 font-semibold mb-1">NPWP</p>
+                <p class="text-white font-bold notranslate">01.234.567.8-012.000</p>
+                <p class="text-[10px] text-slate-500 mt-1">Badan Usaha</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="bobOpenKYCModal('PT Maju Bersama Komoditas')" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold rounded-lg transition-colors">🔍 Audit & Verifikasi</button>
+              <button onclick="bobB2BAction(this,'reject')" class="px-4 py-2 bg-rose-900/40 hover:bg-rose-900/60 text-rose-300 text-xs font-bold rounded-lg transition-colors border border-rose-800/50">✕ Tolak</button>
+            </div>
+          </div>
+
+          <!-- Company 2 -->
+          <div class="b2b-doc-card">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
+              <div>
+                <h3 class="text-sm font-bold text-white notranslate" data-proper-noun="true">CV Nusantara Rempah Sejahtera</h3>
+                <p class="text-[11px] text-slate-400 mt-0.5">PIC: <span class="notranslate">Dewi Lestari</span> · dewi@nusantararempah.id</p>
+              </div>
+              <span class="px-2.5 py-1 text-[10px] font-bold b2b-badge-pending rounded-full self-start">⏳ Menunggu</span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs mb-4">
+              <div class="p-3 bg-slate-800/60 rounded-lg">
+                <p class="text-slate-500 font-semibold mb-1">SIUP</p>
+                <p class="text-white font-bold notranslate">510/0876/SIUP/2023</p>
+                <p class="text-[10px] text-slate-500 mt-1">Masa berlaku: 2023–2028</p>
+              </div>
+              <div class="p-3 bg-slate-800/60 rounded-lg">
+                <p class="text-slate-500 font-semibold mb-1">NIB</p>
+                <p class="text-white font-bold notranslate">8230567412098</p>
+                <p class="text-[10px] text-slate-500 mt-1">OSS RBA Verified</p>
+              </div>
+              <div class="p-3 bg-slate-800/60 rounded-lg">
+                <p class="text-slate-500 font-semibold mb-1">NPWP</p>
+                <p class="text-white font-bold notranslate">02.876.543.1-045.000</p>
+                <p class="text-[10px] text-slate-500 mt-1">Badan Usaha</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="bobOpenKYCModal('CV Nusantara Rempah Sejahtera')" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold rounded-lg transition-colors">🔍 Audit & Verifikasi</button>
+              <button onclick="bobB2BAction(this,'reject')" class="px-4 py-2 bg-rose-900/40 hover:bg-rose-900/60 text-rose-300 text-xs font-bold rounded-lg transition-colors border border-rose-800/50">✕ Tolak</button>
+            </div>
+          </div>
+
+          <!-- Company 3 -->
+          <div class="b2b-doc-card">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
+              <div>
+                <h3 class="text-sm font-bold text-white notranslate" data-proper-noun="true">PT Kopi Mandailing Global</h3>
+                <p class="text-[11px] text-slate-400 mt-0.5">PIC: <span class="notranslate">Rizky Harahap</span> · rizky@kopimandailing.com</p>
+              </div>
+              <span class="px-2.5 py-1 text-[10px] font-bold b2b-badge-verified rounded-full self-start">✓ Terverifikasi</span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs mb-4">
+              <div class="p-3 bg-slate-800/60 rounded-lg">
+                <p class="text-slate-500 font-semibold mb-1">SIUP</p>
+                <p class="text-white font-bold notranslate">503/1290/SIUP/2022</p>
+                <p class="text-[10px] text-emerald-400 mt-1">✓ Valid & Terverifikasi</p>
+              </div>
+              <div class="p-3 bg-slate-800/60 rounded-lg">
+                <p class="text-slate-500 font-semibold mb-1">NIB</p>
+                <p class="text-white font-bold notranslate">7120981234567</p>
+                <p class="text-[10px] text-emerald-400 mt-1">✓ OSS RBA Confirmed</p>
+              </div>
+              <div class="p-3 bg-slate-800/60 rounded-lg">
+                <p class="text-slate-500 font-semibold mb-1">NPWP</p>
+                <p class="text-white font-bold notranslate">03.129.876.5-023.000</p>
+                <p class="text-[10px] text-emerald-400 mt-1">✓ Terdaftar DJP</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="px-4 py-2 text-emerald-400 text-xs font-bold">Akses B2B Aktif sejak 15 Sep 2026</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         PANEL 5: MONITOR PAJAK & PENCAIRAN DANA
+         ══════════════════════════════════════ -->
+    <div id="tab-tax-monitor" class="master-tab-content hidden">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+        <!-- Stat Card: PPN Terkumpul -->
+        <div class="m-card p-5 border-l-4 border-l-blue-500">
+          <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">PPN 11% Terkumpul (Bulan Ini)</p>
+          <p class="text-2xl font-bold text-white mt-1 notranslate">Rp 4.235.000</p>
+          <p class="text-xs text-blue-400 font-medium mt-2">Dari 87 transaksi B2C & B2B</p>
+        </div>
+        <!-- Stat Card: Dana Siap Cair -->
+        <div class="m-card p-5 border-l-4 border-l-emerald-500">
+          <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Dana Seller Siap Cair</p>
+          <p class="text-2xl font-bold text-white mt-1 notranslate">Rp 38.510.000</p>
+          <p class="text-xs text-emerald-400 font-medium mt-2">12 seller menunggu pencairan</p>
+        </div>
+        <!-- Stat Card: Sudah Dicairkan -->
+        <div class="m-card p-5 border-l-4 border-l-purple-500">
+          <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Total Dicairkan (Sep 2026)</p>
+          <p class="text-2xl font-bold text-white mt-1 notranslate">Rp 152.780.000</p>
+          <p class="text-xs text-purple-400 font-medium mt-2">42 pencairan berhasil</p>
+        </div>
+      </div>
+
+      <!-- Tabel Rekapitulasi Pencairan -->
+      <div class="m-card p-6">
+        <h2 class="text-base font-bold text-white mb-4">Rekapitulasi Pencairan Dana Seller</h2>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-900/60 text-slate-400 uppercase font-semibold border-b border-slate-700">
+              <tr>
+                <th class="p-3">Toko / Seller</th>
+                <th class="p-3">Nilai Transaksi</th>
+                <th class="p-3">PPN 11%</th>
+                <th class="p-3">Biaya Platform</th>
+                <th class="p-3">Dana Bersih</th>
+                <th class="p-3">Status</th>
+                <th class="p-3 text-right">Aksi</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-800" id="bob-tax-table-body">
+              <tr>
+                <td class="p-3 font-semibold text-white notranslate">Koperasi Tani Cianjur</td>
+                <td class="p-3 text-slate-300 notranslate">Rp 8.800.000</td>
+                <td class="p-3 text-amber-400 font-bold notranslate">Rp 968.000</td>
+                <td class="p-3 text-slate-400 notranslate">Rp 176.000</td>
+                <td class="p-3 text-emerald-400 font-bold notranslate">Rp 7.656.000</td>
+                <td class="p-3"><span class="px-2 py-0.5 b2b-badge-pending rounded font-bold text-[10px]">Menunggu</span></td>
+                <td class="p-3 text-right">
+                  <button onclick="bobApprovePayout(this)" class="text-xs text-purple-400 hover:underline mr-2">Cairkan</button>
+                  <button onclick="bobHoldPayout(this)" class="text-xs text-amber-400 hover:underline">Tahan</button>
+                </td>
+              </tr>
+              <tr>
+                <td class="p-3 font-semibold text-white notranslate">Gayo Coffee Artisan</td>
+                <td class="p-3 text-slate-300 notranslate">Rp 4.400.000</td>
+                <td class="p-3 text-amber-400 font-bold notranslate">Rp 484.000</td>
+                <td class="p-3 text-slate-400 notranslate">Rp 88.000</td>
+                <td class="p-3 text-emerald-400 font-bold notranslate">Rp 3.828.000</td>
+                <td class="p-3"><span class="px-2 py-0.5 b2b-badge-pending rounded font-bold text-[10px]">Menunggu</span></td>
+                <td class="p-3 text-right">
+                  <button onclick="bobApprovePayout(this)" class="text-xs text-purple-400 hover:underline mr-2">Cairkan</button>
+                  <button onclick="bobHoldPayout(this)" class="text-xs text-amber-400 hover:underline">Tahan</button>
+                </td>
+              </tr>
+              <tr>
+                <td class="p-3 font-semibold text-white notranslate">Madu Sialang Riau</td>
+                <td class="p-3 text-slate-300 notranslate">Rp 6.500.000</td>
+                <td class="p-3 text-amber-400 font-bold notranslate">Rp 715.000</td>
+                <td class="p-3 text-slate-400 notranslate">Rp 130.000</td>
+                <td class="p-3 text-emerald-400 font-bold notranslate">Rp 5.655.000</td>
+                <td class="p-3"><span class="px-2 py-0.5 b2b-badge-verified rounded font-bold text-[10px]">Dicairkan</span></td>
+                <td class="p-3 text-right text-slate-500 text-xs">25 Sep 2026</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-semibold text-white notranslate">PT Maju Bersama Komoditas</td>
+                <td class="p-3 text-slate-300 notranslate">Rp 22.000.000</td>
+                <td class="p-3 text-amber-400 font-bold notranslate">Rp 2.420.000</td>
+                <td class="p-3 text-slate-400 notranslate">Rp 440.000</td>
+                <td class="p-3 text-emerald-400 font-bold notranslate">Rp 19.140.000</td>
+                <td class="p-3"><span class="px-2 py-0.5 b2b-badge-pending rounded font-bold text-[10px]">Menunggu</span></td>
+                <td class="p-3 text-right">
+                  <button onclick="bobApprovePayout(this)" class="text-xs text-purple-400 hover:underline mr-2">Cairkan</button>
+                  <button onclick="bobHoldPayout(this)" class="text-xs text-amber-400 hover:underline">Tahan</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- KYC Audit Calculator -->
+        <div class="mt-6 p-5 bg-slate-900/90 border border-purple-500/30 rounded-xl">
+          <h3 class="text-sm font-bold text-purple-300 mb-3">🧮 Kalkulator Audit Pajak Cepat</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-300 mb-1">Nilai Transaksi (Rp)</label>
+              <input type="number" id="bob-tax-calc-input" placeholder="Masukkan nominal" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-purple-500" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-300 mb-1">PPN 11%</label>
+              <div id="bob-tax-calc-ppn" class="w-full bg-slate-800/60 border border-slate-700 rounded-lg px-3 py-2 text-xs text-amber-400 font-bold">Rp 0</div>
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-300 mb-1">Fee Platform (2%)</label>
+              <div id="bob-tax-calc-fee" class="w-full bg-slate-800/60 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-400 font-bold">Rp 0</div>
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-300 mb-1">Dana Bersih Seller</label>
+              <div id="bob-tax-calc-net" class="w-full bg-slate-800/60 border border-slate-700 rounded-lg px-3 py-2 text-xs text-emerald-400 font-bold">Rp 0</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script>
+  // ── Tab switcher ──
+  function switchMasterTab(tabId) {
+    document.querySelectorAll('.master-tab-content').forEach(el => el.classList.add('hidden'));
+    document.querySelectorAll('.tab-btn-master').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.m-item').forEach(el => el.classList.remove('active'));
+
+    const target = document.getElementById(tabId);
+    if (target) target.classList.remove('hidden');
+
+    const btn = document.getElementById('btn-master-' + tabId.replace('tab-', ''));
+    if (btn) btn.classList.add('active');
+  }
+
+  // ── Tambah Admin Baru ──
+  function handleCreateAdmin(e) {
+    e.preventDefault();
+    const name = document.getElementById('new-admin-name').value;
+    const email = document.getElementById('new-admin-email').value;
+    const pass = document.getElementById('new-admin-pass').value;
+
+    const tbody = document.getElementById('admin-table-body');
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="p-3 font-semibold text-white">${name}</td>
+      <td class="p-3 text-slate-400">${email}</td>
+      <td class="p-3"><span class="px-2 py-0.5 bg-emerald-950 text-emerald-400 border border-emerald-800 rounded font-bold">admin</span></td>
+      <td class="p-3 text-emerald-400 font-bold">Aktif</td>
+      <td class="p-3 text-right">
+        <button onclick="alert('Password admin direset!')" class="text-xs text-purple-400 hover:underline mr-3">Reset Password</button>
+        <button onclick="removeAdminRow(this)" class="text-xs text-rose-400 hover:underline">Hapus</button>
+      </td>
+    `;
+    tbody.prepend(tr);
+
+    alert(`Akun Admin "${name}" (${email}) berhasil dibuat! Password tersimpan.`);
+    e.target.reset();
+  }
+
+  function removeAdminRow(btn) {
+    if (confirm('Yakin ingin mencabut hak akses admin ini?')) {
+      btn.closest('tr').remove();
+    }
+  }
+
+  function toggleHeadlineStatus(btn) {
+    if (btn.classList.contains('bg-purple-600')) {
+      btn.className = 'px-3.5 py-1.5 bg-emerald-600 text-white text-xs font-bold rounded-lg';
+      btn.innerHTML = '✓ Aktif di Headline Depan';
+      alert('Artikel berhasil diposting sebagai Headline Halaman Utama!');
+    } else {
+      btn.className = 'px-3.5 py-1.5 bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold rounded-lg transition-colors';
+      btn.innerHTML = '★ Jadikan Headline Utama';
+    }
+  }
+
+  // Sync session
+  document.addEventListener('DOMContentLoaded', () => {
+    const session = BobAuth.getSession();
+    if (session) {
+      if (document.getElementById('master-user-name')) document.getElementById('master-user-name').textContent = session.name + ' (Master)';
+      if (document.getElementById('master-user-email')) document.getElementById('master-user-email').textContent = session.email;
+    }
+  });
+</script>
+
+<!-- ══════════════════════════════════════
+     KYC VERIFICATION MODAL (B2B)
+     ══════════════════════════════════════ -->
+<div id="bob-kyc-modal-overlay" onclick="bobCloseKYCModal(event)">
+  <div id="bob-kyc-modal-box" onclick="event.stopPropagation()">
+    <div class="flex justify-between items-center mb-5">
+      <div>
+        <h2 class="text-lg font-bold text-white">Audit Dokumen KYC</h2>
+        <p class="text-xs text-slate-400" id="bob-kyc-modal-company">-</p>
+      </div>
+      <button onclick="bobCloseKYCModal()" class="text-slate-400 hover:text-white text-xl leading-none">&times;</button>
+    </div>
+
+    <div class="space-y-4">
+      <!-- SIUP Check -->
+      <div class="p-4 bg-slate-900/80 rounded-xl border border-slate-700">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-bold text-white">📄 SIUP (Surat Izin Usaha Perdagangan)</span>
+          <span class="text-[10px] px-2 py-0.5 b2b-badge-pending rounded-full font-bold" id="bob-kyc-siup-status">Belum Diverifikasi</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <label class="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
+            <input type="checkbox" class="bob-kyc-check rounded" data-target="bob-kyc-siup-status" /> Nomor SIUP valid dan cocok
+          </label>
+        </div>
+        <div class="flex items-center gap-3 mt-1">
+          <label class="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
+            <input type="checkbox" class="bob-kyc-check rounded" data-target="bob-kyc-siup-status" /> Masa berlaku belum habis
+          </label>
+        </div>
+      </div>
+
+      <!-- NIB Check -->
+      <div class="p-4 bg-slate-900/80 rounded-xl border border-slate-700">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-bold text-white">🏛️ NIB (Nomor Induk Berusaha)</span>
+          <span class="text-[10px] px-2 py-0.5 b2b-badge-pending rounded-full font-bold" id="bob-kyc-nib-status">Belum Diverifikasi</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <label class="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
+            <input type="checkbox" class="bob-kyc-check rounded" data-target="bob-kyc-nib-status" /> NIB valid di sistem OSS RBA
+          </label>
+        </div>
+        <div class="flex items-center gap-3 mt-1">
+          <label class="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
+            <input type="checkbox" class="bob-kyc-check rounded" data-target="bob-kyc-nib-status" /> Data badan usaha konsisten
+          </label>
+        </div>
+      </div>
+
+      <!-- NPWP Check -->
+      <div class="p-4 bg-slate-900/80 rounded-xl border border-slate-700">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-bold text-white">🧾 NPWP (Nomor Pokok Wajib Pajak)</span>
+          <span class="text-[10px] px-2 py-0.5 b2b-badge-pending rounded-full font-bold" id="bob-kyc-npwp-status">Belum Diverifikasi</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <label class="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
+            <input type="checkbox" class="bob-kyc-check rounded" data-target="bob-kyc-npwp-status" /> Format NPWP sesuai standar DJP
+          </label>
+        </div>
+        <div class="flex items-center gap-3 mt-1">
+          <label class="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
+            <input type="checkbox" class="bob-kyc-check rounded" data-target="bob-kyc-npwp-status" /> Berstatus Wajib Pajak aktif
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Actions -->
+    <div class="flex items-center gap-3 mt-6 pt-4 border-t border-slate-700">
+      <button onclick="bobKYCApproveAll()" id="bob-kyc-approve-btn" disabled class="flex-1 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-700 disabled:text-slate-500 text-white text-xs font-bold rounded-lg transition-colors">✓ Setujui & Aktifkan Jalur B2B</button>
+      <button onclick="bobCloseKYCModal()" class="px-4 py-2.5 bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold rounded-lg transition-colors">Batal</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     B2B MODULE SCRIPTS (Isolated)
+     ══════════════════════════════════════ -->
+<script>
+  // ── KYC Modal Logic ──
+  function bobOpenKYCModal(companyName) {
+    document.getElementById('bob-kyc-modal-company').textContent = companyName;
+    // Reset checkboxes
+    document.querySelectorAll('.bob-kyc-check').forEach(cb => { cb.checked = false; });
+    document.querySelectorAll('#bob-kyc-modal-box [id$="-status"]').forEach(el => {
+      el.textContent = 'Belum Diverifikasi';
+      el.className = 'text-[10px] px-2 py-0.5 b2b-badge-pending rounded-full font-bold';
+    });
+    document.getElementById('bob-kyc-approve-btn').disabled = true;
+    document.getElementById('bob-kyc-modal-overlay').classList.add('is-open');
+  }
+
+  function bobCloseKYCModal(e) {
+    if (e && e.target !== e.currentTarget) return;
+    document.getElementById('bob-kyc-modal-overlay').classList.remove('is-open');
+  }
+
+  // Checkbox listener: auto-update status badges
+  document.addEventListener('change', function(e) {
+    if (!e.target.classList.contains('bob-kyc-check')) return;
+    const parent = e.target.closest('.p-4');
+    const checks = parent.querySelectorAll('.bob-kyc-check');
+    const statusEl = parent.querySelector('[id$="-status"]');
+    const allChecked = [...checks].every(c => c.checked);
+    if (allChecked) {
+      statusEl.textContent = '✓ Terverifikasi';
+      statusEl.className = 'text-[10px] px-2 py-0.5 b2b-badge-verified rounded-full font-bold';
+    } else {
+      statusEl.textContent = 'Belum Diverifikasi';
+      statusEl.className = 'text-[10px] px-2 py-0.5 b2b-badge-pending rounded-full font-bold';
+    }
+    // Enable approve button only when ALL documents verified
+    const allStatuses = document.querySelectorAll('#bob-kyc-modal-box [id$="-status"]');
+    const allDone = [...allStatuses].every(s => s.textContent.includes('Terverifikasi'));
+    document.getElementById('bob-kyc-approve-btn').disabled = !allDone;
+  });
+
+  function bobKYCApproveAll() {
+    const company = document.getElementById('bob-kyc-modal-company').textContent;
+    alert('✅ Dokumen "' + company + '" telah diverifikasi!\nAkses jalur B2B diaktifkan.');
+    bobCloseKYCModal();
+  }
+
+  function bobB2BAction(btn, action) {
+    const card = btn.closest('.b2b-doc-card');
+    const name = card.querySelector('h3').textContent;
+    if (action === 'reject') {
+      if (confirm('Tolak pendaftaran B2B dari "' + name + '"?')) {
+        const badge = card.querySelector('[class*="b2b-badge"]');
+        badge.textContent = '✕ Ditolak';
+        badge.className = 'px-2.5 py-1 text-[10px] font-bold b2b-badge-rejected rounded-full self-start';
+        btn.remove();
+      }
+    }
+  }
+
+  // ── Tax Calculator (Live) ──
+  (function() {
+    var input = document.getElementById('bob-tax-calc-input');
+    if (!input) return;
+    input.addEventListener('input', function() {
+      var val = parseFloat(this.value) || 0;
+      var ppn = val * 0.11;
+      var fee = val * 0.02;
+      var net = val - ppn - fee;
+      document.getElementById('bob-tax-calc-ppn').textContent = 'Rp ' + ppn.toLocaleString('id-ID');
+      document.getElementById('bob-tax-calc-fee').textContent = 'Rp ' + fee.toLocaleString('id-ID');
+      document.getElementById('bob-tax-calc-net').textContent = 'Rp ' + Math.max(0, net).toLocaleString('id-ID');
+    });
+  })();
+
+  // ── Payout Actions ──
+  function bobApprovePayout(btn) {
+    var row = btn.closest('tr');
+    var seller = row.querySelector('td').textContent;
+    if (confirm('Cairkan dana untuk "' + seller + '"?')) {
+      var statusCell = row.querySelector('[class*="b2b-badge"]');
+      statusCell.textContent = 'Dicairkan';
+      statusCell.className = 'px-2 py-0.5 b2b-badge-verified rounded font-bold text-[10px]';
+      var aksiCell = row.querySelector('td:last-child');
+      aksiCell.innerHTML = '<span class="text-xs text-slate-500">' + new Date().toLocaleDateString('id-ID') + '</span>';
+    }
+  }
+
+  function bobHoldPayout(btn) {
+    var row = btn.closest('tr');
+    var seller = row.querySelector('td').textContent;
+    alert('Dana "' + seller + '" ditahan sementara untuk review.');
+  }
+</script>
+
+  <script src="../../assets/js/lang.js"></script>
+  <script src="/assets/js/layout.js"></script>
+  <script src="/assets/js/public-layout.js"></script>
+</body>
+</html>

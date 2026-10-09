@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Email Terkonfirmasi — Racik Media</title>
+  <script src="../../api/auth.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/assets/css/public-layout.css" />
+</head>
+<body class="flex min-h-screen items-center justify-center bg-emerald-50 px-4">
+  <div id="rm-navbar-root"></div>
+  <main class="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-7 text-center shadow-sm">
+    <div id="icon" class="mx-auto grid h-14 w-14 place-items-center rounded-full bg-slate-100 text-2xl" aria-hidden="true">…</div>
+    <h1 id="title" class="mt-5 font-serif text-3xl font-bold">Memeriksa tautan…</h1>
+    <p id="message" class="mt-2 text-sm leading-6 text-slate-600" role="status" aria-live="polite">Mohon tunggu sebentar.</p>
+    <a id="loginLink" href="login.html" class="mt-6 inline-block rounded-lg bg-emerald-800 px-5 py-3 text-sm font-bold text-white">Lanjut ke login</a>
+    <a id="resendLink" href="verify-email.html" class="mt-4 hidden text-sm font-semibold text-emerald-800 hover:underline">Kirim ulang konfirmasi</a>
+  </main>
+  <script>
+    (async function () {
+      var icon = document.getElementById('icon');
+      var title = document.getElementById('title');
+      var message = document.getElementById('message');
+      var resendLink = document.getElementById('resendLink');
+      try {
+        var client = await BobAuth.getClient();
+        var result = await client.auth.getUser();
+        if (result.error) throw result.error;
+        if (!result.data.user) throw new Error('Tautan konfirmasi tidak valid atau sudah kedaluwarsa.');
+        icon.textContent = '✓';
+        icon.classList.remove('bg-slate-100');
+        icon.classList.add('bg-emerald-100', 'text-emerald-800');
+        title.textContent = 'Email terkonfirmasi';
+        message.textContent = 'Alamat email berhasil dikonfirmasi. Silakan masuk untuk melanjutkan.';
+      } catch (error) {
+        icon.textContent = '!';
+        icon.classList.remove('bg-slate-100');
+        icon.classList.add('bg-rose-100', 'text-rose-700');
+        title.textContent = 'Konfirmasi belum berhasil';
+        message.textContent = error.message || 'Tautan tidak valid atau sudah kedaluwarsa.';
+        resendLink.classList.remove('hidden');
+      }
+    })();
+  </script>
+  <script src="../../assets/js/lang.js"></script>
+  <script src="/assets/js/layout.js"></script>
+  <script src="/assets/js/public-layout.js"></script>
+</body>
+</html>

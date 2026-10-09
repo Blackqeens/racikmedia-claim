@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Checkout — Racik Media</title>
+    <script src="../../api/auth.js"></script>
+    <script>window.checkoutAuthReady = BobAuth.requireAuth();</script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../../assets/css/shared.css" />
+    <script src="../../assets/js/tailwind-config.js"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+input, select, textarea, button {
+        transition: all 0.2s ease;
+      }
+    </style>
+    <link rel="stylesheet" href="/assets/css/public-layout.css" />
+</head>
+  <body class="min-h-screen bg-slate-50 text-slate-800 antialiased">
+  <div id="rm-navbar-root"></div>
+    <header class="sticky top-0 z-40 border-b border-slate-200 bg-white/90 backdrop-blur-sm">
+      <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center gap-3">
+          <a href="../main/dashboard.html" class="flex items-center gap-2">
+            <img src="../../assets/brand/1.png" alt="Racik Media" class="h-9 w-auto" />
+          </a>
+          <div class="hidden h-6 w-px bg-slate-200 sm:block"></div>
+          <span class="hidden text-sm font-semibold text-slate-700 sm:block">Checkout</span>
+        </div>
+
+        <a href="cart.html" class="text-xs font-semibold text-emerald-800 hover:text-emerald-900">
+          ← Kembali ke Keranjang
+        </a>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <div class="mb-6 flex items-center gap-2 text-xs text-slate-500">
+        <a href="../main/dashboard.html" class="hover:text-emerald-700">Beranda</a>
+        <span>/</span>
+        <a href="cart.html" class="hover:text-emerald-700">Keranjang</a>
+        <span>/</span>
+        <span class="font-semibold text-slate-800">Checkout</span>
+      </div>
+
+      <div class="mb-8">
+        <h1 class="font-serif text-3xl font-bold text-slate-900">Checkout</h1>
+        <p class="mt-1 text-sm text-slate-500">Lengkapi data pengiriman dan pilih metode pembayaran.</p>
+      </div>
+
+      <div class="grid grid-cols-1 gap-8 lg:grid-cols-12">
+        <section class="space-y-6 lg:col-span-7">
+          <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+            <div class="mb-4 flex items-center justify-between">
+              <h2 class="text-lg font-bold text-slate-900">Alamat Pengiriman</h2>
+              <button type="button" class="text-xs font-semibold text-emerald-700 hover:text-emerald-800">
+                Ubah Alamat
+              </button>
+            </div>
+
+            <div class="grid gap-4 md:grid-cols-2">
+              <label class="block text-sm font-medium text-slate-700 md:col-span-2">
+                Nama Penerima
+                <input
+                  id="recipientName"
+                  type="text"
+                  value="Deni Pratama"
+                  required
+                  class="mt-1 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-800 outline-none focus:border-emerald-700 focus:bg-white"
+                />
+              </label>
+
+              <label class="block text-sm font-medium text-slate-700">
+                Nomor Telepon
+                <input
+                  id="recipientPhone"
+                  type="tel"
+                  value="081234567890"
+                  required
+                  class="mt-1 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-800 outline-none focus:border-emerald-700 focus:bg-white"
+                />
+              </label>
+
+              <label class="block text-sm font-medium text-slate-700">
+                Email
+                <input
+                  id="recipientEmail"
+                  type="email"
+                  value="deni@example.com"
+                  required
+                  class="mt-1 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-800 outline-none focus:border-emerald-700 focus:bg-white"
+                />
+              </label>
+
+              <label class="block text-sm font-medium text-slate-700 md:col-span-2">
+                Alamat Lengkap
+                <textarea
+                  id="deliveryAddress"
+                  rows="3"
+                  required
+                  class="mt-1 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-800 outline-none focus:border-emerald-700 focus:bg-white"
+                >Jl. Raya Cianjur No. 18, Kelurahan Sukajadi, Kecamatan Cianjur, Jawa Barat 43211</textarea>
+              </label>
+
+              <section class="md:col-span-2" aria-labelledby="map-location-title">
+                <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
+                  <div>
+                    <h3 id="map-location-title" class="text-sm font-semibold text-slate-800">Titik lokasi pengiriman <span class="font-normal text-slate-500">(opsional)</span></h3>
+                    <p class="mt-1 text-xs text-slate-500">Cari alamat, klik peta, atau geser pin untuk menentukan titik yang tepat.</p>
+                  </div>
+                  <button id="useCurrentLocation" type="button" class="rounded-lg border border-emerald-700 px-3 py-2 text-xs font-semibold text-emerald-800 hover:bg-emerald-50">Gunakan lokasi saya</button>
+                </div>
+                <div class="flex flex-col gap-2 sm:flex-row">
+                  <label for="mapAddressSearch" class="sr-only">Cari alamat pada peta</label>
+                  <input id="mapAddressSearch" type="search" autocomplete="street-address" placeholder="Cari alamat atau tempat" class="min-w-0 flex-1 rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-emerald-700 focus:ring-2 focus:ring-emerald-100" />
+                  <button id="searchMapAddress" type="button" class="rounded-lg bg-slate-800 px-4 py-2.5 text-sm font-semibold text-white hover:bg-slate-900">Cari di peta</button>
+                </div>
+                <div id="checkoutMap" class="mt-3 h-72 overflow-hidden rounded-xl border border-slate-200 bg-slate-100" role="region" aria-label="Peta lokasi pengiriman">
+                  <p class="p-4 text-sm text-slate-600">Memuat peta…</p>
+                </div>
+                <p id="mapLocationStatus" class="mt-2 text-xs text-slate-600" role="status" aria-live="polite">Titik lokasi belum dipilih.</p>
+                <input id="deliveryLatitude" type="hidden" />
+                <input id="deliveryLongitude" type="hidden" />
+              </section>
+
+              <label class="block text-sm font-medium text-slate-700">
+                Provinsi
+                <select class="mt-1 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-800 outline-none focus:border-emerald-700 focus:bg-white">
+                  <option selected>Jawa Barat</option>
+                  <option>Jawa Tengah</option>
+                  <option>Jawa Timur</option>
+                  <option>DKI Jakarta</option>
+                </select>
+              </label>
+
+              <label class="block text-sm font-medium text-slate-700">
+                Kota/Kabupaten
+                <select class="mt-1 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-800 outline-none focus:border-emerald-700 focus:bg-white">
+                  <option selected>Cianjur</option>
+                  <option>Bandung</option>
+                  <option>Depok</option>
+                  <option>Bekasi</option>
+                </select>
+              </label>
+            </div>
+          </div>
+
+          <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+            <h2 class="mb-4 text-lg font-bold text-slate-900">Metode Pembayaran</h2>
+
+            <div class="space-y-3">
+              <label class="flex cursor-pointer items-center gap-3 rounded-xl border border-slate-200 p-3 hover:border-emerald-600 hover:bg-emerald-50/50">
+                <input type="radio" name="payment" checked class="h-4 w-4 text-emerald-700 focus:ring-emerald-700" />
+                <div class="flex flex-1 items-center justify-between gap-3">
+                  <div>
+                    <div class="text-sm font-semibold text-slate-800">Transfer Bank</div>
+                    <p class="text-xs text-slate-500">BCA, Mandiri, BRI, BNI</p>
+                  </div>
+                  <div class="rounded-lg bg-slate-100 px-2 py-1 text-[10px] font-semibold uppercase text-slate-600">2 jam</div>
+                </div>
+              </label>
+
+              <label class="flex cursor-pointer items-center gap-3 rounded-xl border border-slate-200 p-3 hover:border-emerald-600 hover:bg-emerald-50/50">
+                <input type="radio" name="payment" class="h-4 w-4 text-emerald-700 focus:ring-emerald-700" />
+                <div class="flex flex-1 items-center justify-between gap-3">
+                  <div>
+                    <div class="text-sm font-semibold text-slate-800">E-Wallet</div>
+                    <p class="text-xs text-slate-500">OVO, GoPay, Dana, ShopeePay</p>
+                  </div>
+                  <div class="rounded-lg bg-slate-100 px-2 py-1 text-[10px] font-semibold uppercase text-slate-600">instant</div>
+                </div>
+              </label>
+
+              <label class="flex cursor-pointer items-center gap-3 rounded-xl border border-slate-200 p-3 hover:border-emerald-600 hover:bg-emerald-50/50">
+                <input type="radio" name="payment" class="h-4 w-4 text-emerald-700 focus:ring-emerald-700" />
+                <div class="flex flex-1 items-center justify-between gap-3">
+                  <div>
+                    <div class="text-sm font-semibold text-slate-800">QRIS</div>
+                    <p class="text-xs text-slate-500">Pembayaran via scan QR</p>
+                  </div>
+                  <div class="rounded-lg bg-slate-100 px-2 py-1 text-[10px] font-semibold uppercase text-slate-600">instant</div>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+            <h2 class="mb-4 text-lg font-bold text-slate-900">Catatan Pesanan</h2>
+            <textarea
+              rows="4"
+              class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-800 outline-none focus:border-emerald-700 focus:bg-white"
+              placeholder="Contoh: Tolong kirim di jam siang, warna produk sesuai foto..."
+            ></textarea>
+          </div>
+        </section>
+
+        <aside class="lg:col-span-5">
+          <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+            <h2 class="mb-4 text-lg font-bold text-slate-900">Ringkasan Pesanan</h2>
+
+            <div id="orderItems" class="space-y-4">
+              <p class="text-sm text-slate-500">Memuat keranjang...</p>
+            </div>
+
+            <div class="mt-5 space-y-2 border-t border-slate-200 pt-4 text-sm">
+              <div class="flex items-center justify-between text-slate-600">
+                <span>Subtotal</span>
+                <span id="subtotal">Rp 0</span>
+              </div>
+              <div class="flex items-center justify-between text-slate-600">
+                <span>Biaya Layanan</span>
+                <span id="serviceFee">Rp 0</span>
+              </div>
+              <div class="flex items-center justify-between text-slate-600">
+                <span>Diskon</span>
+                <span id="discount" class="text-emerald-700">- Rp 0</span>
+              </div>
+              <div class="flex items-center justify-between border-t border-slate-200 pt-3 text-base font-bold text-slate-900">
+                <span>Total</span>
+                <span id="total" class="text-emerald-800">Rp 263.000</span>
+              </div>
+            </div>
+
+            <div class="mt-5 rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-xs text-emerald-800">
+              <div class="flex items-start gap-2">
+                <span class="mt-0.5">🔒</span>
+                <p>Ini masih simulasi checkout. Pembayaran dan layanan escrow belum terhubung.</p>
+              </div>
+            </div>
+
+            <button
+              id="placeOrder"
+              type="button"
+              class="mt-5 w-full rounded-xl bg-emerald-800 px-4 py-3 text-sm font-bold text-white hover:bg-emerald-900"
+            >
+              Bayar Sekarang
+            </button>
+          </div>
+        </aside>
+      </div>
+    </main>
+
+    <script src="../../assets/js/google-maps-config.js"></script>
+    <script src="../../assets/js/google-maps-checkout.js" defer></script>
+    <script>
+      let checkoutData = null;
+      try {
+        checkoutData = JSON.parse(sessionStorage.getItem('racikmedia-checkout') || 'null');
+      } catch (error) {
+        console.error('Data checkout tidak dapat dibaca:', error);
+      }
+      const orderItems = document.getElementById('orderItems');
+      const placeOrderBtn = document.getElementById('placeOrder');
+      const formatRupiah = value => 'Rp ' + value.toLocaleString('id-ID');
+
+      if (!checkoutData || !Array.isArray(checkoutData.items) || checkoutData.items.length === 0) {
+        orderItems.innerHTML = '<p class="rounded-xl bg-amber-50 p-3 text-sm text-amber-800">Data keranjang tidak ditemukan. Kembali ke keranjang dan pilih produk terlebih dahulu.</p>';
+        document.getElementById('total').textContent = 'Rp 0';
+        placeOrderBtn.disabled = true;
+        placeOrderBtn.classList.add('cursor-not-allowed', 'opacity-50');
+      } else {
+        orderItems.textContent = '';
+        checkoutData.items.forEach(item => {
+          const row = document.createElement('div');
+          row.className = 'flex items-center gap-3 rounded-xl bg-slate-50 p-3';
+          const image = document.createElement('img');
+          image.src = item.image;
+          image.alt = item.name;
+          image.className = 'h-16 w-16 rounded-xl object-cover';
+          const details = document.createElement('div');
+          details.className = 'flex-1';
+          const name = document.createElement('h3');
+          name.className = 'text-sm font-semibold text-slate-800';
+          name.textContent = item.name;
+          const quantity = document.createElement('p');
+          quantity.className = 'text-xs text-slate-500';
+          quantity.textContent = 'Qty: ' + item.quantity;
+          details.append(name, quantity);
+          const price = document.createElement('p');
+          price.className = 'text-sm font-bold text-slate-900';
+          price.textContent = formatRupiah(item.unitPrice * item.quantity);
+          row.append(image, details, price);
+          orderItems.appendChild(row);
+        });
+
+        document.getElementById('subtotal').textContent = formatRupiah(checkoutData.subtotal);
+        document.getElementById('serviceFee').textContent = formatRupiah(checkoutData.serviceFee);
+        document.getElementById('discount').textContent = '- ' + formatRupiah(checkoutData.discount);
+        document.getElementById('total').textContent = formatRupiah(checkoutData.total);
+      }
+
+      placeOrderBtn.addEventListener('click', async function () {
+        if (!await window.checkoutAuthReady) return;
+        const requiredFields = ['recipientName', 'recipientPhone', 'recipientEmail', 'deliveryAddress'];
+        const invalidField = requiredFields
+          .map(id => document.getElementById(id))
+          .find(field => !field.value.trim() || !field.checkValidity());
+
+        if (invalidField) {
+          invalidField.reportValidity();
+          invalidField.focus();
+          return;
+        }
+        if (!checkoutData || !checkoutData.items.length) return;
+
+        const order = {
+          ...checkoutData,
+          orderNumber: 'RM-' + Date.now().toString().slice(-8),
+          userId: window.BobAuth?.getSession()?.id,
+          transactionMode: 'simulation',
+          paymentStatus: 'unpaid',
+          recipient: document.getElementById('recipientName').value.trim(),
+          shippingAddress: document.getElementById('deliveryAddress').value.trim(),
+          shippingLocation: document.getElementById('deliveryLatitude').value && document.getElementById('deliveryLongitude').value
+            ? {
+                latitude: Number(document.getElementById('deliveryLatitude').value),
+                longitude: Number(document.getElementById('deliveryLongitude').value)
+              }
+            : null,
+          paymentMethod: document.querySelector('input[name="payment"]:checked')?.parentElement.querySelector('.text-sm.font-semibold')?.textContent.trim() || 'Transfer Bank',
+          createdAt: new Date().toISOString()
+        };
+        if (!order.userId) {
+          alert('Sesi login tidak ditemukan. Silakan masuk kembali sebelum membuat pesanan.');
+          window.location.href = '../../pages/auth/login.html?next=' + encodeURIComponent(window.location.href);
+          return;
+        }
+        const historyKey = 'bob_orders_' + order.userId;
+        let orderHistory;
+        let savedCart;
+        try {
+          orderHistory = JSON.parse(localStorage.getItem(historyKey) || '[]');
+          savedCart = JSON.parse(localStorage.getItem('racikmedia-cart') || '[]');
+          if (!Array.isArray(orderHistory)) throw new Error('Format riwayat pesanan tidak valid.');
+          if (!Array.isArray(savedCart)) throw new Error('Format keranjang tidak valid.');
+          orderHistory.unshift(order);
+          localStorage.setItem(historyKey, JSON.stringify(orderHistory));
+        } catch (error) {
+          console.error('Gagal menyimpan pesanan simulasi:', error);
+          alert('Pesanan belum tersimpan. Periksa penyimpanan browser dan coba lagi; keranjang Anda tetap tersedia.');
+          return;
+        }
+
+        try {
+          const purchasedIds = new Set(checkoutData.items.map(item => item.id));
+          localStorage.setItem('racikmedia-cart', JSON.stringify(savedCart.filter(item => !purchasedIds.has(item.id))));
+          sessionStorage.setItem('racikmedia-last-order', JSON.stringify(order));
+        } catch (error) {
+          console.error('Pesanan tersimpan, tetapi keranjang atau konfirmasi tidak dapat diperbarui:', error);
+          alert('Pesanan simulasi sudah tercatat pada Riwayat Pesanan, tetapi keranjang belum berhasil diperbarui.');
+          window.location.href = 'buyer-orders.html';
+          return;
+        }
+        window.location.href = 'order-confirmation.html';
+      });
+    </script>
+    <script src="../../assets/js/lang.js"></script>
+  <script src="/assets/js/layout.js"></script>
+  <script src="/assets/js/public-layout.js"></script>
+</body>
+</html>

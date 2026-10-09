@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth public-layout-page">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BOB — Bacaan, Cerita & Produk Pilihan</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../../assets/css/shared.css" />
+
+  <!-- Language Switcher CSS -->
+  <link rel="stylesheet" href="../../assets/css/lang.css" />
+  <link rel="stylesheet" href="../../assets/css/public-layout.css" />
+
+  <!-- Google Fonts: Lora (Serif) + Inter (Sans) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap"
+    rel="stylesheet" />
+
+  <script src="../../assets/js/tailwind-config.js"></script>
+
+  <style>
+    /* Card image zoom on hover */
+    .card-img-wrap { overflow: hidden; }
+    .card-img-wrap img { transition: transform 0.5s ease; }
+    .card-img-wrap:hover img { transform: scale(1.04); }
+
+    /* Widen the homepage hero image without changing its height. */
+    .hero-image {
+      transform: scaleX(1.8);
+      transition: transform 0.7s ease;
+    }
+    .group:hover .hero-image { transform: scaleX(1.854); }
+
+    /* Racik Media sidebar card */
+    .rm-stat { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  </style>
+</head>
+
+<body class="bg-white text-gray-900 antialiased public-layout-page">
+
+  <!-- Navbar publik dan footer bersama. -->
+  <div id="rm-navbar-root"></div>
+
+
+  <!-- ============================================================
+     HERO SECTION — Featured Story (Full Width)
+     ============================================================ -->
+  <section id="hero" class="w-full px-4 sm:px-6 lg:px-10 pt-6 pb-10">
+
+    <!-- Garis pemisah penuh sebagai pengganti label "Sorotan Utama" -->
+    <div class="divider mb-6"></div>
+
+    <!-- Featured Article Hero (Full Width) -->
+    <div class="w-full flex">
+      <a href="#articles"
+        class="group flex w-full relative rounded-2xl overflow-hidden bg-gray-900 min-h-[440px] sm:min-h-[480px] lg:h-[500px]">
+        <!-- Hero Image — fills entire container -->
+        <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1600&q=80" alt="Panen Raya Nusantara"
+          class="hero-image absolute inset-0 w-full h-full object-cover opacity-90"
+          loading="eager" />
+        <!-- Gradient overlay bottom -->
+        <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent"></div>
+        <!-- Text overlay — category + title + excerpt -->
+        <div class="relative mt-auto w-full p-6 sm:p-10 lg:p-12 flex flex-col gap-3 max-w-4xl">
+          <div class="flex items-center gap-2">
+            <span class="w-5 border-t-2 border-emerald-400"></span>
+            <span class="text-xs font-sans font-semibold tracking-widest uppercase text-emerald-400">Agrikultur</span>
+          </div>
+          <h1 class="font-serif text-2xl sm:text-3xl lg:text-[2.5rem] leading-snug font-bold text-white drop-shadow-lg">
+            Dari Sawah ke Pasar: Bagaimana Petani Milenial Menulis Ulang Narasi Pertanian Indonesia
+          </h1>
+          <p class="font-sans text-sm sm:text-base text-gray-200 line-clamp-2 max-w-2xl font-light">
+            Eksplorasi mendalam bagaimana generasi baru petani di penjuru Nusantara memadukan teknologi presisi dan
+            kearifan lokal untuk menembus pasar modern tanpa perantara tengkulak.
+          </p>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ============================================================
+     DIVIDER
+     ============================================================ -->
+  <div class="w-full px-4 sm:px-6 lg:px-10">
+    <div class="divider"></div>
+  </div>
+
+  <!-- ============================================================
+     ARTICLE CAROUSEL — 3 visible, with prev/next arrows
+     ============================================================ -->
+  <section id="articles" class="w-full px-4 sm:px-6 lg:px-10 py-12">
+
+    <!-- Section label -->
+    <div class="flex items-center gap-3 mb-8">
+      <span class="text-xs font-sans font-semibold tracking-widest uppercase text-gray-500">Terbaru</span>
+      <span class="flex-1 divider"></span>
+      <a href="articles.html" target="_blank" rel="noopener noreferrer"
+        class="text-xs font-sans font-medium text-emerald-700 hover:underline tracking-wide">Lihat Semua Jurnal →</a>
+    </div>
+
+    <!-- Carousel wrapper -->
+    <div class="relative">
+
+      <!-- Left arrow -->
+      <button id="articles-prev"
+        onclick="articlesCarousel(-1)"
+        aria-label="Artikel sebelumnya"
+        class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-5 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-white border border-gray-200 shadow-sm hover:border-emerald-700 hover:text-emerald-700 transition-colors text-gray-500"
+        style="margin-top:-24px">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+      </button>
+
+      <!-- Right arrow -->
+      <button id="articles-next"
+        onclick="articlesCarousel(1)"
+        aria-label="Artikel berikutnya"
+        class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-5 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-white border border-gray-200 shadow-sm hover:border-emerald-700 hover:text-emerald-700 transition-colors text-gray-500"
+        style="margin-top:-24px">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+      </button>
+
+      <!-- Slide track (overflow hidden) -->
+      <div class="overflow-hidden">
+        <div id="articles-track" class="flex transition-transform duration-400 ease-in-out" style="will-change:transform">
+
+          <!-- Article Card 1 -->
+          <article class="articles-slide flex flex-col gap-3 group shrink-0 px-4" style="width:33.333%">
+            <a href="#" class="card-img-wrap rounded-md overflow-hidden bg-gray-100 aspect-[3/2]">
+              <img src="https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=700&q=75" alt="Kerajinan Rotan"
+                class="w-full h-full object-cover" loading="lazy" />
+            </a>
+            <div class="flex flex-col gap-2 pt-1">
+              <span class="text-xs font-sans font-semibold tracking-widest uppercase text-emerald-700">Kerajinan</span>
+              <h3 class="font-serif text-xl font-semibold leading-snug text-gray-900 group-hover:text-emerald-800 transition-colors">
+                <a href="#">Anyaman Rotan Cirebon: Warisan yang Menemukan Pasar Global</a>
+              </h3>
+              <p class="font-sans text-sm leading-relaxed text-gray-500 line-clamp-3">
+                Para pengrajin rotan di Tegalwangi kini memasok ke butik-butik interior di Paris dan Tokyo, tanpa meninggalkan teknik turun-temurun yang menjadi kekuatan mereka.
+              </p>
+              <div class="flex items-center gap-2 pt-1">
+                <span class="text-xs font-sans text-gray-400">10 Juni 2025</span>
+                <span class="text-gray-300">·</span>
+                <span class="text-xs font-sans text-gray-400">5 menit baca</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- Article Card 2 -->
+          <article class="articles-slide flex flex-col gap-3 group shrink-0 px-4" style="width:33.333%">
+            <a href="#" class="card-img-wrap rounded-md overflow-hidden bg-gray-100 aspect-[3/2]">
+              <img src="https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=700&q=75" alt="Kopi Arabika"
+                class="w-full h-full object-cover" loading="lazy" />
+            </a>
+            <div class="flex flex-col gap-2 pt-1">
+              <span class="text-xs font-sans font-semibold tracking-widest uppercase text-emerald-700">Kuliner</span>
+              <h3 class="font-serif text-xl font-semibold leading-snug text-gray-900 group-hover:text-emerald-800 transition-colors">
+                <a href="#">Kopi Gayo, Toraja, dan Flores: Satu Cangkir, Tiga Karakter</a>
+              </h3>
+              <p class="font-sans text-sm leading-relaxed text-gray-500 line-clamp-3">
+                Panduan menemukan single origin terbaik dari tiga penjuru nusantara, langsung dari tangan petani ke cangkir Anda.
+              </p>
+              <div class="flex items-center gap-2 pt-1">
+                <span class="text-xs font-sans text-gray-400">7 Juni 2025</span>
+                <span class="text-gray-300">·</span>
+                <span class="text-xs font-sans text-gray-400">7 menit baca</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- Article Card 3 -->
+          <article class="articles-slide flex flex-col gap-3 group shrink-0 px-4" style="width:33.333%">
+            <a href="#" class="card-img-wrap rounded-md overflow-hidden bg-gray-100 aspect-[3/2]">
+              <img src="https://images.unsplash.com/photo-1509099836639-18ba1795216d?w=700&q=75" alt="Gotong Royong"
+                class="w-full h-full object-cover" loading="lazy" />
+            </a>
+            <div class="flex flex-col gap-2 pt-1">
+              <span class="text-xs font-sans font-semibold tracking-widest uppercase text-emerald-700">Sosial</span>
+              <h3 class="font-serif text-xl font-semibold leading-snug text-gray-900 group-hover:text-emerald-800 transition-colors">
+                <a href="#">Gotong Royong Digital: Komunitas Desa yang Mengubah Kebiasaan Belanja</a>
+              </h3>
+              <p class="font-sans text-sm leading-relaxed text-gray-500 line-clamp-3">
+                Di Kabupaten Blitar, sebuah komunitas WhatsApp sederhana berevolusi menjadi ekosistem belanja kolektif yang menggerakkan ekonomi warga dari dalam.
+              </p>
+              <div class="flex items-center gap-2 pt-1">
+                <span class="text-xs font-sans text-gray-400">3 Juni 2025</span>
+                <span class="text-gray-300">·</span>
+                <span class="text-xs font-sans text-gray-400">6 menit baca</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- Article Card 4 (bonus — hidden until scrolled) -->
+          <article class="articles-slide flex flex-col gap-3 group shrink-0 px-4" style="width:33.333%">
+            <a href="#" class="card-img-wrap rounded-md overflow-hidden bg-gray-100 aspect-[3/2]">
+              <img src="https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=700&q=75" alt="Petani Muda"
+                class="w-full h-full object-cover" loading="lazy" />
+            </a>
+            <div class="flex flex-col gap-2 pt-1">
+              <span class="text-xs font-sans font-semibold tracking-widest uppercase text-emerald-700">Pertanian</span>
+              <h3 class="font-serif text-xl font-semibold leading-snug text-gray-900 group-hover:text-emerald-800 transition-colors">
+                <a href="#">Petani Muda Nusantara: Teknologi Presisi di Lahan Tradisional</a>
+              </h3>
+              <p class="font-sans text-sm leading-relaxed text-gray-500 line-clamp-3">
+                Eksplorasi mendalam bagaimana generasi baru petani memadukan teknologi presisi dan kearifan lokal untuk menembus pasar modern.
+              </p>
+              <div class="flex items-center gap-2 pt-1">
+                <span class="text-xs font-sans text-gray-400">1 Juni 2025</span>
+                <span class="text-gray-300">·</span>
+                <span class="text-xs font-sans text-gray-400">8 menit baca</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- Article Card 5 (bonus) -->
+          <article class="articles-slide flex flex-col gap-3 group shrink-0 px-4" style="width:33.333%">
+            <a href="#" class="card-img-wrap rounded-md overflow-hidden bg-gray-100 aspect-[3/2]">
+              <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=700&q=75" alt="Kuliner Lokal"
+                class="w-full h-full object-cover" loading="lazy" />
+            </a>
+            <div class="flex flex-col gap-2 pt-1">
+              <span class="text-xs font-sans font-semibold tracking-widest uppercase text-emerald-700">Kuliner</span>
+              <h3 class="font-serif text-xl font-semibold leading-snug text-gray-900 group-hover:text-emerald-800 transition-colors">
+                <a href="#">Bumbu Rempah Nusantara: Kekayaan Rasa dari Dapur Leluhur</a>
+              </h3>
+              <p class="font-sans text-sm leading-relaxed text-gray-500 line-clamp-3">
+                Menggali jejak rempah dari Aceh hingga Papua, dan bagaimana cita rasa leluhur kini mendunia lewat tangan para koki muda Indonesia.
+              </p>
+              <div class="flex items-center gap-2 pt-1">
+                <span class="text-xs font-sans text-gray-400">28 Mei 2025</span>
+                <span class="text-gray-300">·</span>
+                <span class="text-xs font-sans text-gray-400">6 menit baca</span>
+              </div>
+            </div>
+          </article>
+
+        </div><!-- /articles-track -->
+      </div><!-- /overflow-hidden -->
+
+    </div><!-- /relative -->
+  </section>
+
+  <script>
+    (function () {
+      var track = document.getElementById('articles-track');
+      var slides = track ? track.querySelectorAll('.articles-slide') : [];
+      var total = slides.length;
+      var visible = 3;
+      var current = 0;
+
+      function updateArrows() {
+        var prev = document.getElementById('articles-prev');
+        var next = document.getElementById('articles-next');
+        if (prev) prev.style.opacity = current === 0 ? '0.35' : '1';
+        if (next) next.style.opacity = current >= total - visible ? '0.35' : '1';
+      }
+
+      window.articlesCarousel = function (dir) {
+        var max = total - visible;
+        current = Math.max(0, Math.min(current + dir, max));
+        var pct = (100 / visible) * current;
+        track.style.transform = 'translateX(-' + pct + '%)';
+        updateArrows();
+      };
+
+      updateArrows();
+    })();
+  </script>
+
+  <!-- ============================================================
+     DIVIDER
+     ============================================================ -->
+  <div class="w-full px-4 sm:px-6 lg:px-10">
+    <div class="divider"></div>
+  </div>
+
+  <!-- ============================================================
+     MARKETPLACE SNEAK PEEK — Horizontal Product Carousel
+     ============================================================ -->
+  <section id="marketplace" class="w-full px-4 sm:px-6 lg:px-10 py-12">
+
+    <!-- Section label -->
+    <div class="flex items-center gap-3 mb-8">
+      <span class="text-xs font-sans font-semibold tracking-widest uppercase text-gray-500">Produk Pilihan</span>
+      <span class="flex-1 divider"></span>
+      <a href="etalase.html" target="_blank" rel="noopener noreferrer"
+        class="text-xs font-sans font-medium text-emerald-700 hover:underline tracking-wide">Jelajahi Etalase Produk
+        &amp; Jasa →</a>
+    </div>
+
+    <!-- Carousel wrapper -->
+    <div class="relative">
+
+      <!-- Left arrow -->
+      <button id="products-prev"
+        onclick="productsCarousel(-1)"
+        aria-label="Produk sebelumnya"
+        class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-5 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-white border border-gray-200 shadow-sm hover:border-emerald-700 hover:text-emerald-700 transition-colors text-gray-500"
+        style="margin-top:-24px">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+      </button>
+
+      <!-- Right arrow -->
+      <button id="products-next"
+        onclick="productsCarousel(1)"
+        aria-label="Produk berikutnya"
+        class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-5 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-white border border-gray-200 shadow-sm hover:border-emerald-700 hover:text-emerald-700 transition-colors text-gray-500"
+        style="margin-top:-24px">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+      </button>
+
+      <!-- Slide track (overflow hidden) -->
+      <div class="overflow-hidden">
+        <div id="products-track" class="flex transition-transform duration-400 ease-in-out" style="will-change:transform">
+
+          <!-- Product Card 1 -->
+          <div class="products-slide flex flex-col gap-2 group shrink-0 px-2 sm:px-3" style="width:25%">
+            <a href="../products/product-kopi-gayo.html" target="_blank" rel="noopener noreferrer"
+              class="card-img-wrap rounded-md overflow-hidden bg-gray-100 aspect-square block cursor-pointer">
+              <img src="https://images.unsplash.com/photo-1610889556528-9a770e32642f?w=400&q=75" alt="Kopi Gayo"
+                class="w-full h-full object-cover" loading="lazy" />
+            </a>
+            <div class="flex flex-col gap-1 pt-1">
+              <span class="text-xs font-sans text-gray-400 uppercase tracking-wide">Kopi</span>
+              <a href="../products/product-kopi-gayo.html" target="_blank" rel="noopener noreferrer"
+                class="text-sm font-sans font-medium text-gray-800 leading-snug group-hover:text-emerald-700 transition-colors">
+                Kopi Gayo Premium 100g
+              </a>
+              <p class="text-sm font-sans font-semibold text-gray-900">Rp 22.000</p>
+            </div>
+          </div>
+
+          <!-- Product Card 2 -->
+          <div class="products-slide flex flex-col gap-2 group shrink-0 px-2 sm:px-3" style="width:25%">
+            <a href="../products/product-madu-hutan.html" target="_blank" rel="noopener noreferrer"
+              class="card-img-wrap rounded-md overflow-hidden bg-gray-100 aspect-square block cursor-pointer">
+              <img src="https://images.unsplash.com/photo-1571115177098-24ec42ed204d?w=400&q=75" alt="Madu Hutan"
+                class="w-full h-full object-cover" loading="lazy" />
+            </a>
+            <div class="flex flex-col gap-1 pt-1">
+              <span class="text-xs font-sans text-gray-400 uppercase tracking-wide">Herbal</span>
+              <a href="../products/product-madu-hutan.html" target="_blank" rel="noopener noreferrer"
+                class="text-sm font-sans font-medium text-gray-800 leading-snug group-hover:text-emerald-700 transition-colors">
+                Madu Hutan Kalimantan 250ml
+              </a>
+              <p class="text-sm font-sans font-semibold text-gray-900">Rp 65.000</p>
+            </div>
+          </div>
+
+          <!-- Product Card 3 -->
+          <div class="products-slide flex flex-col gap-2 group shrink-0 px-2 sm:px-3" style="width:25%">
+            <a href="../products/product-tas-rotan.html" target="_blank" rel="noopener noreferrer"
+              class="card-img-wrap rounded-md overflow-hidden bg-gray-100 aspect-square block cursor-pointer">
+              <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=75" alt="Tas Rotan"
+                class="w-full h-full object-cover" loading="lazy" />
+            </a>
+            <div class="flex flex-col gap-1 pt-1">
+              <span class="text-xs font-sans text-gray-400 uppercase tracking-wide">Kerajinan</span>
+              <a href="../products/product-tas-rotan.html" target="_blank" rel="noopener noreferrer"
+                class="text-sm font-sans font-medium text-gray-800 leading-snug group-hover:text-emerald-700 transition-colors">
+                Tas Anyam Rotan Natural
+              </a>
+              <p class="text-sm font-sans font-semibold text-gray-900">Rp 135.000</p>
+            </div>
+          </div>
+
+          <!-- Product Card 4 -->
+          <div class="products-slide flex flex-col gap-2 group shrink-0 px-2 sm:px-3" style="width:25%">
+            <a href="../products/product-beras-organik.html" target="_blank" rel="noopener noreferrer"
+              class="card-img-wrap rounded-md overflow-hidden bg-gray-100 aspect-square block cursor-pointer">
+              <img src="https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=400&q=75" alt="Beras Organik"
+                class="w-full h-full object-cover" loading="lazy" />
+            </a>
+            <div class="flex flex-col gap-1 pt-1">
+              <span class="text-xs font-sans text-gray-400 uppercase tracking-wide">Pangan</span>
+              <a href="../products/product-beras-organik.html" target="_blank" rel="noopener noreferrer"
+                class="text-sm font-sans font-medium text-gray-800 leading-snug group-hover:text-emerald-700 transition-colors">
+                Beras Organik Merah 1kg
+              </a>
+              <p class="text-sm font-sans font-semibold text-gray-900">Rp 32.000</p>
+            </div>
+          </div>
+
+          <!-- Product Card 5 (Carousel slide item) -->
+          <div class="products-slide flex flex-col gap-2 group shrink-0 px-2 sm:px-3" style="width:25%">
+            <a href="etalase.html" target="_blank" rel="noopener noreferrer"
+              class="card-img-wrap rounded-md overflow-hidden bg-gray-100 aspect-square block cursor-pointer">
+              <img src="https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=400&q=75" alt="Minyak Kelapa Murni"
+                class="w-full h-full object-cover" loading="lazy" />
+            </a>
+            <div class="flex flex-col gap-1 pt-1">
+              <span class="text-xs font-sans text-gray-400 uppercase tracking-wide">Organik</span>
+              <a href="etalase.html" target="_blank" rel="noopener noreferrer"
+                class="text-sm font-sans font-medium text-gray-800 leading-snug group-hover:text-emerald-700 transition-colors">
+                Minyak Kelapa Murni (VCO) 500ml
+              </a>
+              <p class="text-sm font-sans font-semibold text-gray-900">Rp 45.000</p>
+            </div>
+          </div>
+
+          <!-- Product Card 6 (Carousel slide item) -->
+          <div class="products-slide flex flex-col gap-2 group shrink-0 px-2 sm:px-3" style="width:25%">
+            <a href="etalase.html" target="_blank" rel="noopener noreferrer"
+              class="card-img-wrap rounded-md overflow-hidden bg-gray-100 aspect-square block cursor-pointer">
+              <img src="https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?w=400&q=75" alt="Tenun Ikat NTT"
+                class="w-full h-full object-cover" loading="lazy" />
+            </a>
+            <div class="flex flex-col gap-1 pt-1">
+              <span class="text-xs font-sans text-gray-400 uppercase tracking-wide">Fashion</span>
+              <a href="etalase.html" target="_blank" rel="noopener noreferrer"
+                class="text-sm font-sans font-medium text-gray-800 leading-snug group-hover:text-emerald-700 transition-colors">
+                Kain Tenun Ikat Tradisional NTT
+              </a>
+              <p class="text-sm font-sans font-semibold text-gray-900">Rp 285.000</p>
+            </div>
+          </div>
+
+          <!-- Product Card 7 (Carousel slide item) -->
+          <div class="products-slide flex flex-col gap-2 group shrink-0 px-2 sm:px-3" style="width:25%">
+            <a href="etalase.html" target="_blank" rel="noopener noreferrer"
+              class="card-img-wrap rounded-md overflow-hidden bg-gray-100 aspect-square block cursor-pointer">
+              <img src="https://images.unsplash.com/photo-1518843875459-f738682238a6?w=400&q=75" alt="Garam Kusamba"
+                class="w-full h-full object-cover" loading="lazy" />
+            </a>
+            <div class="flex flex-col gap-1 pt-1">
+              <span class="text-xs font-sans text-gray-400 uppercase tracking-wide">Pangan</span>
+              <a href="etalase.html" target="_blank" rel="noopener noreferrer"
+                class="text-sm font-sans font-medium text-gray-800 leading-snug group-hover:text-emerald-700 transition-colors">
+                Garam Laut Organik Kusamba 250g
+              </a>
+              <p class="text-sm font-sans font-semibold text-gray-900">Rp 28.000</p>
+            </div>
+          </div>
+
+          <!-- Product Card 8 (Carousel slide item) -->
+          <div class="products-slide flex flex-col gap-2 group shrink-0 px-2 sm:px-3" style="width:25%">
+            <a href="etalase.html" target="_blank" rel="noopener noreferrer"
+              class="card-img-wrap rounded-md overflow-hidden bg-gray-100 aspect-square block cursor-pointer">
+              <img src="https://images.unsplash.com/photo-1549007994-cb92caebd54b?w=400&q=75" alt="Cokelat Ransiki"
+                class="w-full h-full object-cover" loading="lazy" />
+            </a>
+            <div class="flex flex-col gap-1 pt-1">
+              <span class="text-xs font-sans text-gray-400 uppercase tracking-wide">Kuliner</span>
+              <a href="etalase.html" target="_blank" rel="noopener noreferrer"
+                class="text-sm font-sans font-medium text-gray-800 leading-snug group-hover:text-emerald-700 transition-colors">
+                Cokelat Single Origin Ransiki 80g
+              </a>
+              <p class="text-sm font-sans font-semibold text-gray-900">Rp 38.000</p>
+            </div>
+          </div>
+
+        </div><!-- /products-track -->
+      </div><!-- /overflow-hidden -->
+
+    </div><!-- /relative -->
+  </section>
+
+  <script>
+    (function () {
+      var track = document.getElementById('products-track');
+      var slides = track ? track.querySelectorAll('.products-slide') : [];
+      var total = slides.length;
+      var current = 0;
+
+      function getVisibleCount() {
+        if (window.innerWidth < 640) return 2;
+        if (window.innerWidth < 1024) return 3;
+        return 4;
+      }
+
+      function updateArrows() {
+        var prev = document.getElementById('products-prev');
+        var next = document.getElementById('products-next');
+        var vis = getVisibleCount();
+        if (prev) prev.style.opacity = current === 0 ? '0.35' : '1';
+        if (next) next.style.opacity = current >= total - vis ? '0.35' : '1';
+      }
+
+      window.productsCarousel = function (dir) {
+        var vis = getVisibleCount();
+        var max = Math.max(0, total - vis);
+        current = Math.max(0, Math.min(current + dir, max));
+        var pct = (100 / vis) * current;
+        track.style.transform = 'translateX(-' + pct + '%)';
+        updateArrows();
+      };
+
+      window.addEventListener('resize', function() {
+        var vis = getVisibleCount();
+        var max = Math.max(0, total - vis);
+        if (current > max) current = max;
+        var pct = (100 / vis) * current;
+        if (track) track.style.transform = 'translateX(-' + pct + '%)';
+        updateArrows();
+      });
+
+      updateArrows();
+    })();
+  </script>
+
+  <!-- ============================================================
+     DIVIDER
+     ============================================================ -->
+  <div class="w-full px-4 sm:px-6 lg:px-10">
+    <div class="divider"></div>
+  </div>
+
+  <!-- ============================================================
+     SECONDARY ARTICLE ROW — 2 columns (wide + narrow)
+     ============================================================ -->
+  <section id="events" class="w-full px-4 sm:px-6 lg:px-10 py-12">
+
+    <div class="flex items-center gap-3 mb-8">
+      <span class="text-xs font-sans font-semibold tracking-widest uppercase text-gray-500">Lebih Banyak Cerita</span>
+      <span class="flex-1 divider"></span>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+      <!-- Wide Feature Card (2/3) -->
+      <!-- [DYNAMIC] {{ secondary_feature_article }} -->
+      <article class="lg:col-span-2 flex flex-col sm:flex-row gap-6 group">
+        <div
+          class="card-img-wrap rounded-md overflow-hidden bg-gray-100 w-full sm:w-56 shrink-0 aspect-[4/3] sm:aspect-auto sm:h-44">
+          <img src="https://images.unsplash.com/photo-1444858291040-58f756a3bdd6?w=700&q=75" alt="Tenun NTT"
+            class="w-full h-full object-cover" loading="lazy" />
+        </div>
+        <div class="flex flex-col gap-2 justify-center">
+          <span class="text-xs font-sans font-semibold tracking-widest uppercase text-emerald-700">Budaya</span>
+          <h3
+            class="font-serif text-xl sm:text-2xl font-semibold leading-snug text-gray-900 group-hover:text-emerald-800 transition-colors">
+            <a href="#">Tenun Ikat NTT: Motif Leluhur yang Kini Dikenakan di Panggung Dunia</a>
+          </h3>
+          <p class="font-sans text-sm leading-relaxed text-gray-500 line-clamp-2">Desainer muda lokal berkolaborasi
+            dengan penenun lansia di Flores untuk menjaga motif adat tetap hidup dan relevan bagi generasi berikutnya.
+          </p>
+          <div class="flex items-center gap-2 pt-1">
+            <span class="text-xs font-sans text-gray-400">1 Juni 2025</span>
+            <span class="text-gray-300">·</span>
+            <span class="text-xs font-sans text-gray-400">8 menit baca</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- Narrow Stack (1/3) -->
+      <div class="flex flex-col gap-6">
+
+        <!-- [DYNAMIC] {{ secondary_small_articles | slice(2) }} loop -->
+        <article class="flex gap-4 group">
+          <div class="card-img-wrap rounded-md overflow-hidden bg-gray-100 w-24 h-20 shrink-0">
+            <img src="https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=300&q=75" alt="Sampah Plastik"
+              class="w-full h-full object-cover" loading="lazy" />
+          </div>
+          <div class="flex flex-col gap-1 justify-center">
+            <span class="text-xs font-sans font-semibold tracking-widest uppercase text-emerald-700">Lingkungan</span>
+            <h4
+              class="font-serif text-base font-semibold leading-snug text-gray-900 group-hover:text-emerald-800 transition-colors">
+              <a href="#">Desa Bebas Plastik: Kisah dari Bali yang Menginspirasi Dunia</a>
+            </h4>
+            <span class="text-xs font-sans text-gray-400">28 Mei 2025</span>
+          </div>
+        </article>
+
+        <div class="divider"></div>
+
+        <article class="flex gap-4 group">
+          <div class="card-img-wrap rounded-md overflow-hidden bg-gray-100 w-24 h-20 shrink-0">
+            <img src="https://images.unsplash.com/photo-1508193638397-1c4234db14d8?w=300&q=75" alt="Ekowisata"
+              class="w-full h-full object-cover" loading="lazy" />
+          </div>
+          <div class="flex flex-col gap-1 justify-center">
+            <span class="text-xs font-sans font-semibold tracking-widest uppercase text-emerald-700">Wisata</span>
+            <h4
+              class="font-serif text-base font-semibold leading-snug text-gray-900 group-hover:text-emerald-800 transition-colors">
+              <a href="#">Ekowisata Hutan Mangrove: Alternatif Penghasilan Nelayan Pesisir</a>
+            </h4>
+            <span class="text-xs font-sans text-gray-400">25 Mei 2025</span>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+     EVENTS + GOOGLE MAPS SECTION
+     ============================================================ -->
+  <section class="w-full px-4 sm:px-6 lg:px-10 py-12 bg-white">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+
+      <!-- LEFT: Upcoming Events Articles (blue circle area) -->
+      <div class="flex flex-col gap-6">
+        <div class="flex items-center gap-3 mb-2">
+          <span class="w-4 border-t-2 border-emerald-600"></span>
+          <span class="text-xs font-sans font-semibold tracking-widest uppercase text-emerald-700">Event
+            Mendatang</span>
+          <span class="flex-1 border-t border-gray-200"></span>
+          <a href="events.html" target="_blank" rel="noopener noreferrer"
+            class="text-xs font-sans font-medium text-emerald-700 hover:underline tracking-wide">Lihat Kalender &amp;
+            Semua Event →</a>
+        </div>
+
+        <!-- Event Card 1 -->
+        <article class="flex gap-5 group">
+          <div class="card-img-wrap rounded-lg overflow-hidden bg-gray-100 w-32 h-24 shrink-0">
+            <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=400&q=75"
+              alt="Festival Kerajinan Nusantara" class="w-full h-full object-cover" loading="lazy" />
+          </div>
+          <div class="flex flex-col gap-1 justify-center">
+            <span class="text-[10px] font-sans font-semibold tracking-widest uppercase text-emerald-700">Kerajinan ·
+              Jakarta</span>
+            <h4
+              class="font-serif text-base font-semibold leading-snug text-gray-900 group-hover:text-emerald-800 transition-colors">
+              <a href="#">Festival Kerajinan Nusantara 2025</a>
+            </h4>
+            <p class="text-xs font-sans text-gray-500 line-clamp-2">Pameran kerajinan tangan terbesar dari seluruh
+              pelosok Indonesia — rotan, tenun, batik, dan gerabah dalam satu atap.</p>
+            <div class="flex items-center gap-2 pt-0.5">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-gray-400 shrink-0" fill="none"
+                viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              <span class="text-xs font-sans text-gray-400">20–22 Juli 2025</span>
+              <span class="text-gray-300">·</span>
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-gray-400 shrink-0" fill="none"
+                viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              <span class="text-xs font-sans text-gray-400">JCC Senayan, Jakarta</span>
+            </div>
+          </div>
+        </article>
+
+        <div class="border-t border-gray-100"></div>
+
+        <!-- Event Card 2 -->
+        <article class="flex gap-5 group">
+          <div class="card-img-wrap rounded-lg overflow-hidden bg-gray-100 w-32 h-24 shrink-0">
+            <img src="https://images.unsplash.com/photo-1605810230434-7631ac76ec81?w=400&q=75"
+              alt="Seminar Agrikultur Digital" class="w-full h-full object-cover" loading="lazy" />
+          </div>
+          <div class="flex flex-col gap-1 justify-center">
+            <span class="text-[10px] font-sans font-semibold tracking-widest uppercase text-emerald-700">Agrikultur ·
+              Bandung</span>
+            <h4
+              class="font-serif text-base font-semibold leading-snug text-gray-900 group-hover:text-emerald-800 transition-colors">
+              <a href="#">Seminar Agrikultur Digital: Tani Masa Depan</a>
+            </h4>
+            <p class="text-xs font-sans text-gray-500 line-clamp-2">Diskusi panel bersama petani muda, pakar teknologi,
+              dan investor untuk membedah potensi pertanian presisi di Indonesia.</p>
+            <div class="flex items-center gap-2 pt-0.5">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-gray-400 shrink-0" fill="none"
+                viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              <span class="text-xs font-sans text-gray-400">5 Agustus 2025</span>
+              <span class="text-gray-300">·</span>
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-gray-400 shrink-0" fill="none"
+                viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              <span class="text-xs font-sans text-gray-400">Trans Luxury Hotel, Bandung</span>
+            </div>
+          </div>
+        </article>
+
+        <div class="border-t border-gray-100"></div>
+
+        <!-- Event Card 3 -->
+        <article class="flex gap-5 group">
+          <div class="card-img-wrap rounded-lg overflow-hidden bg-gray-100 w-32 h-24 shrink-0">
+            <img src="https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=400&q=75" alt="Pasar Kuliner Lokal"
+              class="w-full h-full object-cover" loading="lazy" />
+          </div>
+          <div class="flex flex-col gap-1 justify-center">
+            <span class="text-[10px] font-sans font-semibold tracking-widest uppercase text-emerald-700">Kuliner ·
+              Yogyakarta</span>
+            <h4
+              class="font-serif text-base font-semibold leading-snug text-gray-900 group-hover:text-emerald-800 transition-colors">
+              <a href="#">Pasar Kuliner Lokal: Cita Rasa Jogja Autentik</a>
+            </h4>
+            <p class="text-xs font-sans text-gray-500 line-clamp-2">Ratusan pelaku kuliner UMKM berkumpul menyajikan
+              hidangan tradisional Jawa yang kaya rempah dan cerita di balik setiap resep.</p>
+            <div class="flex items-center gap-2 pt-0.5">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-gray-400 shrink-0" fill="none"
+                viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              <span class="text-xs font-sans text-gray-400">12–14 Agustus 2025</span>
+              <span class="text-gray-300">·</span>
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-gray-400 shrink-0" fill="none"
+                viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              <span class="text-xs font-sans text-gray-400">Alun-Alun Kidul, Yogyakarta</span>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <!-- RIGHT: Google Maps (red circle area) -->
+      <div class="flex flex-col gap-4">
+        <div class="flex items-center gap-3 mb-2">
+          <span class="w-4 border-t-2 border-emerald-600"></span>
+          <span class="text-xs font-sans font-semibold tracking-widest uppercase text-emerald-700">Lokasi Event</span>
+          <span class="flex-1 border-t border-gray-200"></span>
+        </div>
+        <div class="rounded-xl overflow-hidden border border-gray-200 shadow-sm w-full" style="height: 420px;">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d126748.05734032955!2d106.7272509!3d-6.2297465!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f3e945e34b9d%3A0x5371bf0fdad786a2!2sJakarta%20Convention%20Center!5e0!3m2!1sid!2sid!4v1718000000000!5m2!1sid!2sid"
+            width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade" title="Lokasi Event — Jakarta Convention Center">
+          </iframe>
+        </div>
+        <p class="text-xs font-sans text-gray-400 text-center">
+          📍 Peta menampilkan lokasi event terdekat. <a href="https://maps.google.com" target="_blank"
+            rel="noopener noreferrer" class="text-emerald-700 hover:underline">Buka di Google Maps</a>
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="w-full px-4 sm:px-6 lg:px-10">
+    <div class="divider"></div>
+  </div>
+
+  <!-- ============================================================
+     NEWSLETTER / CTA STRIP
+     ============================================================ -->
+  <section class="bg-gray-50 border-t border-b border-gray-100 py-14">
+    <div class="max-w-2xl mx-auto px-4 text-center flex flex-col gap-4">
+      <span class="text-xs font-sans font-semibold tracking-widest uppercase text-emerald-700">Newsletter BOB</span>
+      <h2 class="font-serif text-2xl sm:text-3xl font-bold text-gray-900">
+        Cerita terbaik, langsung ke kotak masuk Anda
+      </h2>
+      <p class="font-sans text-sm text-gray-500 leading-relaxed">
+        Bergabunglah dengan ribuan pembaca yang menerima kurasi artikel pilihan dan penawaran produk eksklusif setiap
+        minggu.
+      </p>
+      <!-- [DYNAMIC] Connect to newsletter subscription API -->
+      <form class="flex flex-col sm:flex-row gap-3 justify-center mt-2" onsubmit="return false;">
+        <input type="email" placeholder="alamat@email.com"
+          class="flex-1 max-w-xs px-4 py-2.5 text-sm font-sans border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-transparent" />
+        <button type="submit"
+          class="px-6 py-2.5 text-sm font-sans font-semibold bg-emerald-700 text-white rounded-full hover:bg-emerald-800 transition-colors">
+          Langganan Gratis
+        </button>
+      </form>
+      <p class="text-xs font-sans text-gray-400">Tanpa spam. Berhenti berlangganan kapan saja.</p>
+    </div>
+  </section>
+
+  <!-- ============================================================
+     FOOTER
+     ============================================================ -->
+  <div id="rm-footer-root">
+    <div class="site-footer__inner">
+
+      <!-- ── Top: brand + 3 nav groups ── -->
+      <div class="site-footer__top">
+
+        <!-- Brand -->
+        <div class="footer-brand">
+          <a href="../../index.html" class="footer-brand__logo">Racik<span>Media</span></a>
+          <p class="footer-brand__desc">
+            Platform editorial &amp; marketplace untuk produk lokal Indonesia — ditulis, dikurasi, dan dijual oleh
+            komunitas.
+          </p>
+          <!-- Sosial media -->
+          <nav class="footer-brand__socials" aria-label="Media sosial">
+            <!-- Instagram -->
+            <a href="#" class="footer-social-btn" aria-label="Instagram">
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                <rect x="2" y="2" width="20" height="20" rx="5" />
+                <circle cx="12" cy="12" r="4" />
+                <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+              </svg>
+            </a>
+            <!-- X / Twitter -->
+            <a href="#" class="footer-social-btn" aria-label="X (Twitter)">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L2.002 2.25H8.08l4.26 5.634 5.904-5.634zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z" />
+              </svg>
+            </a>
+            <!-- YouTube -->
+            <a href="#" class="footer-social-btn" aria-label="YouTube">
+              <svg fill="currentColor" viewBox="0 0 24 24">
+                <path
+                  d="M23 7s-.3-2-1.2-2.8c-1.1-1.2-2.4-1.2-3-1.3C16.6 2.8 12 2.8 12 2.8s-4.6 0-6.8.1c-.6.1-1.9.1-3 1.3C1.3 5 1 7 1 7S.7 9.1.7 11.3v2c0 2.1.3 4.3.3 4.3s.3 2 1.2 2.8c1.1 1.2 2.6 1.1 3.3 1.2C7.4 21.8 12 21.8 12 21.8s4.6 0 6.8-.2c.6-.1 1.9-.1 3-1.2.9-.8 1.2-2.8 1.2-2.8s.3-2.1.3-4.3v-2C23.3 9.1 23 7 23 7zm-13.4 8.8V8.2l8.1 3.8-8.1 3.8z" />
+              </svg>
+            </a>
+          </nav>
+        </div>
+
+        <!-- Kolom 1 — Fitur -->
+        <nav aria-labelledby="footer-fitur">
+          <h3 class="footer-nav__title" id="footer-fitur">Fitur</h3>
+          <ul class="footer-nav__list">
+            <li><a href="articles.html" target="_blank" rel="noopener noreferrer">Jelajah Jurnal</a></li>
+            <li><a href="etalase.html" target="_blank" rel="noopener noreferrer">Etalase Produk &amp; Jasa</a></li>
+            <li><a href="cerita-kami.html" target="_blank" rel="noopener noreferrer">Cerita Kami</a></li>
+            <li><a href="events.html" target="_blank" rel="noopener noreferrer">Events &amp; Kalender</a></li>
+            <li><a href="../../pages/seller/seller-dashboard.html">Dasbor Seller</a></li>
+          </ul>
+        </nav>
+
+        <!-- Kolom 2 — Bantuan -->
+        <nav aria-labelledby="footer-bantuan">
+          <h3 class="footer-nav__title" id="footer-bantuan">Bantuan</h3>
+          <ul class="footer-nav__list">
+            <li>
+              <a href="#">
+                Tutorial Jurnal
+              </a>
+            </li>
+            <li>
+              <a href="#">
+                Kontak Admin
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <!-- Kolom 3 — Legalitas -->
+        <nav aria-labelledby="footer-legal">
+          <h3 class="footer-nav__title" id="footer-legal">Legalitas</h3>
+          <ul class="footer-nav__list">
+            <li>
+              <a href="#">
+                Kebijakan Privasi
+              </a>
+            </li>
+            <li>
+              <a href="#">
+                Syarat &amp; Ketentuan
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+      </div><!-- /site-footer__top -->
+
+      <!-- ── Bottom bar ── -->
+      <div class="site-footer__bottom" style="display:flex;align-items:center;justify-content:space-between;gap:0.75rem;flex-wrap:wrap;">
+        <p>&copy; 2026 Racik Media Nusantara</p>
+        <p style="display:inline-flex;align-items:center;gap:0.25rem;">
+          Dibuat dengan
+          <svg style="width:1rem;height:1rem;color:#f43f5e;" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M12 21.35 10.55 20C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09A6 6 0 0 1 16.5 3C19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.51L12 21.35Z"/>
+          </svg>
+          untuk produk lokal Indonesia.
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+
+
+  <!-- Language Switcher JS -->
+  <script src="../../assets/js/lang.js"></script>
+  <script src="../../assets/js/layout.js"></script>
+  <script src="../../assets/js/public-layout.js"></script>
+</body>
+
+</html>

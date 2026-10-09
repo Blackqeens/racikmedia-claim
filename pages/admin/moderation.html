@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Moderasi Artikel — Admin BOB</title>
+  <!-- ROUTE GUARD: hanya admin yang boleh mengakses halaman ini -->
+  <script src="../../api/auth.js"></script>
+  <script>BobAuth.requireRole('admin');</script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../../assets/css/shared.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+/* ── Sidebar ── */
+    .sidebar {
+      position: fixed; top: 0; left: 0; bottom: 0;
+      width: 220px; background: #1f2328;
+      display: flex; flex-direction: column;
+      z-index: 40; overflow-y: auto;
+    }
+    .sidebar-logo {
+      padding: 18px 20px 16px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .sidebar-logo img { height: 26px; width: auto; filter: brightness(0) invert(1); }
+    .sidebar-logo-badge {
+      font-size: 10px; font-weight: 700; letter-spacing: .06em;
+      background: #ef4444; color: #fff;
+      padding: 2px 7px; border-radius: 4px;
+    }
+    .sidebar-section {
+      font-size: 10px; font-weight: 700; color: rgba(255,255,255,.3);
+      letter-spacing: .08em; text-transform: uppercase;
+      padding: 14px 20px 4px;
+    }
+    .sidebar-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 20px; font-size: 13px; color: rgba(255,255,255,.6);
+      text-decoration: none; border-left: 3px solid transparent;
+      transition: color .15s, background .15s, border-color .15s;
+    }
+    .sidebar-item:hover { color: #fff; background: rgba(255,255,255,.06); }
+    .sidebar-item.active { color: #fff; background: rgba(255,255,255,.08); border-left-color: #34d399; font-weight: 600; }
+    .sidebar-item svg { width: 15px; height: 15px; flex-shrink: 0; }
+    .sidebar-badge {
+      margin-left: auto; font-size: 10px; font-weight: 700;
+      background: #ef4444; color: #fff;
+      padding: 1px 6px; border-radius: 99px; min-width: 18px; text-align: center;
+    }
+    .sidebar-badge.yellow { background: #d97706; }
+
+    /* ── Top navbar ── */
+    .topbar {
+      position: fixed; top: 0; left: 220px; right: 0; height: 52px;
+      background: #fff; border-bottom: 1px solid #e5e7eb;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 24px; z-index: 30;
+    }
+
+    /* ── Main content ── */
+    .main-wrap { margin-left: 220px; padding-top: 52px; min-height: 100vh; }
+    .content   { padding: 28px 28px 60px; }
+
+    /* ── Page header ── */
+    .page-header { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 22px; }
+    .page-title  { font-family: 'Lora', Georgia, serif; font-size: 20px; font-weight: 700; color: #1f2328; }
+    .page-sub    { font-size: 13px; color: #6b7280; margin-top: 3px; }
+
+    /* ── Filter bar ── */
+    .filter-bar {
+      background: #fff; border: 1px solid #e5e7eb; border-radius: 10px;
+      padding: 12px 16px;
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+    .filter-input {
+      flex: 1; min-width: 180px;
+      border: 1px solid #e5e7eb; border-radius: 7px;
+      padding: 7px 12px; font-size: 13px; color: #374151;
+      outline: none; transition: border-color .15s;
+    }
+    .filter-input:focus { border-color: #34d399; }
+    .filter-select {
+      border: 1px solid #e5e7eb; border-radius: 7px;
+      padding: 7px 28px 7px 10px; font-size: 12px; color: #374151;
+      background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='none' viewBox='0 0 24 24' stroke='%239ca3af'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E") no-repeat right 8px center;
+      appearance: none; outline: none; cursor: pointer;
+    }
+    .filter-count { font-size: 12px; color: #9ca3af; margin-left: auto; white-space: nowrap; }
+
+    /* ── Stats strip ── */
+    .stats-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 20px; }
+    .stat-box {
+      background: #fff; border: 1px solid #e5e7eb; border-radius: 10px;
+      padding: 14px 18px;
+    }
+    .stat-box-val   { font-size: 24px; font-weight: 700; color: #1f2328; line-height: 1; }
+    .stat-box-label { font-size: 12px; color: #6b7280; margin-top: 4px; }
+    .stat-box-dot   { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+
+    /* ── Article table ── */
+    .art-table-wrap {
+      background: #fff; border: 1px solid #e5e7eb; border-radius: 12px;
+      overflow: hidden;
+    }
+    .art-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .art-table thead tr { background: #f9fafb; border-bottom: 1px solid #e5e7eb; }
+    .art-table th {
+      padding: 10px 16px; text-align: left;
+      font-size: 11px; font-weight: 700; color: #6b7280;
+      letter-spacing: .04em; text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .art-table th input[type="checkbox"],
+    .art-table td input[type="checkbox"] { cursor: pointer; accent-color: #047857; }
+    .art-table tbody tr {
+      border-bottom: 1px solid #f3f4f6;
+      transition: background .12s;
+    }
+    .art-table tbody tr:last-child { border-bottom: none; }
+    .art-table tbody tr:hover { background: #f9fafb; }
+    .art-table td { padding: 14px 16px; vertical-align: middle; }
+
+    /* ── Author cell ── */
+    .author-cell { display: flex; align-items: center; gap: 10px; }
+    .author-avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: linear-gradient(135deg, #34d399, #38bdf8);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; color: #064e3b; flex-shrink: 0;
+    }
+    .author-name  { font-size: 13px; font-weight: 600; color: #1f2328; }
+    .author-email { font-size: 11px; color: #9ca3af; }
+
+    /* ── Title cell ── */
+    .title-text   { font-size: 13px; font-weight: 600; color: #1f2328; line-height: 1.35; max-width: 280px; }
+    .title-cat    { font-size: 11px; color: #6b7280; margin-top: 3px; }
+    .title-preview {
+      font-size: 11px; color: #9ca3af; margin-top: 3px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 280px;
+    }
+
+    /* ── Status badge ── */
+    .badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 11px; font-weight: 600;
+      padding: 3px 9px; border-radius: 99px;
+      white-space: nowrap;
+    }
+    .badge::before { content: ''; display: block; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+    .badge.pending  { background: #fef3c7; color: #92400e; }
+    .badge.approved { background: #dcfce7; color: #166534; }
+    .badge.rejected { background: #fee2e2; color: #991b1b; }
+    .badge.draft    { background: #f3f4f6; color: #6b7280; }
+
+    /* ── Action buttons ── */
+    .btn-review {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 14px; border-radius: 7px;
+      background: #047857; color: #fff;
+      font-size: 12px; font-weight: 600; border: none; cursor: pointer;
+      text-decoration: none;
+      transition: background .15s, box-shadow .15s;
+      white-space: nowrap;
+    }
+    .btn-review:hover { background: #065f46; box-shadow: 0 2px 8px rgba(4,120,87,.25); }
+    .btn-review svg { width: 13px; height: 13px; flex-shrink: 0; }
+
+    .btn-icon {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 30px; height: 30px; border-radius: 6px;
+      border: 1px solid #e5e7eb; background: #fff; cursor: pointer;
+      color: #6b7280; transition: background .12s, color .12s, border-color .12s;
+    }
+    .btn-icon:hover { background: #f9fafb; color: #1f2328; border-color: #d1d5db; }
+    .btn-icon svg { width: 13px; height: 13px; }
+
+    /* ── Empty state ── */
+    .empty-state {
+      padding: 60px 24px; text-align: center;
+      display: flex; flex-direction: column; align-items: center; gap: 10px;
+    }
+
+    /* ── Review modal ── */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,.45);
+      z-index: 200; display: flex; align-items: center; justify-content: center;
+      padding: 20px; opacity: 0; pointer-events: none; transition: opacity .2s;
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+    .modal {
+      background: #fff; border-radius: 14px;
+      width: 100%; max-width: 640px; max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0,0,0,.2);
+      transform: translateY(12px); transition: transform .2s;
+    }
+    .modal-overlay.open .modal { transform: translateY(0); }
+    .modal-header {
+      padding: 18px 22px 14px;
+      border-bottom: 1px solid #f3f4f6;
+      display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+    }
+    .modal-body    { padding: 20px 22px; }
+    .modal-footer  { padding: 14px 22px 18px; border-top: 1px solid #f3f4f6; display: flex; gap: 10px; justify-content: flex-end; }
+
+    .btn-approve {
+      padding: 8px 20px; border-radius: 8px;
+      background: #059669; color: #fff;
+      font-size: 13px; font-weight: 700; border: none; cursor: pointer;
+      transition: background .15s;
+    }
+    .btn-approve:hover { background: #047857; }
+    .btn-reject {
+      padding: 8px 20px; border-radius: 8px;
+      background: #fff; color: #dc2626;
+      font-size: 13px; font-weight: 600;
+      border: 1.5px solid #fca5a5; cursor: pointer;
+      transition: background .15s, border-color .15s;
+    }
+    .btn-reject:hover { background: #fff1f2; border-color: #ef4444; }
+    .btn-cancel-modal {
+      padding: 8px 16px; border-radius: 8px;
+      background: #f3f4f6; color: #374151;
+      font-size: 13px; font-weight: 600; border: none; cursor: pointer;
+    }
+
+    .note-textarea {
+      width: 100%; border: 1.5px solid #e5e7eb; border-radius: 8px;
+      padding: 10px 12px; font-size: 13px; color: #374151;
+      font-family: 'Inter', sans-serif; resize: vertical; outline: none;
+      min-height: 80px; transition: border-color .15s;
+    }
+    .note-textarea:focus { border-color: #34d399; }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+      background: #1f2328; color: #fff; font-size: 13px; font-weight: 500;
+      padding: 10px 20px; border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0,0,0,.18);
+      opacity: 0; pointer-events: none; transition: opacity .25s, bottom .25s;
+      z-index: 300; white-space: nowrap;
+    }
+    .toast.show { opacity: 1; bottom: 32px; }
+    .toast.green  { background: #059669; }
+    .toast.red    { background: #dc2626; }
+  </style>
+  <link rel="stylesheet" href="/assets/css/public-layout.css" />
+</head>
+
+<body>
+  <div id="rm-navbar-root"></div>
+
+<!-- ══════════════════════════════════════════
+     SIDEBAR
+     ══════════════════════════════════════════ -->
+<aside class="sidebar">
+
+  <!-- Logo -->
+  <div class="sidebar-logo">
+    <img src="../../assets/brand/2.png" alt="Racik Media" style="height:26px;width:auto;" />
+    <span class="sidebar-logo-badge">ADMIN</span>
+  </div>
+
+  <!-- Nav -->
+  <nav style="flex:1;padding-bottom:20px;">
+    <div class="sidebar-section">Dasbor</div>
+    <a href="#" class="sidebar-item">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0h6"/></svg>
+      Ringkasan
+    </a>
+
+    <div class="sidebar-section">Konten</div>
+    <a href="moderation.html" class="sidebar-item active">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+      Moderasi Artikel
+      <span class="sidebar-badge" id="sidebar-pending-count">—</span>
+    </a>
+    <a href="#" class="sidebar-item">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+      Semua Artikel
+    </a>
+    <a href="#" class="sidebar-item">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+      Produk
+    </a>
+
+    <div class="sidebar-section">Verifikasi &amp; KYC</div>
+    <a href="seller-verification.html" class="sidebar-item">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
+      Review Pengajuan Seller
+    </a>
+
+    <div class="sidebar-section">Pengguna</div>
+    <a href="#" class="sidebar-item">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+      Manajemen Penulis
+    </a>
+
+    <div class="sidebar-section">Sistem</div>
+    <a href="../main/dashboard.html" class="sidebar-item">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+      Kembali ke Situs
+    </a>
+  </nav>
+
+</aside>
+
+<!-- ══════════════════════════════════════════
+     TOPBAR
+     ══════════════════════════════════════════ -->
+<div class="topbar">
+  <div style="display:flex;align-items:center;gap:8px;">
+    <svg class="w-4 h-4" style="width:16px;height:16px;color:#6b7280;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+    </svg>
+    <span style="font-size:14px;font-weight:600;color:#1f2328;">Daftar Moderasi Artikel</span>
+    <span id="topbar-count" style="font-size:11px;font-weight:600;background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:99px;"></span>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <span style="font-size:12px;color:#9ca3af;" id="last-refresh">—</span>
+    <button onclick="loadArticles()" style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;padding:5px 12px;border:1px solid #e5e7eb;border-radius:6px;background:#fff;color:#374151;cursor:pointer;" class="hover:bg-gray-50">
+      <svg style="width:13px;height:13px;" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+      Refresh
+    </button>
+    <div style="display:flex;align-items:center;gap:6px;">
+      <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#ef4444,#f97316);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;" id="admin-avatar">A</div>
+      <span style="font-size:13px;font-weight:600;color:#1f2328;" id="admin-name">Admin</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     MAIN CONTENT
+     ══════════════════════════════════════════ -->
+<div class="main-wrap">
+<div class="content">
+
+  <!-- Page header -->
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Daftar Moderasi Artikel</h1>
+      <p class="page-sub">Tinjau dan setujui artikel yang diajukan penulis untuk tampil di halaman utama.</p>
+    </div>
+  </div>
+
+  <!-- Stats strip -->
+  <div class="stats-strip">
+    <div class="stat-box">
+      <div class="stat-box-val" id="stat-pending">—</div>
+      <div class="stat-box-label"><span class="stat-box-dot" style="background:#d97706;"></span>Menunggu Review</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-box-val" id="stat-approved">—</div>
+      <div class="stat-box-label"><span class="stat-box-dot" style="background:#22c55e;"></span>Disetujui Hari Ini</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-box-val" id="stat-rejected">—</div>
+      <div class="stat-box-label"><span class="stat-box-dot" style="background:#ef4444;"></span>Ditolak Hari Ini</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-box-val" id="stat-total">—</div>
+      <div class="stat-box-label"><span class="stat-box-dot" style="background:#9ca3af;"></span>Total Pengajuan</div>
+    </div>
+  </div>
+
+  <!-- Filter bar -->
+  <div class="filter-bar">
+    <input type="text" class="filter-input" id="search-filter"
+           placeholder="🔍  Cari judul atau nama penulis…"
+           oninput="applyFilter()" />
+    <select class="filter-select" id="cat-filter" onchange="applyFilter()">
+      <option value="">Semua Kategori</option>
+      <option value="agrikultur">Agrikultur</option>
+      <option value="kuliner">Kuliner</option>
+      <option value="kerajinan">Kerajinan</option>
+      <option value="budaya">Budaya</option>
+      <option value="sosial">Sosial</option>
+      <option value="lingkungan">Lingkungan</option>
+      <option value="wisata">Wisata</option>
+      <option value="catatan-buku">Catatan Buku</option>
+      <option value="jurnal">Jurnal Harian</option>
+      <option value="ulasan">Ulasan</option>
+    </select>
+    <select class="filter-select" id="sort-filter" onchange="applyFilter()">
+      <option value="newest">Terbaru dulu</option>
+      <option value="oldest">Terlama dulu</option>
+      <option value="author">Nama Penulis A–Z</option>
+    </select>
+    <span class="filter-count" id="filter-count">— artikel</span>
+  </div>
+
+  <!-- Table -->
+  <div class="art-table-wrap">
+    <table class="art-table" id="art-table">
+      <thead>
+        <tr>
+          <th style="width:36px;"><input type="checkbox" id="check-all" onchange="toggleAll(this)" /></th>
+          <th>Penulis</th>
+          <th>Judul Artikel</th>
+          <th>Kategori</th>
+          <th>Tanggal Pengajuan</th>
+          <th>Status</th>
+          <th style="text-align:right;">Aksi</th>
+        </tr>
+      </thead>
+      <tbody id="table-body">
+        <!-- Populated by JS -->
+      </tbody>
+    </table>
+
+    <!-- Empty state (hidden by default) -->
+    <div class="empty-state" id="empty-state" style="display:none;">
+      <svg style="width:40px;height:40px;color:#d1d5db;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+      </svg>
+      <p style="font-size:14px;font-weight:600;color:#6b7280;">Tidak ada artikel yang perlu ditinjau</p>
+      <p style="font-size:12px;color:#9ca3af;">Semua pengajuan sudah diproses, atau belum ada artikel baru.</p>
+    </div>
+  </div>
+
+  <!-- Bulk action bar (muncul jika ada yang dipilih) -->
+  <div id="bulk-bar" style="display:none;margin-top:14px;background:#1f2328;border-radius:10px;padding:12px 18px;display:none;align-items:center;gap:12px;color:#fff;">
+    <span style="font-size:13px;" id="bulk-count">0 dipilih</span>
+    <div style="flex:1;"></div>
+    <button onclick="bulkAction('approved')" style="font-size:12px;font-weight:700;padding:6px 16px;background:#059669;color:#fff;border:none;border-radius:7px;cursor:pointer;">✓ Setujui Semua</button>
+    <button onclick="bulkAction('rejected')" style="font-size:12px;font-weight:700;padding:6px 16px;background:#dc2626;color:#fff;border:none;border-radius:7px;cursor:pointer;">✕ Tolak Semua</button>
+    <button onclick="clearSelection()" style="font-size:12px;padding:6px 12px;background:rgba(255,255,255,.1);color:#fff;border:none;border-radius:7px;cursor:pointer;">Batal</button>
+  </div>
+
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     REVIEW MODAL
+     ══════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+
+    <div class="modal-header">
+      <div>
+        <p style="font-size:11px;font-weight:700;color:#9ca3af;letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px;">Tinjau Pengajuan</p>
+        <h2 style="font-family:'Lora',serif;font-size:17px;font-weight:700;color:#1f2328;line-height:1.3;" id="modal-title">—</h2>
+        <div style="display:flex;gap:10px;margin-top:6px;flex-wrap:wrap;">
+          <span style="font-size:12px;color:#6b7280;">✍️ <span id="modal-author">—</span></span>
+          <span style="font-size:12px;color:#6b7280;">📂 <span id="modal-category">—</span></span>
+          <span style="font-size:12px;color:#6b7280;">🕐 <span id="modal-date">—</span></span>
+        </div>
+      </div>
+      <button onclick="closeModalById()" style="background:none;border:none;cursor:pointer;color:#9ca3af;padding:4px;" class="hover:text-gray-700">
+        <svg style="width:18px;height:18px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <!-- Content preview -->
+      <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:16px;margin-bottom:16px;max-height:280px;overflow-y:auto;">
+        <p style="font-size:13px;line-height:1.75;color:#374151;font-family:'Lora',serif;" id="modal-content-preview">—</p>
+      </div>
+
+      <!-- Admin note -->
+      <label style="font-size:12px;font-weight:600;color:#374151;display:block;margin-bottom:6px;">
+        Catatan untuk Penulis <span style="font-weight:400;color:#9ca3af;">(opsional)</span>
+      </label>
+      <textarea class="note-textarea" id="modal-note"
+                placeholder="Contoh: Artikel sangat menarik, namun perlu perbaikan di bagian pendahuluan…"></textarea>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-cancel-modal" onclick="closeModalById()">Batal</button>
+      <button class="btn-reject"   onclick="modalAction('rejected')">
+        ✕ Tolak Artikel
+      </button>
+      <button class="btn-approve"  onclick="modalAction('approved')">
+        ✓ Setujui &amp; Publikasikan
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ══════════════════════════════════════════
+   DATA — Mock articles (status: pending_review)
+   [DYNAMIC] Ganti dengan fetch('/api/admin/articles?status=pending_review')
+   ══════════════════════════════════════════ */
+var ARTICLES = [
+  {
+    id: 'art-001',
+    author:     'Sinta Maharani',
+    email:      'sinta@email.com',
+    title:      'Kopi Gayo dan Warisan Rasa yang Tak Tergantikan',
+    category:   'kuliner',
+    excerpt:    'Di balik setiap cangkir kopi Gayo tersimpan cerita panjang tentang perjuangan petani di dataran tinggi Aceh yang mempertahankan cara pengolahan tradisional mereka…',
+    submitted:  '2025-09-21T08:14:00Z',
+    status:     'pending_review',
+    word_count: 842,
+  },
+  {
+    id: 'art-002',
+    author:     'Budi Santoso',
+    email:      'budi@email.com',
+    title:      'Anyaman Rotan Cirebon: Jalan Panjang ke Pasar Global',
+    category:   'kerajinan',
+    excerpt:    'Desa Tegalwangi di Cirebon telah melahirkan ribuan pengrajin rotan selama berabad-abad. Namun dengan masuknya produk impor, mereka kini berjuang mempertahankan eksistensi…',
+    submitted:  '2025-09-20T15:30:00Z',
+    status:     'pending_review',
+    word_count: 1120,
+  },
+  {
+    id: 'art-003',
+    author:     'Dewi Rahayu',
+    email:      'dewi@email.com',
+    title:      'Catatan Buku: Sapiens oleh Yuval Noah Harari',
+    category:   'catatan-buku',
+    excerpt:    'Membaca Sapiens seperti diajak terbang lintas zaman. Harari membuka bab pertama dengan pertanyaan sederhana namun menghantam: mengapa Homo sapiens berhasil menguasai bumi?',
+    submitted:  '2025-09-19T11:00:00Z',
+    status:     'pending_review',
+    word_count: 650,
+  },
+  {
+    id: 'art-004',
+    author:     'Reza Pratama',
+    email:      'reza@email.com',
+    title:      'Ekowisata Mangrove Berau: Peluang yang Terabaikan',
+    category:   'wisata',
+    excerpt:    'Hutan mangrove seluas 350 hektare di Berau, Kalimantan Timur, menyimpan potensi ekowisata yang luar biasa. Sayangnya, infrastruktur akses dan promosi masih minim…',
+    submitted:  '2025-09-18T09:45:00Z',
+    status:     'pending_review',
+    word_count: 978,
+  },
+  {
+    id: 'art-005',
+    author:     'Ayu Lestari',
+    email:      'ayu@email.com',
+    title:      'Madu Hutan Kalimantan: Kekayaan Alam yang Mulai Langka',
+    category:   'agrikultur',
+    excerpt:    'Para pemburu madu tradisional di Kalimantan Tengah telah mewariskan teknik pendakian pohon sialang secara turun-temurun. Tapi kini pohon-pohon itu semakin sedikit…',
+    submitted:  '2025-09-17T14:20:00Z',
+    status:     'pending_review',
+    word_count: 760,
+  },
+];
+
+/* Track approved/rejected today for stats */
+var _todayApproved = 0;
+var _todayRejected = 0;
+var _activeArticleId = null;
+var _selected = new Set();
+
+/* ── Category label map ── */
+var CAT_LABELS = {
+  'agrikultur':   '🌾 Agrikultur',
+  'kuliner':      '☕ Kuliner',
+  'kerajinan':    '🧶 Kerajinan',
+  'budaya':       '🎭 Budaya',
+  'sosial':       '🤝 Sosial',
+  'lingkungan':   '🌿 Lingkungan',
+  'wisata':       '🗺️ Wisata',
+  'catatan-buku': '📖 Catatan Buku',
+  'jurnal':       '🗒️ Jurnal Harian',
+  'ulasan':       '⭐ Ulasan',
+};
+
+/* ─────────────────────────────────────
+   Format date (id-ID)
+───────────────────────────────────── */
+function fmtDate(iso) {
+  var d = new Date(iso);
+  return d.toLocaleDateString('id-ID', {day:'numeric', month:'short', year:'numeric'}) +
+         ' · ' + d.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
+}
+
+function relativeDate(iso) {
+  var diff = Math.floor((Date.now() - new Date(iso)) / 1000);
+  if (diff <    60) return diff + ' detik lalu';
+  if (diff <  3600) return Math.floor(diff/60) + ' menit lalu';
+  if (diff < 86400) return Math.floor(diff/3600) + ' jam lalu';
+  return Math.floor(diff/86400) + ' hari lalu';
+}
+
+/* ─────────────────────────────────────
+   Update stats strip + sidebar badge
+───────────────────────────────────── */
+function updateStats() {
+  var pending = ARTICLES.filter(function(a){ return a.status === 'pending_review'; }).length;
+  document.getElementById('stat-pending').textContent  = pending;
+  document.getElementById('stat-approved').textContent = _todayApproved;
+  document.getElementById('stat-rejected').textContent = _todayRejected;
+  document.getElementById('stat-total').textContent    = ARTICLES.length;
+
+  // Topbar + sidebar badges
+  var badge = pending > 0 ? pending + ' menunggu' : 'Kosong';
+  document.getElementById('topbar-count').textContent = badge;
+  document.getElementById('sidebar-pending-count').textContent = pending > 0 ? pending : '';
+}
+
+/* ─────────────────────────────────────
+   Render table
+───────────────────────────────────── */
+function renderTable(list) {
+  var tbody  = document.getElementById('table-body');
+  var empty  = document.getElementById('empty-state');
+  var fcount = document.getElementById('filter-count');
+
+  fcount.textContent = list.length + ' artikel';
+
+  if (list.length === 0) {
+    tbody.innerHTML  = '';
+    empty.style.display = 'flex';
+    return;
+  }
+  empty.style.display = 'none';
+
+  tbody.innerHTML = list.map(function(a) {
+    var initials = a.author.split(' ').map(function(w){ return w[0]; }).join('').slice(0,2).toUpperCase();
+    var statusBadge = {
+      pending_review: '<span class="badge pending">Menunggu Review</span>',
+      approved:       '<span class="badge approved">Disetujui</span>',
+      rejected:       '<span class="badge rejected">Ditolak</span>',
+      draft:          '<span class="badge draft">Draft</span>',
+    }[a.status] || '<span class="badge draft">' + a.status + '</span>';
+
+    var actionBtn = a.status === 'pending_review'
+      ? '<a class="btn-review" href="article-preview.html?id=' + a.id + '">'
+          + '<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>'
+          + 'Tinjau Tulisan</a>'
+      : '<span style="font-size:12px;color:#9ca3af;">Selesai</span>';
+
+    var checked = _selected.has(a.id) ? 'checked' : '';
+
+    return '<tr id="row-' + a.id + '">'
+      + '<td><input type="checkbox" ' + checked + ' onchange="toggleSelect(\'' + a.id + '\',this)" /></td>'
+      + '<td><div class="author-cell">'
+          + '<div class="author-avatar">' + initials + '</div>'
+          + '<div><div class="author-name">' + escHtml(a.author) + '</div>'
+          + '<div class="author-email">' + escHtml(a.email) + '</div></div>'
+          + '</div></td>'
+      + '<td><div class="title-text">' + escHtml(a.title) + '</div>'
+          + '<div class="title-preview">' + escHtml(a.excerpt.slice(0,80)) + '…</div>'
+          + '<div class="title-cat">' + (a.word_count || 0) + ' kata</div></td>'
+      + '<td>' + (CAT_LABELS[a.category] || a.category) + '</td>'
+      + '<td><div style="font-size:13px;color:#374151;">' + fmtDate(a.submitted) + '</div>'
+          + '<div style="font-size:11px;color:#9ca3af;margin-top:2px;">' + relativeDate(a.submitted) + '</div></td>'
+      + '<td>' + statusBadge + '</td>'
+      + '<td style="text-align:right;">' + actionBtn + '</td>'
+      + '</tr>';
+  }).join('');
+}
+
+/* ─────────────────────────────────────
+   Filter + sort
+───────────────────────────────────── */
+function getPending() {
+  return ARTICLES.filter(function(a){ return a.status === 'pending_review'; });
+}
+
+function applyFilter() {
+  var q    = (document.getElementById('search-filter').value || '').toLowerCase();
+  var cat  = document.getElementById('cat-filter').value;
+  var sort = document.getElementById('sort-filter').value;
+
+  var list = getPending().filter(function(a) {
+    var matchQ   = !q || a.title.toLowerCase().includes(q) || a.author.toLowerCase().includes(q);
+    var matchCat = !cat || a.category === cat;
+    return matchQ && matchCat;
+  });
+
+  list.sort(function(x, y) {
+    if (sort === 'newest') return new Date(y.submitted) - new Date(x.submitted);
+    if (sort === 'oldest') return new Date(x.submitted) - new Date(y.submitted);
+    if (sort === 'author') return x.author.localeCompare(y.author);
+    return 0;
+  });
+
+  renderTable(list);
+}
+
+function loadArticles() {
+  // [DYNAMIC] fetch('/api/admin/articles?status=pending_review').then(r=>r.json()).then(data=>{ ARTICLES=data; ... })
+  applyFilter();
+  updateStats();
+  var now = new Date();
+  document.getElementById('last-refresh').textContent =
+    'Diperbarui ' + now.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
+}
+
+/* ─────────────────────────────────────
+   Select / bulk
+───────────────────────────────────── */
+function toggleSelect(id, el) {
+  if (el.checked) _selected.add(id); else _selected.delete(id);
+  updateBulkBar();
+}
+
+function toggleAll(el) {
+  var rows = document.querySelectorAll('#table-body input[type="checkbox"]');
+  rows.forEach(function(cb) {
+    cb.checked = el.checked;
+    var id = cb.closest('tr').id.replace('row-', '');
+    if (el.checked) _selected.add(id); else _selected.delete(id);
+  });
+  updateBulkBar();
+}
+
+function clearSelection() {
+  _selected.clear();
+  document.querySelectorAll('#table-body input[type="checkbox"]').forEach(function(cb){ cb.checked = false; });
+  document.getElementById('check-all').checked = false;
+  updateBulkBar();
+}
+
+function updateBulkBar() {
+  var bar = document.getElementById('bulk-bar');
+  if (_selected.size > 0) {
+    bar.style.display = 'flex';
+    document.getElementById('bulk-count').textContent = _selected.size + ' artikel dipilih';
+  } else {
+    bar.style.display = 'none';
+  }
+}
+
+function bulkAction(newStatus) {
+  _selected.forEach(function(id) {
+    var art = ARTICLES.find(function(a){ return a.id === id; });
+    if (art) {
+      art.status = newStatus;
+      if (newStatus === 'approved') _todayApproved++;
+      if (newStatus === 'rejected') _todayRejected++;
+    }
+  });
+  clearSelection();
+  loadArticles();
+  var label = newStatus === 'approved' ? 'disetujui' : 'ditolak';
+  showToast('✓  Artikel berhasil ' + label, 'green');
+}
+
+/* ─────────────────────────────────────
+   Modal
+───────────────────────────────────── */
+function openModal(id) {
+  var art = ARTICLES.find(function(a){ return a.id === id; });
+  if (!art) return;
+  _activeArticleId = id;
+
+  document.getElementById('modal-title').textContent   = art.title;
+  document.getElementById('modal-author').textContent  = art.author;
+  document.getElementById('modal-category').textContent = CAT_LABELS[art.category] || art.category;
+  document.getElementById('modal-date').textContent    = fmtDate(art.submitted);
+  document.getElementById('modal-content-preview').textContent = art.excerpt;
+  document.getElementById('modal-note').value          = '';
+
+  document.getElementById('modal-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById('modal-overlay')) closeModalById();
+}
+
+function closeModalById() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+  _activeArticleId = null;
+}
+
+function modalAction(newStatus) {
+  if (!_activeArticleId) return;
+  var art = ARTICLES.find(function(a){ return a.id === _activeArticleId; });
+  if (!art) return;
+
+  var note = document.getElementById('modal-note').value.trim();
+  art.status = newStatus;
+  if (newStatus === 'approved') _todayApproved++;
+  if (newStatus === 'rejected') _todayRejected++;
+
+  // [DYNAMIC] POST ke backend:
+  // fetch('/api/admin/articles/' + _activeArticleId + '/review', {
+  //   method: 'POST',
+  //   headers: { 'Content-Type': 'application/json' },
+  //   body: JSON.stringify({ status: newStatus, note: note })
+  // })
+
+  closeModalById();
+  loadArticles();
+
+  var msg = newStatus === 'approved'
+    ? '✓  Artikel disetujui dan siap dipublikasikan'
+    : '✕  Artikel ditolak, notifikasi dikirim ke penulis';
+  showToast(msg, newStatus === 'approved' ? 'green' : 'red');
+}
+
+/* ─────────────────────────────────────
+   Escape HTML
+───────────────────────────────────── */
+function escHtml(str) {
+  return String(str)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+/* ─────────────────────────────────────
+   Toast
+───────────────────────────────────── */
+var _tt;
+function showToast(msg, color) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className   = 'toast show ' + (color || '');
+  clearTimeout(_tt);
+  _tt = setTimeout(function(){ t.className = 'toast'; }, 3400);
+}
+
+/* ─────────────────────────────────────
+   ESC key closes modal
+───────────────────────────────────── */
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeModalById();
+});
+
+/* ─────────────────────────────────────
+   Admin name from sessionStorage
+───────────────────────────────────── */
+(function() {
+  var name = sessionStorage.getItem('bob_user_name') || 'Admin';
+  var el   = document.getElementById('admin-name');
+  var av   = document.getElementById('admin-avatar');
+  if (el) el.textContent = name;
+  if (av) av.textContent = name.charAt(0).toUpperCase();
+})();
+
+/* ─────────────────────────────────────
+   Init
+───────────────────────────────────── */
+loadArticles();
+</script>
+
+  <script src="../../assets/js/lang.js"></script>
+  <script src="/assets/js/layout.js"></script>
+  <script src="/assets/js/public-layout.js"></script>
+</body>
+</html>

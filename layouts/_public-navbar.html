@@ -1,0 +1,68 @@
+<header class="rm-public-header" role="banner">
+  <div class="rm-public-header__inner">
+    <a href="/index.html" class="rm-public-header__logo" aria-label="Racik Media — Beranda">
+      <img src="/assets/brand/1.png" alt="Racik Media" />
+    </a>
+
+    <nav class="rm-public-header__nav" aria-label="Menu utama">
+      <a href="/pages/main/articles.html" data-id="Jelajah Jurnal" data-en="Explore Journal" data-zh="浏览期刊">Jelajah Jurnal</a>
+      <a href="/pages/main/etalase.html" data-id="Etalase Produk &amp; Jasa" data-en="Products &amp; Services" data-zh="产品与服务">Etalase Produk &amp; Jasa</a>
+      <a href="/pages/main/cerita-kami.html" data-id="Cerita Kami" data-en="Our Story" data-zh="我们的故事">Cerita Kami</a>
+      <a href="/pages/main/events.html" data-id="Events" data-en="Events" data-zh="活动">Events</a>
+    </nav>
+
+    <div class="rm-public-header__actions">
+      <button id="back-button" class="rm-public-header__back" type="button" aria-label="Kembali" data-aria-label-id="Kembali" data-aria-label-en="Go back">
+        <svg aria-hidden="true" viewBox="0 0 20 20" fill="none">
+          <path d="M8.25 4.75 3 10l5.25 5.25M3.75 10h12.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span data-id="Kembali" data-en="Back">Kembali</span>
+      </button>
+
+      <div id="lang-switcher" role="group" aria-label="Pilih Bahasa / Select Language">
+        <span id="lang-detecting" aria-live="polite">
+          <span class="lang-spinner" aria-hidden="true"></span>
+          <span class="sr-only">Mendeteksi bahasa…</span>
+        </span>
+        <button id="lang-trigger" type="button" aria-haspopup="listbox" aria-expanded="false"
+                aria-controls="lang-dropdown" aria-label="Pilih bahasa">
+          <span class="rm-public-header__language-label">Bahasa</span>
+          <span id="lang-trigger-flag" aria-hidden="true">🇮🇩</span>
+          <span id="lang-trigger-label">ID</span>
+          <span class="lang-chevron" aria-hidden="true">⌄</span>
+        </button>
+        <div id="lang-dropdown" role="listbox" aria-label="Daftar bahasa">
+          <div class="lang-dropdown__header">Language / Bahasa</div>
+          <button type="button" data-lang-option="id" role="option" aria-selected="true">
+            <span class="lang-opt__flag" aria-hidden="true">🇮🇩</span>
+            <span class="lang-opt__name">Indonesia<span class="lang-opt__sub">Bahasa Indonesia</span></span>
+          </button>
+          <button type="button" data-lang-option="en" role="option" aria-selected="false">
+            <span class="lang-opt__flag" aria-hidden="true">🇬🇧</span>
+            <span class="lang-opt__name">English<span class="lang-opt__sub">United Kingdom / Global</span></span>
+          </button>
+        </div>
+      </div>
+
+      <a href="/pages/auth/login.html" id="btn-login" class="rm-public-header__login"
+         data-id="Login" data-en="Login" data-zh="登录">Login</a>
+
+      <button id="mobile-menu-toggle" class="rm-public-header__mobile-toggle" type="button"
+              aria-label="Buka menu navigasi" aria-controls="mobile-menu" aria-expanded="false">
+        <span id="icon-hamburger" class="rm-menu-icon" aria-hidden="true">☰</span>
+        <span id="icon-close-menu" class="rm-menu-icon hidden" aria-hidden="true">×</span>
+      </button>
+    </div>
+  </div>
+
+  <div id="mobile-menu" class="rm-public-header__mobile-menu hidden">
+    <nav aria-label="Menu mobile">
+      <a href="/pages/main/articles.html" data-id="Jelajah Jurnal" data-en="Explore Journal" data-zh="浏览期刊">Jelajah Jurnal</a>
+      <a href="/pages/main/etalase.html" data-id="Etalase Produk &amp; Jasa" data-en="Products &amp; Services" data-zh="产品与服务">Etalase Produk &amp; Jasa</a>
+      <a href="/pages/main/cerita-kami.html" data-id="Cerita Kami" data-en="Our Story" data-zh="我们的故事">Cerita Kami</a>
+      <a href="/pages/main/events.html" data-id="Events" data-en="Events" data-zh="活动">Events</a>
+      <a href="/pages/auth/login.html" class="rm-public-header__mobile-login"
+         data-id="Masuk / Daftar" data-en="Sign In / Register" data-zh="登录 / 注册">Masuk / Daftar</a>
+    </nav>
+  </div>
+</header>

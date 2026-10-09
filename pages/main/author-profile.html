@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Profil Penulis — Racik Media</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../../assets/css/shared.css">
+  <script src="../../api/auth.js"></script>
+  <script src="../../assets/js/public-articles.js"></script>
+  <link rel="stylesheet" href="/assets/css/public-layout.css" />
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-800">
+  <div id="rm-navbar-root"></div>
+  <header class="border-b bg-white">
+    <div class="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">
+      <a href="articles.html" class="font-bold text-emerald-900">Racik Media · Jurnal</a>
+      <a href="bookmarks.html" class="text-sm font-semibold text-emerald-800 hover:underline">Artikel tersimpan</a>
+    </div>
+  </header>
+  <main class="mx-auto max-w-5xl px-4 py-10">
+    <div id="authorMessage" class="mb-5 text-sm text-slate-600" role="status" aria-live="polite">Memuat profil penulis...</div>
+    <section id="authorCard" class="hidden rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:flex sm:items-center sm:gap-6">
+      <div id="authorInitial" class="flex h-24 w-24 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-3xl font-bold text-emerald-900" aria-hidden="true"></div>
+      <div>
+        <p class="text-xs font-bold uppercase tracking-wide text-emerald-800">Penulis Racik Media</p>
+        <h1 id="authorName" class="mt-2 font-serif text-3xl font-bold"></h1>
+        <p id="authorCity" class="mt-1 text-sm text-slate-500"></p>
+        <p id="authorBio" class="mt-4 whitespace-pre-wrap text-sm leading-6 text-slate-700"></p>
+        <p class="mt-4 text-xs font-semibold text-slate-500"><span id="articleCount">0</span> artikel diterbitkan</p>
+      </div>
+    </section>
+    <section class="mt-10">
+      <h2 class="font-serif text-2xl font-bold">Artikel penulis</h2>
+      <div id="authorArticles" class="mt-5 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3"></div>
+      <nav id="authorPagination" class="mt-8 flex justify-center gap-3" aria-label="Halaman artikel penulis"></nav>
+    </section>
+  </main>
+  <script>
+    (async function () {
+      var params = new URLSearchParams(window.location.search);
+      var authorId = params.get('id');
+      var message = document.getElementById('authorMessage');
+      var list = document.getElementById('authorArticles');
+      var pagination = document.getElementById('authorPagination');
+      var currentPage = 1;
+
+      function renderPagination(result) {
+        pagination.innerHTML = '';
+        if (result.totalPages < 2) return;
+        [[currentPage - 1, 'Sebelumnya', currentPage === 1], [currentPage + 1, 'Berikutnya', currentPage === result.totalPages]].forEach(function (entry) {
+          var button = document.createElement('button');
+          button.type = 'button';
+          button.textContent = entry[1];
+          button.disabled = entry[2];
+          button.className = 'rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold disabled:opacity-40';
+          button.addEventListener('click', function () {
+            currentPage = entry[0];
+            loadAuthorArticles().catch(function (error) {
+              message.textContent = error.message || 'Artikel penulis gagal dimuat.';
+              message.classList.add('text-rose-700');
+            });
+          });
+          pagination.appendChild(button);
+        });
+      }
+      async function loadAuthorArticles() {
+        var result = await PublicArticles.list({ authorId: authorId, page: currentPage, limit: 9 });
+        if (!result.data.length) {
+          list.innerHTML = '<p class="text-sm text-slate-500">Penulis belum memiliki artikel terbit.</p>';
+        } else {
+          list.innerHTML = result.data.map(function (article) {
+            var imageUrl = PublicArticles.safeImageUrl(article.cover_url);
+            var image = imageUrl
+              ? '<img src="' + PublicArticles.escapeHtml(imageUrl) + '" alt="' + PublicArticles.escapeHtml(article.title) + '" class="h-full w-full object-cover" loading="lazy">'
+              : '<div class="flex h-full items-center justify-center bg-emerald-50 text-4xl text-emerald-800">✦</div>';
+            return '<article class="flex flex-col gap-3"><a href="article-detail.html?id=' + encodeURIComponent(article.id) + '" class="aspect-[3/2] overflow-hidden rounded-xl bg-slate-100">' + image + '</a><p class="text-xs font-semibold uppercase tracking-wide text-emerald-800">' + PublicArticles.escapeHtml(article.category) + '</p><h3 class="font-serif text-xl font-bold"><a class="hover:text-emerald-800" href="article-detail.html?id=' + encodeURIComponent(article.id) + '">' + PublicArticles.escapeHtml(article.title) + '</a></h3><p class="line-clamp-3 text-sm leading-6 text-slate-600">' + PublicArticles.escapeHtml(article.excerpt) + '</p><time class="text-xs text-slate-400">' + PublicArticles.escapeHtml(PublicArticles.dateLabel(article.published_at)) + '</time></article>';
+          }).join('');
+        }
+        renderPagination(result);
+        message.textContent = result.total + ' artikel ditemukan.';
+      }
+      try {
+        if (!authorId) throw new Error('ID penulis tidak tersedia.');
+        var author = await PublicArticles.getPublicAuthor(authorId);
+        if (!author) throw new Error('Profil publik penulis tidak ditemukan.');
+        document.title = author.display_name + ' — Penulis Racik Media';
+        document.getElementById('authorName').textContent = author.display_name || 'Penulis Racik Media';
+        document.getElementById('authorInitial').textContent = (author.display_name || 'P').trim().charAt(0).toUpperCase();
+        document.getElementById('authorCity').textContent = author.city || '';
+        document.getElementById('authorBio').textContent = author.bio || 'Penulis Racik Media yang berbagi cerita dan wawasan tentang produk lokal.';
+        document.getElementById('articleCount').textContent = String(author.article_count);
+        document.getElementById('authorCard').classList.remove('hidden');
+        await loadAuthorArticles();
+      } catch (error) {
+        message.textContent = error.message || 'Profil penulis gagal dimuat.';
+        message.classList.add('text-rose-700');
+      }
+    })();
+  </script>
+  <script src="../../assets/js/lang.js"></script>
+  <script src="/assets/js/layout.js"></script>
+  <script src="/assets/js/public-layout.js"></script>
+</body>
+</html>

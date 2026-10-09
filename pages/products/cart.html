@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Keranjang Belanja — Racik Media</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../../assets/css/shared.css" />
+  <script src="../../assets/js/tailwind-config.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  
+  
+  <link rel="stylesheet" href="/assets/css/public-layout.css" />
+</head>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col">
+  <div id="rm-navbar-root"></div>
+
+  <!-- TOP HEADER -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-4">
+        <a href="../main/dashboard.html" class="flex items-center gap-2">
+          <img src="../../assets/brand/1.png" alt="Racik Media" class="h-9 w-auto" />
+        </a>
+        <div class="h-6 w-px bg-slate-200 hidden sm:block"></div>
+        <span class="text-base font-bold text-slate-800 hidden sm:block">Keranjang Belanja</span>
+      </div>
+      <a href="../main/etalase.html" class="text-xs font-semibold text-emerald-800 hover:text-emerald-900 flex items-center gap-1">
+        ← Lanjut Belanja
+      </a>
+    </div>
+  </header>
+
+  <!-- MAIN CART CONTENT -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
+    
+    <div class="flex items-center justify-between mb-6">
+      <h1 class="text-2xl font-bold text-slate-900 font-serif">Keranjang Belanja</h1>
+      <span id="cart-count" class="text-xs text-slate-500 font-medium">Memuat keranjang...</span>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+      <!-- DAFTAR ITEM KERANJANG (8 KOLOM) -->
+      <div class="lg:col-span-8 space-y-4">
+        
+        <!-- Header Tabel Toko -->
+        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between text-xs text-slate-600">
+          <label class="flex items-center gap-3 cursor-pointer select-none">
+            <input type="checkbox" id="check-all" checked class="w-4 h-4 rounded text-emerald-800 focus:ring-emerald-700" onchange="toggleSelectAll(this)" />
+            <span class="font-semibold text-slate-800">Pilih Semua (3 Produk)</span>
+          </label>
+          <button onclick="clearAllCart()" class="text-slate-400 hover:text-rose-600 transition">Hapus Semua</button>
+        </div>
+
+        <!-- GRUP TOKO 1: Koperasi Tani Cianjur -->
+        <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+          <div class="p-4 bg-slate-50/70 border-b border-slate-100 flex items-center gap-3">
+            <input type="checkbox" checked class="item-checkbox w-4 h-4 rounded text-emerald-800 focus:ring-emerald-700" onchange="recalculateCart()" />
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-bold text-slate-900">Koperasi Tani Cianjur</span>
+              <span class="text-[10px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-semibold">Official Store</span>
+            </div>
+          </div>
+
+          <!-- Item 1 -->
+          <div class="p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-100 last:border-0">
+            <div class="flex items-center gap-3 flex-1">
+              <input type="checkbox" checked class="item-checkbox w-4 h-4 rounded text-emerald-800 focus:ring-emerald-700" onchange="recalculateCart()" />
+              <img src="https://images.unsplash.com/photo-1586201375761-83865001e31c?w=120" alt="Beras" class="w-16 h-16 rounded-xl object-cover border border-slate-200" />
+              <div>
+                <h3 class="text-xs font-bold text-slate-900 leading-snug">Beras Organik Pandan Wangi Cianjur 5kg</h3>
+                <p class="text-[11px] text-slate-500">Varian: Sak 5 Kg</p>
+                <div class="text-xs font-bold text-emerald-800 mt-1">Rp 88.000</div>
+              </div>
+            </div>
+            <div class="flex items-center justify-between w-full sm:w-auto gap-6">
+              <div class="flex items-center border border-slate-200 rounded-xl bg-slate-50 p-1">
+                <button onclick="updateQty(this, -1, 88000)" class="w-7 h-7 flex items-center justify-center font-bold text-slate-500 hover:bg-white rounded-lg transition">-</button>
+                <span class="item-qty w-8 text-center text-xs font-bold">2</span>
+                <button onclick="updateQty(this, 1, 88000)" class="w-7 h-7 flex items-center justify-center font-bold text-slate-500 hover:bg-white rounded-lg transition">+</button>
+              </div>
+              <div class="text-right min-w-[80px]">
+                <div class="item-total text-xs font-bold text-slate-900">Rp 176.000</div>
+                <button onclick="removeItem(this)" class="text-[10px] text-rose-500 hover:underline mt-0.5">Hapus</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- GRUP TOKO 2: Gayo Coffee Artisan -->
+        <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+          <div class="p-4 bg-slate-50/70 border-b border-slate-100 flex items-center gap-3">
+            <input type="checkbox" checked class="item-checkbox w-4 h-4 rounded text-emerald-800 focus:ring-emerald-700" onchange="recalculateCart()" />
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-bold text-slate-900">Gayo Coffee Artisan</span>
+              <span class="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full font-semibold">Aceh Tengah</span>
+            </div>
+          </div>
+
+          <!-- Item 2 -->
+          <div class="p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-100 last:border-0">
+            <div class="flex items-center gap-3 flex-1">
+              <input type="checkbox" checked class="item-checkbox w-4 h-4 rounded text-emerald-800 focus:ring-emerald-700" onchange="recalculateCart()" />
+              <img src="https://images.unsplash.com/photo-1610889556528-9a770e32642f?w=120" alt="Kopi" class="w-16 h-16 rounded-xl object-cover border border-slate-200" />
+              <div>
+                <h3 class="text-xs font-bold text-slate-900 leading-snug">Kopi Gayo Premium Arabika 100g</h3>
+                <p class="text-[11px] text-slate-500">Varian: Biji Sangrai (Medium Roast)</p>
+                <div class="text-xs font-bold text-emerald-800 mt-1">Rp 22.000</div>
+              </div>
+            </div>
+            <div class="flex items-center justify-between w-full sm:w-auto gap-6">
+              <div class="flex items-center border border-slate-200 rounded-xl bg-slate-50 p-1">
+                <button onclick="updateQty(this, -1, 22000)" class="w-7 h-7 flex items-center justify-center font-bold text-slate-500 hover:bg-white rounded-lg transition">-</button>
+                <span class="item-qty w-8 text-center text-xs font-bold">1</span>
+                <button onclick="updateQty(this, 1, 22000)" class="w-7 h-7 flex items-center justify-center font-bold text-slate-500 hover:bg-white rounded-lg transition">+</button>
+              </div>
+              <div class="text-right min-w-[80px]">
+                <div class="item-total text-xs font-bold text-slate-900">Rp 22.000</div>
+                <button onclick="removeItem(this)" class="text-[10px] text-rose-500 hover:underline mt-0.5">Hapus</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Item 3 -->
+          <div class="p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-100 last:border-0">
+            <div class="flex items-center gap-3 flex-1">
+              <input type="checkbox" checked class="item-checkbox w-4 h-4 rounded text-emerald-800 focus:ring-emerald-700" onchange="recalculateCart()" />
+              <img src="https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=120" alt="Madu" class="w-16 h-16 rounded-xl object-cover border border-slate-200" />
+              <div>
+                <h3 class="text-xs font-bold text-slate-900 leading-snug">Madu Hutan Asli Sialang Riau 250ml</h3>
+                <p class="text-[11px] text-slate-500">Varian: Botol Kaca 250ml</p>
+                <div class="text-xs font-bold text-emerald-800 mt-1">Rp 65.000</div>
+              </div>
+            </div>
+            <div class="flex items-center justify-between w-full sm:w-auto gap-6">
+              <div class="flex items-center border border-slate-200 rounded-xl bg-slate-50 p-1">
+                <button onclick="updateQty(this, -1, 65000)" class="w-7 h-7 flex items-center justify-center font-bold text-slate-500 hover:bg-white rounded-lg transition">-</button>
+                <span class="item-qty w-8 text-center text-xs font-bold">1</span>
+                <button onclick="updateQty(this, 1, 65000)" class="w-7 h-7 flex items-center justify-center font-bold text-slate-500 hover:bg-white rounded-lg transition">+</button>
+              </div>
+              <div class="text-right min-w-[80px]">
+                <div class="item-total text-xs font-bold text-slate-900">Rp 65.000</div>
+                <button onclick="removeItem(this)" class="text-[10px] text-rose-500 hover:underline mt-0.5">Hapus</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RINGKASAN BELANJA (4 KOLOM STICKY) -->
+      <aside class="lg:col-span-4 bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm sticky top-24 space-y-4">
+        <h2 class="text-sm font-bold text-slate-900 font-serif uppercase tracking-wider">Ringkasan Pesanan</h2>
+        
+        <!-- Voucher Input -->
+        <div class="flex gap-2">
+          <input type="text" placeholder="Kode promo / voucher" class="flex-1 px-3 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-emerald-800 outline-none" />
+          <button class="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white text-xs font-semibold rounded-xl transition">Gunakan</button>
+        </div>
+
+        <div class="space-y-2.5 text-xs text-slate-600 border-t border-b border-slate-100 py-4">
+          <div class="flex justify-between">
+            <span>Total Harga Barang</span>
+            <span id="subtotal-display" class="font-bold text-slate-900">Rp 263.000</span>
+          </div>
+          <div class="flex justify-between">
+            <span>Diskon Promo Platform</span>
+            <span id="discount-display" class="text-emerald-700 font-bold">- Rp 15.000</span>
+          </div>
+          <div class="flex justify-between">
+            <span>Estimasi Biaya Layanan</span>
+            <span class="text-slate-500">Rp 1.000</span>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center text-sm font-bold text-slate-900 pt-1">
+          <span>Total Tagihan:</span>
+          <span id="grandtotal-display" class="text-emerald-800 text-lg">Rp 249.000</span>
+        </div>
+
+        <!-- ═══════════════════════════════════
+             INTERNATIONAL ESCROW (Pure Addition)
+             ═══════════════════════════════════ -->
+        <div id="bob-escrow-section" class="border border-blue-200 rounded-xl p-4 bg-blue-50/60 space-y-3">
+          <div class="flex items-center gap-2">
+            <svg class="w-4 h-4 text-blue-700" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <span class="text-xs font-bold text-blue-800">International Payment (Secured Escrow)</span>
+          </div>
+
+          <div class="flex gap-2 items-center">
+            <select id="bob-escrow-currency" onchange="bobUpdateEscrowConversion()" class="flex-1 px-3 py-2 text-xs rounded-lg bg-white border border-blue-200 text-slate-800 font-semibold focus:border-blue-500 outline-none">
+              <option value="IDR" selected>🇮🇩 IDR — Rupiah Indonesia</option>
+              <option value="USD">🇺🇸 USD — US Dollar</option>
+              <option value="CNY">🇨🇳 CNY — Chinese Yuan</option>
+              <option value="SGD">🇸🇬 SGD — Singapore Dollar</option>
+              <option value="MYR">🇲🇾 MYR — Malaysian Ringgit</option>
+              <option value="JPY">🇯🇵 JPY — Japanese Yen</option>
+              <option value="EUR">🇪🇺 EUR — Euro</option>
+            </select>
+          </div>
+
+          <div id="bob-escrow-conversion" class="text-[11px] text-blue-700 font-medium hidden">
+            <!-- Filled by JS -->
+          </div>
+
+          <!-- Legal Protection Banner — notranslate locked -->
+          <div class="p-3 bg-white rounded-lg border border-blue-100 text-[10px] text-slate-500 leading-relaxed">
+            <p class="font-bold text-blue-800 mb-1 notranslate" data-proper-noun="true">🔒 BOB Escrow Protection™</p>
+            <p class="notranslate">Tampilan perlindungan escrow ini masih berupa informasi prototipe. Pembayaran dan penahanan dana belum terhubung ke layanan transaksi.</p>
+          </div>
+        </div>
+
+        <a id="checkout-link" href="checkout.html" onclick="return startCheckout(event)" class="block w-full py-3.5 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white font-bold text-xs text-center shadow-lg shadow-emerald-800/20 transition active:scale-98">
+          Beli Sekarang (Checkout) →
+        </a>
+
+        <div class="text-[11px] text-slate-400 text-center flex items-center justify-center gap-1.5 pt-2">
+          <svg class="w-3.5 h-3.5 text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+          Transaksi Aman &amp; Terenkripsi
+        </div>
+      </aside>
+
+    </div>
+  </main>
+
+  <script>
+    const CART_KEY = 'racikmedia-cart';
+    const cartColumn = document.querySelector('[class~="lg:col-span-8"]');
+    const selectedIds = new Set();
+    let cartItems = [];
+
+    function formatRupiah(value) {
+      return 'Rp ' + Number(value || 0).toLocaleString('id-ID');
+    }
+
+    function readCart() {
+      const value = JSON.parse(localStorage.getItem(CART_KEY) || '[]');
+      if (!Array.isArray(value)) throw new Error('Format keranjang tidak valid.');
+      if (value.some(item =>
+        !item || typeof item.id !== 'string' || typeof item.name !== 'string' ||
+        !Number.isFinite(Number(item.unitPrice)) || Number(item.unitPrice) < 0
+      )) throw new Error('Data salah satu produk di keranjang tidak valid.');
+      return value.map(item => ({
+        id: item.id,
+        name: item.name,
+        image: typeof item.image === 'string' ? item.image : '',
+        unitPrice: Number(item.unitPrice),
+        quantity: Math.max(1, Number.parseInt(item.quantity, 10) || 1)
+      }));
+    }
+
+    function saveCart() {
+      try {
+        localStorage.setItem(CART_KEY, JSON.stringify(cartItems));
+        return true;
+      } catch (error) {
+        console.error('Gagal menyimpan keranjang:', error);
+        alert('Perubahan keranjang tidak dapat disimpan. Periksa ruang penyimpanan browser.');
+        return false;
+      }
+    }
+
+    function makeElement(tag, className, text) {
+      const element = document.createElement(tag);
+      element.className = className;
+      if (text !== undefined) element.textContent = text;
+      return element;
+    }
+
+    function renderCart() {
+      cartColumn.replaceChildren();
+      const selectedCount = cartItems.filter(item => selectedIds.has(item.id)).length;
+      document.getElementById('cart-count').textContent = cartItems.length + ' barang';
+
+      if (cartItems.length === 0) {
+        const empty = makeElement('section', 'rounded-2xl border border-dashed border-slate-300 bg-white px-5 py-12 text-center');
+        empty.append(
+          makeElement('h2', 'text-lg font-bold text-slate-900', 'Keranjang masih kosong'),
+          makeElement('p', 'mt-2 text-sm text-slate-500', 'Pilih produk dari etalase untuk memulai simulasi pembelian.'),
+          makeElement('a', 'mt-5 inline-flex rounded-xl bg-emerald-800 px-5 py-3 text-sm font-bold text-white hover:bg-emerald-900', 'Jelajahi Etalase')
+        );
+        empty.querySelector('a').href = '../main/etalase.html';
+        cartColumn.appendChild(empty);
+        document.getElementById('checkout-link').classList.add('pointer-events-none', 'opacity-50');
+        updateTotals();
+        return;
+      }
+
+      document.getElementById('checkout-link').classList.remove('pointer-events-none', 'opacity-50');
+      const header = makeElement('div', 'bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between text-xs text-slate-600');
+      const label = makeElement('label', 'flex items-center gap-3 cursor-pointer select-none');
+      const master = document.createElement('input');
+      master.type = 'checkbox';
+      master.checked = selectedCount === cartItems.length;
+      master.className = 'w-4 h-4 rounded text-emerald-800 focus:ring-emerald-700';
+      master.addEventListener('change', function () { toggleSelectAll(master); });
+      label.append(master, makeElement('span', 'font-semibold text-slate-800', 'Pilih Semua (' + cartItems.length + ' Produk)'));
+      const clear = makeElement('button', 'text-slate-400 hover:text-rose-600 transition', 'Hapus Semua');
+      clear.type = 'button';
+      clear.addEventListener('click', clearAllCart);
+      header.append(label, clear);
+      cartColumn.appendChild(header);
+
+      cartItems.forEach(function (item) {
+        const card = makeElement('article', 'bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden');
+        const row = makeElement('div', 'p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4');
+        const product = makeElement('div', 'flex items-center gap-3 flex-1');
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.checked = selectedIds.has(item.id);
+        checkbox.className = 'item-checkbox w-4 h-4 rounded text-emerald-800 focus:ring-emerald-700';
+        checkbox.addEventListener('change', function () {
+          if (checkbox.checked) selectedIds.add(item.id);
+          else selectedIds.delete(item.id);
+          renderCart();
+        });
+        const image = document.createElement('img');
+        image.src = item.image;
+        image.alt = item.name;
+        image.className = 'w-16 h-16 rounded-xl object-cover border border-slate-200';
+        const details = makeElement('div', '');
+        details.append(
+          makeElement('h3', 'text-xs font-bold text-slate-900 leading-snug', item.name),
+          makeElement('div', 'text-xs font-bold text-emerald-800 mt-1', formatRupiah(item.unitPrice))
+        );
+        product.append(checkbox, image, details);
+
+        const controls = makeElement('div', 'flex items-center justify-between w-full sm:w-auto gap-6');
+        const quantity = makeElement('div', 'flex items-center border border-slate-200 rounded-xl bg-slate-50 p-1');
+        const decrease = makeElement('button', 'w-7 h-7 flex items-center justify-center font-bold text-slate-500 hover:bg-white rounded-lg transition', '−');
+        decrease.type = 'button';
+        decrease.setAttribute('aria-label', 'Kurangi jumlah ' + item.name);
+        const count = makeElement('span', 'item-qty w-8 text-center text-xs font-bold', String(item.quantity));
+        const increase = makeElement('button', 'w-7 h-7 flex items-center justify-center font-bold text-slate-500 hover:bg-white rounded-lg transition', '+');
+        increase.type = 'button';
+        increase.setAttribute('aria-label', 'Tambah jumlah ' + item.name);
+        decrease.addEventListener('click', function () { changeQuantity(item.id, -1); });
+        increase.addEventListener('click', function () { changeQuantity(item.id, 1); });
+        quantity.append(decrease, count, increase);
+
+        const total = makeElement('div', 'text-right min-w-[80px]');
+        total.appendChild(makeElement('div', 'item-total text-xs font-bold text-slate-900', formatRupiah(item.unitPrice * item.quantity)));
+        const remove = makeElement('button', 'text-[10px] text-rose-500 hover:underline mt-0.5', 'Hapus');
+        remove.type = 'button';
+        remove.addEventListener('click', function () { removeItem(item.id); });
+        total.appendChild(remove);
+        controls.append(quantity, total);
+        row.append(product, controls);
+        card.appendChild(row);
+        cartColumn.appendChild(card);
+      });
+      updateTotals();
+    }
+
+    function changeQuantity(id, amount) {
+      const item = cartItems.find(entry => entry.id === id);
+      if (!item) return;
+      const oldQuantity = item.quantity;
+      item.quantity = Math.max(1, item.quantity + amount);
+      if (!saveCart()) item.quantity = oldQuantity;
+      renderCart();
+    }
+
+    function removeItem(id) {
+      const oldCart = cartItems;
+      cartItems = cartItems.filter(item => item.id !== id);
+      selectedIds.delete(id);
+      if (!saveCart()) {
+        cartItems = oldCart;
+        selectedIds.add(id);
+      }
+      renderCart();
+    }
+
+    function toggleSelectAll(master) {
+      selectedIds.clear();
+      if (master.checked) cartItems.forEach(item => selectedIds.add(item.id));
+      renderCart();
+    }
+
+    function clearAllCart() {
+      if (!confirm('Kosongkan seluruh isi keranjang?')) return;
+      const oldCart = cartItems;
+      const oldSelection = new Set(selectedIds);
+      cartItems = [];
+      selectedIds.clear();
+      if (!saveCart()) {
+        cartItems = oldCart;
+        oldSelection.forEach(id => selectedIds.add(id));
+      }
+      renderCart();
+    }
+
+    function updateTotals() {
+      const subtotal = cartItems.reduce((sum, item) =>
+        sum + (selectedIds.has(item.id) ? item.unitPrice * item.quantity : 0), 0);
+      const discount = Math.min(15000, subtotal);
+      const serviceFee = subtotal > 0 ? 1000 : 0;
+      document.getElementById('subtotal-display').textContent = formatRupiah(subtotal);
+      document.getElementById('discount-display').textContent = '- ' + formatRupiah(discount);
+      document.getElementById('grandtotal-display').textContent = formatRupiah(subtotal - discount + serviceFee);
+    }
+
+    function startCheckout(event) {
+      const items = cartItems.filter(item => selectedIds.has(item.id));
+      if (items.length === 0) {
+        if (event) event.preventDefault();
+        alert('Pilih minimal satu produk untuk melanjutkan checkout.');
+        return false;
+      }
+      const subtotal = items.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
+      const discount = Math.min(15000, subtotal);
+      const serviceFee = subtotal > 0 ? 1000 : 0;
+      const total = subtotal - discount + serviceFee;
+      try {
+        sessionStorage.setItem('racikmedia-checkout', JSON.stringify({ items, subtotal, discount, serviceFee, total }));
+        return true;
+      } catch (error) {
+        console.error('Gagal menyiapkan checkout:', error);
+        if (event) event.preventDefault();
+        alert('Checkout tidak dapat disiapkan. Periksa penyimpanan browser dan coba lagi.');
+        return false;
+      }
+    }
+
+    try {
+      cartItems = readCart();
+      cartItems.forEach(item => selectedIds.add(item.id));
+      renderCart();
+    } catch (error) {
+      console.error('Gagal memuat keranjang:', error);
+      cartColumn.textContent = 'Keranjang tidak dapat dimuat. Periksa penyimpanan browser dan muat ulang halaman.';
+      document.getElementById('checkout-link').classList.add('pointer-events-none', 'opacity-50');
+    }
+
+    // ── International Escrow Conversion (Pure Addition) ──
+    var BOB_ESCROW_RATES = {
+      IDR: 1, USD: 0.0000625, CNY: 0.000455, SGD: 0.0000845,
+      MYR: 0.000295, JPY: 0.00943, EUR: 0.0000575
+    };
+    var BOB_ESCROW_SYMBOLS = {
+      IDR: 'Rp', USD: '$', CNY: '¥', SGD: 'S$', MYR: 'RM', JPY: '¥', EUR: '€'
+    };
+
+    function bobUpdateEscrowConversion() {
+      var cur = document.getElementById('bob-escrow-currency').value;
+      var convDiv = document.getElementById('bob-escrow-conversion');
+      if (cur === 'IDR') {
+        convDiv.classList.add('hidden');
+        return;
+      }
+      var grandText = document.getElementById('grandtotal-display').textContent;
+      var idr = parseInt(grandText.replace(/[^0-9]/g, '')) || 0;
+      var rate = BOB_ESCROW_RATES[cur] || 1;
+      var converted = (idr * rate).toFixed(2);
+      var sym = BOB_ESCROW_SYMBOLS[cur] || cur;
+      convDiv.innerHTML = '≈ <strong class="notranslate">' + sym + ' ' + parseFloat(converted).toLocaleString('en-US', {minimumFractionDigits:2}) + '</strong> (estimasi kurs hari ini)';
+      convDiv.classList.remove('hidden');
+    }
+  </script>
+  <script src="../../assets/js/lang.js"></script>
+  <script src="/assets/js/layout.js"></script>
+  <script src="/assets/js/public-layout.js"></script>
+</body>
+</html>

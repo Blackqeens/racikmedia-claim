@@ -1,0 +1,296 @@
+
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Panduan Language Switcher</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, "Segoe UI", system-ui, sans-serif; font-size: 14px; line-height: 1.6; color: #1f2328; background: #fff; }
+  .page { max-width: 760px; margin: 0 auto; padding: 40px 24px 60px; }
+
+  /* ── Header ── */
+  .doc-header { border-bottom: 2px solid #e5e7eb; padding-bottom: 24px; margin-bottom: 32px; }
+  .doc-header h1 { font-size: 22px; font-weight: 700; color: #065f46; margin-bottom: 6px; }
+  .doc-header p { color: #57606a; font-size: 13px; }
+  .badge { display: inline-flex; align-items: center; gap: 5px; background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; border-radius: 99px; padding: 2px 10px; font-size: 11px; font-weight: 600; margin-right: 6px; }
+
+  /* ── Sections ── */
+  h2 { font-size: 15px; font-weight: 700; color: #1f2328; margin: 32px 0 10px; padding-left: 10px; border-left: 3px solid #059669; }
+  h3 { font-size: 13px; font-weight: 600; color: #374151; margin: 20px 0 8px; }
+  p { color: #374151; margin-bottom: 10px; font-size: 13.5px; }
+
+  /* ── Flow Diagram ── */
+  .flow { background: #f7f8fa; border: 1px solid #e5e7eb; border-radius: 10px; padding: 20px 24px; margin: 14px 0; }
+  .flow-row { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
+  .flow-row:last-child { margin-bottom: 0; }
+  .flow-num { width: 22px; height: 22px; border-radius: 50%; background: #059669; color: #fff; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+  .flow-text { font-size: 13px; color: #374151; }
+  .flow-text strong { color: #065f46; }
+  .flow-arrow { text-align: center; color: #9ca3af; font-size: 16px; margin: -4px 0 4px 33px; }
+
+  /* ── Code blocks ── */
+  pre { background: #0d1117; color: #e6edf3; border-radius: 8px; padding: 16px 18px; overflow-x: auto; margin: 10px 0 16px; font-size: 12.5px; line-height: 1.7; }
+  code { font-family: "SF Mono", "Fira Code", Consolas, monospace; }
+  .hl-green { color: #7ee787; }
+  .hl-blue  { color: #79c0ff; }
+  .hl-orange{ color: #ffa657; }
+  .hl-gray  { color: #8b949e; }
+  .hl-str   { color: #a5d6ff; }
+  .inline-code { background: #f0fdf4; color: #065f46; border: 1px solid #bbf7d0; border-radius: 4px; padding: 1px 6px; font-family: "SF Mono", Consolas, monospace; font-size: 12px; }
+
+  /* ── Files table ── */
+  table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 13px; }
+  th { background: #f7f8fa; padding: 8px 12px; text-align: left; color: #57606a; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid #e5e7eb; }
+  td { padding: 9px 12px; border-bottom: 1px solid #f3f4f6; vertical-align: top; }
+  td:first-child { font-family: "SF Mono", Consolas, monospace; font-size: 12px; color: #0550ae; }
+  tr:last-child td { border-bottom: none; }
+
+  /* ── Attribute table ── */
+  .attr-table td:nth-child(2) { font-family: "SF Mono", Consolas, monospace; font-size: 11.5px; color: #8250df; }
+  .attr-table td:nth-child(3) { font-size: 12px; color: #57606a; }
+
+  /* ── API table ── */
+  .api-table td:first-child { color: #0550ae; font-family: "SF Mono", Consolas, monospace; font-size: 12px; }
+  .api-table td:nth-child(2) { color: #57606a; font-size: 12.5px; }
+
+  /* ── Note box ── */
+  .note { background: #fff8e6; border: 1px solid #fde68a; border-radius: 8px; padding: 12px 14px; font-size: 13px; color: #78350f; margin: 14px 0; }
+  .note strong { color: #92400e; }
+  .tip  { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 12px 14px; font-size: 13px; color: #14532d; margin: 14px 0; }
+
+  /* ── Widget preview ── */
+  .widget-preview { border: 1px solid #e5e7eb; border-radius: 10px; padding: 20px; margin: 14px 0; display: flex; align-items: center; gap: 16px; background: #f7f8fa; }
+  .mock-btn { display: inline-flex; align-items: center; gap: 5px; padding: 6px 10px; border: 1px solid #d1d5db; border-radius: 8px; background: #fff; font-size: 12px; font-weight: 600; color: #374151; box-shadow: 0 1px 3px rgba(0,0,0,.06); }
+  .mock-drop { border: 1px solid #e5e7eb; border-radius: 10px; background: #fff; box-shadow: 0 8px 24px rgba(0,0,0,.10); overflow: hidden; min-width: 140px; }
+  .mock-head { padding: 7px 12px 5px; font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #9ca3af; border-bottom: 1px solid #f3f4f6; }
+  .mock-opt { display: flex; align-items: center; gap: 9px; padding: 8px 13px; font-size: 13px; color: #374151; }
+  .mock-opt.active { background: #ecfdf5; color: #065f46; font-weight: 600; }
+  .mock-check { margin-left: auto; color: #059669; font-size: 11px; }
+
+  /* ── Divider ── */
+  hr { border: none; border-top: 1px solid #e5e7eb; margin: 28px 0; }
+
+  /* ── Footer ── */
+  .footer { text-align: center; font-size: 11px; color: #9ca3af; border-top: 1px solid #e5e7eb; padding-top: 20px; margin-top: 40px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  
+  <div class="doc-header">
+    <h1>🌐 Language Switcher — Panduan Implementasi</h1>
+    <p>Pilihan bahasa manual dan deteksi otomatis English untuk Racik Media · Vanilla JS + CSS</p>
+    <br />
+    <span class="badge">✓ Terpasang</span>
+    <span class="badge">✓ Seluruh 46 Halaman</span>
+    <span class="badge">✓ Auto-detect English</span>
+    <span class="badge">✓ Cache terjemahan per sesi</span>
+    <span class="badge">✓ localStorage</span>
+  </div>
+
+  
+  <h2>Alur Kerja Sistem</h2>
+  <div class="flow">
+    <div class="flow-row">
+      <div class="flow-num">1</div>
+      <div class="flow-text">Halaman dimuat → cek preferensi manual di <strong>localStorage["rm_lang"]</strong></div>
+    </div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-row">
+      <div class="flow-num">2</div>
+      <div class="flow-text"><strong>Ada pilihan manual</strong> → pakai langsung (ID/EN), tanpa deteksi otomatis.</div>
+    </div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-row">
+      <div class="flow-num">3</div>
+      <div class="flow-text"><strong>Tidak ada pilihan manual</strong> → periksa bahasa browser. Hanya awalan <code>en</code> yang mengaktifkan terjemahan otomatis.</div>
+    </div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-row">
+      <div class="flow-num">4</div>
+      <div class="flow-text">Browser bahasa Inggris → English. Bahasa lain (termasuk Jepang/Prancis) → default Indonesia, tanpa panggilan terjemahan otomatis.</div>
+    </div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-row">
+      <div class="flow-num">5</div>
+      <div class="flow-text">Cache sesi <code>sessionStorage</code> digunakan lebih dulu. Hanya teks yang belum tercache yang dikirim ke Gemini.</div>
+    </div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-row">
+      <div class="flow-num">6</div>
+      <div class="flow-text"><strong>Pengguna klik dropdown</strong> → ganti bahasa manual → simpan ke localStorage → berlaku di seluruh halaman.</div>
+    </div>
+  </div>
+
+  
+  <h2>File yang Terpasang</h2>
+  <table>
+    <tr><th>File</th><th>Fungsi</th></tr>
+    <tr><td>assets/js/lang.js</td><td>Engine global: pilihan lintas halaman, switcher, terjemahan DOM, dan cache browser</td></tr>
+    <tr><td>assets/css/lang.css</td><td>Style widget dropdown; dimuat otomatis bila halaman belum memuatnya</td></tr>
+    <tr><td>pages/**/*.html</td><td>Semua 46 halaman memuat engine bahasa dan menyediakan switcher</td></tr>
+    <tr><td>supabase/functions/translate-page</td><td>Endpoint server-side Gemini untuk menerjemahkan teks halaman tanpa mengekspos API key</td></tr>
+    <tr><td>supabase/config.toml</td><td>Konfigurasi endpoint publik khusus terjemahan</td></tr>
+  </table>
+
+  <h2>Menyiapkan terjemahan otomatis</h2>
+  <p>Terjemahan otomatis memerlukan secret server Gemini dan daftar origin situs produksi yang diizinkan. Untuk pengembangan lokal melalui HTTP, origin loopback (localhost, 127.0.0.1, atau [::1]) diizinkan oleh fungsi. Jangan menaruh <code>GEMINI_API_KEY</code> di file JavaScript atau HTML.</p>
+  <pre><code>supabase secrets set GEMINI_API_KEY=&lt;API_KEY_GEMINI&gt; APP_ALLOWED_ORIGINS=https://dapper-bienenstitch-b63263.netlify.app
+supabase functions deploy translate-page</code></pre>
+  <p>Origin harus berisi skema dan host saja, tanpa path; untuk beberapa domain, pisahkan origin dengan koma dan jangan gunakan <code>*</code>. Setelah mengubah secret, deploy ulang fungsi. Pilihan bahasa disimpan lintas halaman; cache terjemahan teks disimpan per sesi browser. Teks UI dan konten dinamis yang tampil dapat dikirim ke Gemini saat pertama kali diterjemahkan. Elemen identitas/nama yang tidak boleh dikirim dapat diberi class <code>notranslate</code> atau atribut <code>translate="no"</code>.</p>
+  <div class="note"><strong>Catatan:</strong> fungsi memvalidasi origin dan ukuran permintaan serta memakai batas frekuensi best-effort per instance. Karena endpoint diakses pengunjung publik, pasang juga rate limit/kuota di gateway dan batasi anggaran Gemini; cache fungsi bersifat sementara.</div>
+
+  
+  <h2>Tampilan Widget</h2>
+  <div class="widget-preview">
+    <div>
+      <div style="font-size:11px;color:#9ca3af;margin-bottom:6px">Tombol trigger (closed)</div>
+      <div class="mock-btn">🇮🇩 ID <span style="color:#9ca3af;font-size:10px">▾</span></div>
+    </div>
+    <div style="font-size:20px;color:#d1d5db">→</div>
+    <div>
+      <div style="font-size:11px;color:#9ca3af;margin-bottom:6px">Dropdown terbuka</div>
+      <div class="mock-drop">
+        <div class="mock-head">Bahasa / Language</div>
+        <div class="mock-opt active">🇮🇩 <span>Indonesia <span class="mock-check">✓</span></span></div>
+        <div class="mock-opt">🇬🇧 English</div>
+      </div>
+    </div>
+  </div>
+
+  <hr />
+
+  
+  <h2>Cara Menambah Terjemahan ke Elemen HTML</h2>
+  <p>Tidak perlu ubah JS. Cukup tambahkan atribut <span class="inline-code">data-id</span> dan <span class="inline-code">data-en</span> langsung ke elemen HTML mana saja.</p>
+
+  <h3>① Teks biasa (heading, paragraf, span, button)</h3>
+  <pre><code><span class="hl-gray">&lt;!-- Teks default = Indonesia. Saat EN dipilih, JS ganti isinya --&gt;</span>
+<span class="hl-blue">&lt;h2</span> <span class="hl-orange">data-id</span>=<span class="hl-str">"Artikel Terbaru"</span>
+     <span class="hl-orange">data-en</span>=<span class="hl-str">"Latest Articles"</span><span class="hl-blue">&gt;</span>Artikel Terbaru<span class="hl-blue">&lt;/h2&gt;</span>
+
+<span class="hl-blue">&lt;p</span> <span class="hl-orange">data-id</span>=<span class="hl-str">"Dibuat oleh komunitas"</span>
+   <span class="hl-orange">data-en</span>=<span class="hl-str">"Made by the community"</span><span class="hl-blue">&gt;</span>Dibuat oleh komunitas<span class="hl-blue">&lt;/p&gt;</span></code></pre>
+
+  <h3>② Placeholder input &amp; textarea</h3>
+  <pre><code><span class="hl-blue">&lt;input</span> <span class="hl-orange">data-ph-id</span>=<span class="hl-str">"Cari artikel..."</span>
+       <span class="hl-orange">data-ph-en</span>=<span class="hl-str">"Search articles..."</span>
+       placeholder=<span class="hl-str">"Cari artikel..."</span> <span class="hl-blue">/&gt;</span></code></pre>
+
+  <h3>③ Blok konten berbeda per bahasa (show/hide)</h3>
+  <pre><code><span class="hl-gray">&lt;!-- Hanya blok yang cocok dengan bahasa aktif yang ditampilkan --&gt;</span>
+<span class="hl-blue">&lt;div</span> <span class="hl-orange">data-lang-show</span>=<span class="hl-str">"id"</span><span class="hl-blue">&gt;</span>
+  Konten panjang dalam Bahasa Indonesia...
+<span class="hl-blue">&lt;/div&gt;</span>
+
+<span class="hl-blue">&lt;div</span> <span class="hl-orange">data-lang-show</span>=<span class="hl-str">"en"</span><span class="hl-blue">&gt;</span>
+  Full content in English...
+<span class="hl-blue">&lt;/div&gt;</span></code></pre>
+
+  <h3>④ aria-label (aksesibilitas)</h3>
+  <pre><code><span class="hl-blue">&lt;button</span> <span class="hl-orange">data-aria-id</span>=<span class="hl-str">"Tutup menu"</span>
+        <span class="hl-orange">data-aria-en</span>=<span class="hl-str">"Close menu"</span>
+        aria-label=<span class="hl-str">"Tutup menu"</span><span class="hl-blue">&gt;</span>✕<span class="hl-blue">&lt;/button&gt;</span></code></pre>
+
+  
+  <h2>Referensi Atribut</h2>
+  <table class="attr-table">
+    <tr><th>Target</th><th>Atribut</th><th>Keterangan</th></tr>
+    <tr><td>Teks elemen</td><td>data-id / data-en</td><td>Mengganti textContent elemen</td></tr>
+    <tr><td>Placeholder</td><td>data-ph-id / data-ph-en</td><td>Mengganti placeholder input/textarea</td></tr>
+    <tr><td>aria-label</td><td>data-aria-id / data-aria-en</td><td>Mengganti aria-label untuk aksesibilitas</td></tr>
+    <tr><td>Show/hide blok</td><td>data-lang-show="id" / "en"</td><td>Tampilkan blok, sembunyikan yang lain</td></tr>
+  </table>
+
+  <hr />
+
+  
+  <h2>Memasang di Halaman Baru</h2>
+  <p>Untuk setiap halaman HTML baru, tambahkan 3 bagian ini:</p>
+
+  <h3>1 · Di &lt;head&gt; — link CSS</h3>
+  <pre><code><span class="hl-blue">&lt;link</span> <span class="hl-orange">rel</span>=<span class="hl-str">"stylesheet"</span> <span class="hl-orange">href</span>=<span class="hl-str">"../../assets/css/lang.css"</span> <span class="hl-blue">/&gt;</span>
+<span class="hl-gray">&lt;!-- Sesuaikan path ../../ dengan kedalaman folder halaman Anda --&gt;</span></code></pre>
+
+  <h3>2 · Di dalam navbar — widget HTML</h3>
+  <pre><code><span class="hl-blue">&lt;div</span> <span class="hl-orange">id</span>=<span class="hl-str">"lang-switcher"</span><span class="hl-blue">&gt;</span>
+  <span class="hl-blue">&lt;button</span> <span class="hl-orange">id</span>=<span class="hl-str">"lang-trigger"</span> <span class="hl-orange">aria-haspopup</span>=<span class="hl-str">"listbox"</span> <span class="hl-orange">aria-expanded</span>=<span class="hl-str">"false"</span><span class="hl-blue">&gt;</span>
+    <span class="hl-blue">&lt;span</span> <span class="hl-orange">id</span>=<span class="hl-str">"lang-trigger-flag"</span><span class="hl-blue">&gt;</span>🇮🇩<span class="hl-blue">&lt;/span&gt;</span>
+    <span class="hl-blue">&lt;span</span> <span class="hl-orange">id</span>=<span class="hl-str">"lang-trigger-label"</span><span class="hl-blue">&gt;</span>ID<span class="hl-blue">&lt;/span&gt;</span>
+    <span class="hl-blue">&lt;svg</span> <span class="hl-orange">class</span>=<span class="hl-str">"lang-chevron"</span> <span class="hl-orange">viewBox</span>=<span class="hl-str">"0 0 10 10"</span> <span class="hl-orange">fill</span>=<span class="hl-str">"none"</span>
+         <span class="hl-orange">stroke</span>=<span class="hl-str">"currentColor"</span> <span class="hl-orange">stroke-width</span>=<span class="hl-str">"1.8"</span><span class="hl-blue">&gt;</span>
+      <span class="hl-blue">&lt;path</span> <span class="hl-orange">d</span>=<span class="hl-str">"M2 3.5l3 3 3-3"</span> <span class="hl-orange">stroke-linecap</span>=<span class="hl-str">"round"</span> <span class="hl-orange">stroke-linejoin</span>=<span class="hl-str">"round"</span><span class="hl-blue">/&gt;</span>
+    <span class="hl-blue">&lt;/svg&gt;</span>
+  <span class="hl-blue">&lt;/button&gt;</span>
+  <span class="hl-blue">&lt;div</span> <span class="hl-orange">id</span>=<span class="hl-str">"lang-dropdown"</span> <span class="hl-orange">role</span>=<span class="hl-str">"listbox"</span><span class="hl-blue">&gt;</span>
+    <span class="hl-blue">&lt;div</span> <span class="hl-orange">class</span>=<span class="hl-str">"lang-dropdown__header"</span><span class="hl-blue">&gt;</span>Bahasa / Language<span class="hl-blue">&lt;/div&gt;</span>
+    <span class="hl-blue">&lt;button</span> <span class="hl-orange">data-lang-option</span>=<span class="hl-str">"id"</span> <span class="hl-orange">role</span>=<span class="hl-str">"option"</span> <span class="hl-orange">type</span>=<span class="hl-str">"button"</span><span class="hl-blue">&gt;</span>
+      <span class="hl-blue">&lt;span</span> <span class="hl-orange">class</span>=<span class="hl-str">"lang-opt__flag"</span><span class="hl-blue">&gt;</span>🇮🇩<span class="hl-blue">&lt;/span&gt;</span>
+      <span class="hl-blue">&lt;span</span> <span class="hl-orange">class</span>=<span class="hl-str">"lang-opt__name"</span><span class="hl-blue">&gt;</span>Indonesia<span class="hl-blue">&lt;/span&gt;</span>
+    <span class="hl-blue">&lt;/button&gt;</span>
+    <span class="hl-blue">&lt;button</span> <span class="hl-orange">data-lang-option</span>=<span class="hl-str">"en"</span> <span class="hl-orange">role</span>=<span class="hl-str">"option"</span> <span class="hl-orange">type</span>=<span class="hl-str">"button"</span><span class="hl-blue">&gt;</span>
+      <span class="hl-blue">&lt;span</span> <span class="hl-orange">class</span>=<span class="hl-str">"lang-opt__flag"</span><span class="hl-blue">&gt;</span>🇬🇧<span class="hl-blue">&lt;/span&gt;</span>
+      <span class="hl-blue">&lt;span</span> <span class="hl-orange">class</span>=<span class="hl-str">"lang-opt__name"</span><span class="hl-blue">&gt;</span>English<span class="hl-blue">&lt;/span&gt;</span>
+    <span class="hl-blue">&lt;/button&gt;</span>
+  <span class="hl-blue">&lt;/div&gt;</span>
+<span class="hl-blue">&lt;/div&gt;</span></code></pre>
+
+  <h3>3 · Sebelum &lt;/body&gt; — load JS</h3>
+  <pre><code><span class="hl-blue">&lt;script</span> <span class="hl-orange">src</span>=<span class="hl-str">"../../assets/js/lang.js"</span><span class="hl-blue">&gt;&lt;/script&gt;</span></code></pre>
+
+  <hr />
+
+  
+  <h2>Public API — Debug &amp; Kontrol via Console</h2>
+  <table class="api-table">
+    <tr><th>Perintah</th><th>Fungsi</th></tr>
+    <tr><td>RMlang.get()</td><td>Kembalikan bahasa aktif saat ini → <span class="inline-code">"id"</span> atau <span class="inline-code">"en"</span></td></tr>
+    <tr><td>RMlang.set("en")</td><td>Paksa ganti ke bahasa tertentu + simpan ke localStorage</td></tr>
+    <tr><td>RMlang.reset()</td><td>Hapus pilihan manual dan deteksi ulang berdasarkan bahasa browser (English saja untuk auto-translate)</td></tr>
+  </table>
+
+  <div class="note">
+    <strong>Catatan:</strong> pilihan manual disimpan lintas halaman. Hasil terjemahan disimpan per bahasa/teks di <code>sessionStorage</code> dan tidak dibagikan ke tab atau sesi browser lain.
+  </div>
+
+  <div class="tip">
+    <strong>💡 Tips:</strong> Karena localStorage persisten, pengguna Indonesia yang pernah berkunjung tidak akan kena fetch IP lagi di kunjungan berikutnya — respons instan tanpa latensi.
+  </div>
+
+  <hr />
+
+  
+  <h2>Contoh Lengkap — Hero Section Bilingual</h2>
+  <pre><code><span class="hl-blue">&lt;section&gt;</span>
+  <span class="hl-blue">&lt;h1</span> <span class="hl-orange">data-id</span>=<span class="hl-str">"Dari Sawah ke Pasar"</span>
+       <span class="hl-orange">data-en</span>=<span class="hl-str">"From Field to Market"</span><span class="hl-blue">&gt;</span>
+    Dari Sawah ke Pasar
+  <span class="hl-blue">&lt;/h1&gt;</span>
+
+  <span class="hl-blue">&lt;p</span> <span class="hl-orange">data-id</span>=<span class="hl-str">"Platform editorial untuk produk lokal Indonesia"</span>
+     <span class="hl-orange">data-en</span>=<span class="hl-str">"Editorial platform for Indonesian local products"</span><span class="hl-blue">&gt;</span>
+    Platform editorial untuk produk lokal Indonesia
+  <span class="hl-blue">&lt;/p&gt;</span>
+
+  <span class="hl-gray">&lt;!-- Tombol dengan teks berbeda --&gt;</span>
+  <span class="hl-blue">&lt;a</span> <span class="hl-orange">href</span>=<span class="hl-str">"articles.html"</span><span class="hl-blue">&gt;</span>
+    <span class="hl-blue">&lt;span</span> <span class="hl-orange">data-id</span>=<span class="hl-str">"Jelajah Jurnal"</span> <span class="hl-orange">data-en</span>=<span class="hl-str">"Browse Journal"</span><span class="hl-blue">&gt;</span>Jelajah Jurnal<span class="hl-blue">&lt;/span&gt;</span>
+  <span class="hl-blue">&lt;/a&gt;</span>
+
+  <span class="hl-gray">&lt;!-- Blok narasi panjang yang berbeda sepenuhnya --&gt;</span>
+  <span class="hl-blue">&lt;div</span> <span class="hl-orange">data-lang-show</span>=<span class="hl-str">"id"</span><span class="hl-blue">&gt;</span>
+    Narasi panjang dalam Bahasa Indonesia...
+  <span class="hl-blue">&lt;/div&gt;</span>
+  <span class="hl-blue">&lt;div</span> <span class="hl-orange">data-lang-show</span>=<span class="hl-str">"en"</span><span class="hl-blue">&gt;</span>
+    Long narrative in English...
+  <span class="hl-blue">&lt;/div&gt;</span>
+<span class="hl-blue">&lt;/section&gt;</span></code></pre>
+
+  <div class="footer">
+    Racik Media Language Switcher · Vanilla JS · Kompatibel semua browser modern · Made with IBM Bob
+  </div>
+</div>
+</body>
+</html>

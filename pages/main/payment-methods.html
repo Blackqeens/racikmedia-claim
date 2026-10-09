@@ -1,0 +1,925 @@
+﻿<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Metode Pembayaran &amp; Dompet — Racik Media Nusantara</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../../assets/css/shared.css" />
+  <link rel="stylesheet" href="../../assets/css/lang.css" />
+  <link rel="stylesheet" href="../../assets/css/public-layout.css" />
+
+  <!-- Google Fonts: Inter (Sans) & Lora (Serif) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <script src="../../assets/js/tailwind-config.js"></script>
+
+  <style>
+
+    
+    
+
+    /* Custom Popup Styles */
+    .popup-wrapper { position: relative; display: inline-block; }
+    .custom-popup {
+      display: none; position: absolute; top: calc(100% + 8px); left: 0;
+      background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+      z-index: 50;
+    }
+    .popup-wrapper:hover .custom-popup { display: flex; }
+
+    .avatar-circle {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: linear-gradient(135deg, #059669, #10b981);
+      color: #ffffff; display: flex; align-items: center; justify-content: center;
+      font-weight: 600; font-size: 13px;
+    }
+
+    /* Card Visual Gradient */
+    .credit-card-bca {
+      background: linear-gradient(135deg, #003399 0%, #0055cc 50%, #001f66 100%);
+    }
+    .credit-card-mandiri {
+      background: linear-gradient(135deg, #0f2c59 0%, #1e4d8c 50%, #081a38 100%);
+    }
+    .credit-card-generic {
+      background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #0f172a 100%);
+    }
+
+    /* Shimmer effect */
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+    .shimmer-active::after {
+      content: ''; position: absolute; top: 0; right: 0; bottom: 0; left: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transform: translateX(-100%);
+      animation: shimmer 2.5s infinite;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased">
+
+  <!-- NAVBAR GLOBAL -->
+  <div id="rm-navbar-root"></div>
+
+
+  <!-- ============================================================
+       BREADCRUMB
+       ============================================================ -->
+  <div class="bg-white border-b border-slate-200/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+      <nav class="flex text-xs text-slate-500 gap-2 items-center">
+        <a href="dashboard.html" class="hover:text-emerald-700 transition">Beranda</a>
+        <span>/</span>
+        <a href="#" class="hover:text-emerald-700 transition">Akun Saya</a>
+        <span>/</span>
+        <span class="text-slate-800 font-semibold">Metode Pembayaran &amp; Dompet</span>
+      </nav>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MAIN CONTENT: MEMBER PAYMENT METHODS DASHBOARD
+       ============================================================ -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+      <!-- ═════════════════════════════════════════════════════════
+           KOLOM KIRI: SIDEBAR MEMBER (Inspirasi Blibli Member Nav)
+           ═════════════════════════════════════════════════════════ -->
+      <aside class="lg:col-span-4 xl:col-span-3 space-y-5">
+        
+        <!-- Profile Mini Card -->
+        <div class="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-sm">
+          <div class="flex items-center gap-3.5 pb-4 border-b border-slate-100">
+            <div class="avatar-circle w-12 h-12 text-base">D</div>
+            <div class="min-w-0 flex-1">
+              <h2 class="text-sm font-bold text-slate-900 truncate">Deni Pratama</h2>
+              <div class="flex items-center gap-1.5 mt-0.5">
+                <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800">
+                  ⭐ Gold Member
+                </span>
+                <span class="text-[11px] text-emerald-600 font-semibold">Verified</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Saldo Preview -->
+          <div class="pt-4 flex items-center justify-between">
+            <div>
+              <p class="text-[11px] text-slate-400 font-medium">Saldo RacikPay</p>
+              <p class="text-base font-bold text-emerald-800" id="sidebar-balance">Rp 1.450.000</p>
+            </div>
+            <button onclick="openTopupModal()" class="px-3 py-1.5 text-xs font-semibold bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg transition shadow-sm">
+              + Top Up
+            </button>
+          </div>
+        </div>
+
+        <!-- Member Navigation Menu -->
+        <nav class="bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden p-2 space-y-1">
+          <a href="#" class="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition">
+            <div class="flex items-center gap-3">
+              <span class="text-base">👤</span>
+              <span>Profil &amp; Alamat Saya</span>
+            </div>
+          </a>
+          <a href="../products/buyer-orders.html" class="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition">
+            <div class="flex items-center gap-3">
+              <span class="text-base">📦</span>
+              <span>Daftar Pesanan &amp; Transaksi</span>
+            </div>
+          </a>
+          <a href="payment-methods.html" class="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200/60 shadow-xs transition">
+            <div class="flex items-center gap-3">
+              <span class="text-base">💳</span>
+              <span>Metode Pembayaran</span>
+            </div>
+            <span class="w-2 h-2 rounded-full bg-emerald-600"></span>
+          </a>
+          <a href="#" onclick="openTopupModal(); return false;" class="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition">
+            <div class="flex items-center gap-3">
+              <span class="text-base">💰</span>
+              <span>Saldo &amp; Dompet Digital</span>
+            </div>
+            <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800">Aktif</span>
+          </a>
+          <a href="#" class="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition">
+            <div class="flex items-center gap-3">
+              <span class="text-base">🎟️</span>
+              <span>Voucher &amp; Promo Saya</span>
+            </div>
+            <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-rose-100 text-rose-700">3 Kupon</span>
+          </a>
+          <a href="#" class="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition">
+            <div class="flex items-center gap-3">
+              <span class="text-base">🔒</span>
+              <span>Keamanan &amp; PIN Transaksi</span>
+            </div>
+          </a>
+        </nav>
+
+        <!-- Bantuan & Keamanan Card -->
+        <div class="bg-gradient-to-br from-emerald-900 to-slate-900 rounded-2xl p-5 text-white shadow-md">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="text-lg">🛡️</span>
+            <h4 class="text-xs font-bold uppercase tracking-wider text-emerald-300">Garansi Keamanan</h4>
+          </div>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Data kartu dan rekening dienkripsi dengan standar bank internasional (PCI-DSS Level 1). Racik Media tidak menyimpan nomor CVV kartu Anda.
+          </p>
+        </div>
+
+      </aside>
+
+      <!-- ═════════════════════════════════════════════════════════
+           KOLOM KANAN: KELOLA METODE PEMBAYARAN UTAMA
+           ═════════════════════════════════════════════════════════ -->
+      <section class="lg:col-span-8 xl:col-span-9 space-y-6">
+
+        <!-- Top Header Panel -->
+        <div class="bg-white rounded-2xl p-6 border border-slate-200/90 shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <div class="flex items-center gap-2">
+              <h1 class="font-serif text-2xl font-bold text-slate-900">Metode Pembayaran</h1>
+              <span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                Pilihan Cepat
+              </span>
+            </div>
+            <p class="text-xs sm:text-sm text-slate-500 mt-1">
+              Atur kartu kredit/debit instan, dompet digital, dan rekening bank Anda untuk kemudahan checkout otomatis.
+            </p>
+          </div>
+          
+          <div class="flex items-center gap-2 shrink-0">
+            <button onclick="openAddCardModal()" class="px-4 py-2.5 bg-emerald-800 hover:bg-emerald-900 text-white rounded-xl text-xs font-semibold flex items-center gap-2 transition shadow-sm">
+              <span>+</span>
+              <span>Tambah Kartu Baru</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- ── SECTION 1: RACIKPAY & DOMPET DIGITAL (Saldo Aktif) ── -->
+        <div class="bg-white rounded-2xl p-6 border border-slate-200/90 shadow-sm">
+          <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-5">
+            <div class="flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-sm">
+                👛
+              </div>
+              <div>
+                <h3 class="text-sm font-bold text-slate-900">Dompet Digital &amp; Saldo Instan</h3>
+                <p class="text-xs text-slate-400">Pembayaran 1-klik tanpa input berulang</p>
+              </div>
+            </div>
+            <button onclick="openConnectEwalletModal()" class="text-xs font-semibold text-emerald-700 hover:text-emerald-900 hover:underline">
+              + Hubungkan Dompet
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            
+            <!-- Card RacikPay Saldo Utama -->
+            <div class="relative overflow-hidden rounded-xl border-2 border-emerald-600 bg-gradient-to-br from-emerald-50 via-white to-emerald-50/30 p-5 shadow-xs">
+              <div class="flex items-start justify-between">
+                <div>
+                  <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-700 text-white mb-2">
+                    UTAMA &amp; AKTIF
+                  </span>
+                  <p class="text-xs font-medium text-slate-600">Saldo RacikPay (Dompet Lokal)</p>
+                  <p class="text-xl sm:text-2xl font-bold text-slate-900 mt-1" id="main-balance-card">Rp 1.450.000</p>
+                </div>
+                <div class="w-10 h-10 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-base shadow-sm">
+                  RM
+                </div>
+              </div>
+              <div class="mt-4 pt-3 border-t border-emerald-100 flex items-center justify-between text-xs">
+                <span class="text-emerald-700 font-medium">Bebas Biaya Admin</span>
+                <div class="flex gap-2">
+                  <button onclick="openTopupModal()" class="px-3 py-1 bg-emerald-700 hover:bg-emerald-800 text-white rounded-md font-semibold transition">
+                    Isi Saldo
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- E-Wallet: GoPay -->
+            <div class="rounded-xl border border-slate-200 bg-white p-5 hover:border-slate-300 transition shadow-xs flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <div class="flex items-center gap-2">
+                    <div class="w-7 h-7 rounded-full bg-sky-500 text-white flex items-center justify-center font-bold text-xs">
+                      G
+                    </div>
+                    <span class="text-sm font-bold text-slate-800">GoPay</span>
+                  </div>
+                  <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">
+                    Terhubung
+                  </span>
+                </div>
+                <p class="text-xs text-slate-500">Nomor: <span class="font-medium text-slate-700">0812-••••-8821</span></p>
+                <p class="text-xs text-slate-500 mt-0.5">Saldo Terbaca: <span class="font-semibold text-slate-900">Rp 340.000</span></p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+                <span class="text-slate-400 text-[11px]">Batas harian: Rp 2.000.000</span>
+                <button onclick="disconnectEwallet('GoPay')" class="text-slate-400 hover:text-rose-600 transition">
+                  Putuskan
+                </button>
+              </div>
+            </div>
+
+            <!-- E-Wallet: DANA -->
+            <div class="rounded-xl border border-slate-200 bg-white p-5 hover:border-slate-300 transition shadow-xs flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <div class="flex items-center gap-2">
+                    <div class="w-7 h-7 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs">
+                      D
+                    </div>
+                    <span class="text-sm font-bold text-slate-800">DANA</span>
+                  </div>
+                  <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">
+                    Terhubung
+                  </span>
+                </div>
+                <p class="text-xs text-slate-500">Nomor: <span class="font-medium text-slate-700">0812-••••-8821</span></p>
+                <p class="text-xs text-slate-500 mt-0.5">Metode Alternatif Siap Pakai</p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+                <span class="text-slate-400 text-[11px]">Auto-Debit Aktif</span>
+                <button onclick="disconnectEwallet('DANA')" class="text-slate-400 hover:text-rose-600 transition">
+                  Putuskan
+                </button>
+              </div>
+            </div>
+
+            <!-- E-Wallet: OVO (Belum Terhubung) -->
+            <div class="rounded-xl border border-dashed border-slate-300 bg-slate-50/70 p-5 flex flex-col justify-between hover:bg-slate-50 transition">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <div class="flex items-center gap-2">
+                    <div class="w-7 h-7 rounded-full bg-purple-600 text-white flex items-center justify-center font-bold text-xs">
+                      O
+                    </div>
+                    <span class="text-sm font-bold text-slate-700">OVO</span>
+                  </div>
+                  <span class="text-[11px] text-slate-400">Belum Terhubung</span>
+                </div>
+                <p class="text-xs text-slate-500">Hubungkan akun OVO untuk pembayaran kilat dan promo cashback.</p>
+              </div>
+              <div class="mt-4 pt-3">
+                <button onclick="connectSpecificEwallet('OVO')" class="w-full py-1.5 px-3 bg-white border border-slate-300 hover:border-emerald-600 hover:text-emerald-700 rounded-lg text-xs font-semibold text-slate-700 transition">
+                  Hubungkan OVO Sekarang
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ── SECTION 2: KARTU KREDIT & DEBIT TERSIMPAN ── -->
+        <div class="bg-white rounded-2xl p-6 border border-slate-200/90 shadow-sm">
+          <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-5">
+            <div class="flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-sm">
+                💳
+              </div>
+              <div>
+                <h3 class="text-sm font-bold text-slate-900">Kartu Kredit &amp; Debit Instan</h3>
+                <p class="text-xs text-slate-400">Visa, Mastercard, JCB &amp; GPN (3D Secure Terverifikasi)</p>
+              </div>
+            </div>
+            <button onclick="openAddCardModal()" class="text-xs font-semibold text-emerald-700 hover:text-emerald-900 hover:underline">
+              + Tambah Kartu
+            </button>
+          </div>
+
+          <!-- Dynamic Card List Container -->
+          <div id="saved-cards-container" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <!-- Cards rendered via JS -->
+          </div>
+        </div>
+
+        <!-- ── SECTION 3: DIRECT DEBIT & REKENING BANK TERVERIFIKASI ── -->
+        <div class="bg-white rounded-2xl p-6 border border-slate-200/90 shadow-sm">
+          <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-5">
+            <div class="flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center font-bold text-sm">
+                🏦
+              </div>
+              <div>
+                <h3 class="text-sm font-bold text-slate-900">Rekening Bank &amp; Direct Debit</h3>
+                <p class="text-xs text-slate-400">Untuk autodebit pesanan dan rekening penarikan dana</p>
+              </div>
+            </div>
+            <button onclick="openAddBankModal()" class="text-xs font-semibold text-emerald-700 hover:text-emerald-900 hover:underline">
+              + Tambah Rekening
+            </button>
+          </div>
+
+          <div class="space-y-3" id="saved-banks-container">
+            
+            <!-- Bank Item 1: BCA OneKlik -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl border border-slate-200 hover:border-slate-300 bg-white transition gap-3">
+              <div class="flex items-center gap-3.5">
+                <div class="w-10 h-10 rounded-lg bg-blue-50 border border-blue-100 flex items-center justify-center font-bold text-blue-700 text-xs">
+                  BCA
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <p class="text-sm font-bold text-slate-800">BCA OneKlik Autodebit</p>
+                    <span class="px-2 py-0.2 rounded text-[10px] font-bold bg-blue-100 text-blue-800">Direct Debit</span>
+                  </div>
+                  <p class="text-xs text-slate-500 mt-0.5">No. Rekening: 8820 •••• 1290 (a.n. Deni Pratama)</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 self-end sm:self-center">
+                <span class="text-xs text-slate-400">Limit: Rp 2 Jt/hari</span>
+                <button onclick="deleteBankItem(this)" class="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-slate-100 transition" title="Hapus">
+                  🗑️
+                </button>
+              </div>
+            </div>
+
+            <!-- Bank Item 2: BSI Syariah Penarikan -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl border border-slate-200 hover:border-slate-300 bg-white transition gap-3">
+              <div class="flex items-center gap-3.5">
+                <div class="w-10 h-10 rounded-lg bg-emerald-50 border border-emerald-100 flex items-center justify-center font-bold text-emerald-800 text-xs">
+                  BSI
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <p class="text-sm font-bold text-slate-800">Bank Syariah Indonesia (BSI)</p>
+                    <span class="px-2 py-0.2 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">Rekening Utama Penarikan</span>
+                  </div>
+                  <p class="text-xs text-slate-500 mt-0.5">No. Rekening: 7118 •••• 5542 (a.n. Deni Pratama)</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 self-end sm:self-center">
+                <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-1 rounded">
+                  ✓ Terverifikasi BI-FAST
+                </span>
+                <button onclick="deleteBankItem(this)" class="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-slate-100 transition" title="Hapus">
+                  🗑️
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ── SECTION 4: PANDUAN & FAQ PEMBAYARAN AMAN ── -->
+        <div class="bg-slate-100/80 rounded-2xl p-6 border border-slate-200/80">
+          <h4 class="text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
+            <span>❓</span> Pertanyaan Seputar Metode Pembayaran
+          </h4>
+          <div class="space-y-3 text-xs text-slate-600 leading-relaxed">
+            <details class="group bg-white p-3.5 rounded-xl border border-slate-200 cursor-pointer">
+              <summary class="font-semibold text-slate-800 flex justify-between items-center">
+                Apakah menyimpan kartu kredit/debit di Racik Media aman?
+                <span class="text-slate-400 group-open:rotate-180 transition-transform">▼</span>
+              </summary>
+              <p class="mt-2 text-slate-600">
+                Sangat aman. Racik Media bekerja sama dengan Payment Gateway berlisensi Bank Indonesia dengan standar keamanan enkripsi PCI-DSS Level 1. Kode CVV kartu Anda tidak pernah disimpan di server kami.
+              </p>
+            </details>
+            <details class="group bg-white p-3.5 rounded-xl border border-slate-200 cursor-pointer">
+              <summary class="font-semibold text-slate-800 flex justify-between items-center">
+                Bagaimana cara mengubah metode pembayaran utama?
+                <span class="text-slate-400 group-open:rotate-180 transition-transform">▼</span>
+              </summary>
+              <p class="mt-2 text-slate-600">
+                Cukup klik tombol "Jadikan Utama" pada kartu atau dompet digital yang Anda inginkan. Metode utama akan otomatis terpilih saat Anda melakukan checkout produk di etalase.
+              </p>
+            </details>
+          </div>
+        </div>
+
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ============================================================
+       MODAL 1: TAMBAH KARTU KREDIT / DEBIT BARU
+       ============================================================ -->
+  <div id="modal-add-card" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 relative animate-in fade-in zoom-in duration-200">
+      
+      <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-4">
+        <h3 class="font-serif text-lg font-bold text-slate-900">Tambah Kartu Debit / Kredit</h3>
+        <button onclick="closeAddCardModal()" class="text-slate-400 hover:text-slate-700 text-lg">✕</button>
+      </div>
+
+      <!-- Preview Kartu Real-Time -->
+      <div class="credit-card-generic text-white rounded-xl p-5 mb-5 shadow-lg relative overflow-hidden">
+        <div class="flex justify-between items-start mb-6">
+          <span class="text-xs font-semibold tracking-widest uppercase opacity-80" id="card-preview-bank">DEBIT / KREDIT</span>
+          <span class="text-sm font-bold italic" id="card-preview-brand">VISA / MC</span>
+        </div>
+        <div class="text-lg tracking-widest font-mono mb-4 font-semibold" id="card-preview-number">•••• •••• •••• ••••</div>
+        <div class="flex justify-between text-xs">
+          <div>
+            <p class="text-[9px] opacity-70 uppercase">Pemegang Kartu</p>
+            <p class="font-semibold tracking-wide uppercase truncate max-w-[150px]" id="card-preview-name">NAMA LENGKAP</p>
+          </div>
+          <div>
+            <p class="text-[9px] opacity-70 uppercase">Berlaku Hingga</p>
+            <p class="font-semibold font-mono" id="card-preview-expiry">MM/YY</p>
+          </div>
+        </div>
+      </div>
+
+      <form id="form-add-card" onsubmit="handleSaveCard(event)" class="space-y-3.5">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Nomor Kartu (16 Digit)</label>
+          <input type="text" id="input-card-number" required maxlength="19" placeholder="4000 1234 5678 9010" 
+                 class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 font-mono" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Nama Lengkap di Kartu</label>
+          <input type="text" id="input-card-name" required placeholder="Contoh: DENI PRATAMA" 
+                 class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 uppercase" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Masa Berlaku (MM/YY)</label>
+            <input type="text" id="input-card-expiry" required maxlength="5" placeholder="08/28" 
+                   class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 font-mono text-center" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Kode CVV (3 Digit)</label>
+            <input type="password" id="input-card-cvv" required maxlength="3" placeholder="•••" 
+                   class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 font-mono text-center" />
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 pt-1">
+          <input type="checkbox" id="input-card-primary" class="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500" />
+          <label for="input-card-primary" class="text-xs text-slate-600 cursor-pointer">Jadikan sebagai metode pembayaran utama</label>
+        </div>
+
+        <div class="pt-3 flex gap-3">
+          <button type="button" onclick="closeAddCardModal()" class="flex-1 py-2.5 rounded-xl border border-slate-300 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition">
+            Batal
+          </button>
+          <button type="submit" class="flex-1 py-2.5 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-xs font-semibold text-white transition shadow-sm">
+            Simpan Kartu
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MODAL 2: TOP UP SALDO RACIKPAY
+       ============================================================ -->
+  <div id="modal-topup" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 relative">
+      
+      <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-4">
+        <h3 class="font-serif text-lg font-bold text-slate-900">Isi Saldo RacikPay</h3>
+        <button onclick="closeTopupModal()" class="text-slate-400 hover:text-slate-700 text-lg">✕</button>
+      </div>
+
+      <div class="mb-4">
+        <p class="text-xs text-slate-500">Pilih Nominal Pengisian:</p>
+        <div class="grid grid-cols-2 gap-2.5 mt-2">
+          <button onclick="selectTopupNominal(50000)" class="topup-nominal-btn py-2.5 px-3 rounded-xl border border-slate-200 hover:border-emerald-600 text-xs font-bold text-slate-700 hover:text-emerald-700 bg-white transition text-center">
+            Rp 50.000
+          </button>
+          <button onclick="selectTopupNominal(100000)" class="topup-nominal-btn py-2.5 px-3 rounded-xl border border-slate-200 hover:border-emerald-600 text-xs font-bold text-slate-700 hover:text-emerald-700 bg-white transition text-center">
+            Rp 100.000
+          </button>
+          <button onclick="selectTopupNominal(250000)" class="topup-nominal-btn py-2.5 px-3 rounded-xl border border-slate-200 hover:border-emerald-600 text-xs font-bold text-slate-700 hover:text-emerald-700 bg-white transition text-center">
+            Rp 250.000
+          </button>
+          <button onclick="selectTopupNominal(500000)" class="topup-nominal-btn py-2.5 px-3 rounded-xl border border-slate-200 hover:border-emerald-600 text-xs font-bold text-slate-700 hover:text-emerald-700 bg-white transition text-center">
+            Rp 500.000
+          </button>
+        </div>
+      </div>
+
+      <form onsubmit="handleExecuteTopup(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Nominal Custom (Min. Rp 10.000)</label>
+          <input type="number" id="input-topup-amount" min="10000" step="5000" value="100000" required 
+                 class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-bold text-slate-900 focus:ring-2 focus:ring-emerald-500 font-mono" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Sumber Pembayaran Top Up</label>
+          <select id="select-topup-source" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs font-medium text-slate-800 focus:ring-2 focus:ring-emerald-500 bg-white">
+            <option value="BCA Virtual Account">BCA Virtual Account (Otomatis)</option>
+            <option value="Mandiri Virtual Account">Mandiri Virtual Account</option>
+            <option value="QRIS Instant">QRIS Nusantara (Bebas Biaya)</option>
+            <option value="BCA OneKlik">BCA OneKlik Autodebit</option>
+          </select>
+        </div>
+
+        <div class="pt-2 flex gap-3">
+          <button type="button" onclick="closeTopupModal()" class="flex-1 py-2.5 rounded-xl border border-slate-300 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition">
+            Batal
+          </button>
+          <button type="submit" class="flex-1 py-2.5 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-xs font-semibold text-white transition shadow-sm">
+            Konfirmasi Top Up
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- ============================================================
+       TOAST NOTIFICATION
+       ============================================================ -->
+  <div id="toast-notify" class="fixed bottom-6 right-6 bg-slate-900 text-white text-xs font-semibold px-4 py-3 rounded-xl shadow-2xl z-50 hidden transition-all duration-300 flex items-center gap-2">
+    <span id="toast-icon">✓</span>
+    <span id="toast-message">Operasi berhasil.</span>
+  </div>
+
+  <!-- ============================================================
+       FOOTER
+       ============================================================ -->
+  <footer class="bg-slate-900 text-slate-400 text-xs py-8 border-t border-slate-800 mt-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex flex-col items-center sm:items-start gap-2">
+        <div class="flex items-center gap-2">
+          <span class="font-serif font-bold text-white text-sm">Racik Media</span>
+          <span>·</span>
+          <span>Platform Editorial &amp; Commerce Produk Nusantara</span>
+        </div>
+        <p>© 2026 Racik Media Nusantara</p>
+      </div>
+      <p class="inline-flex items-center gap-1">
+        Dibuat dengan
+        <svg class="h-4 w-4 text-rose-500" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M12 21.35 10.55 20C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09A6 6 0 0 1 16.5 3C19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.51L12 21.35Z"/>
+        </svg>
+        untuk produk lokal Indonesia.
+      </p>
+    </div>
+  </footer>
+
+  <!-- ============================================================
+       INTERACTIVE SCRIPT (STATE & CONTROLLER)
+       ============================================================ -->
+  <script>
+    // Inisialisasi State Default Kartu
+    const DEFAULT_CARDS = [
+      {
+        id: 'card-1',
+        bank: 'BCA Platinum',
+        brand: 'Mastercard',
+        last4: '4829',
+        name: 'DENI PRATAMA',
+        expiry: '08/28',
+        isPrimary: true,
+        bgClass: 'credit-card-bca'
+      },
+      {
+        id: 'card-2',
+        bank: 'Mandiri Gold',
+        brand: 'Visa',
+        last4: '9104',
+        name: 'DENI PRATAMA',
+        expiry: '11/27',
+        isPrimary: false,
+        bgClass: 'credit-card-mandiri'
+      }
+    ];
+
+    let savedCards = JSON.parse(localStorage.getItem('racik_saved_cards')) || DEFAULT_CARDS;
+    let racikBalance = parseInt(localStorage.getItem('racik_balance')) || 1450000;
+
+    function formatRupiah(num) {
+      return 'Rp ' + num.toLocaleString('id-ID');
+    }
+
+    function renderCards() {
+      const container = document.getElementById('saved-cards-container');
+      if (!container) return;
+
+      if (savedCards.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-2 text-center py-8 border border-dashed border-slate-200 rounded-xl bg-slate-50">
+            <p class="text-xs text-slate-500">Belum ada kartu tersimpan.</p>
+            <button onclick="openAddCardModal()" class="mt-2 text-xs font-semibold text-emerald-700 hover:underline">+ Tambah Kartu Sekarang</button>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = savedCards.map(card => `
+        <div class="relative overflow-hidden rounded-2xl p-5 text-white ${card.bgClass} shadow-md flex flex-col justify-between h-48 group">
+          <div class="flex justify-between items-start">
+            <div>
+              <span class="text-[10px] font-bold tracking-widest uppercase opacity-80">${card.bank}</span>
+              <p class="text-xs font-semibold opacity-90">${card.brand}</p>
+            </div>
+            ${card.isPrimary 
+              ? `<span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-400 text-slate-950 shadow-xs">METODE UTAMA</span>`
+              : `<button onclick="setPrimaryCard('${card.id}')" class="px-2 py-0.5 rounded text-[10px] font-semibold bg-white/20 hover:bg-white/30 text-white transition">Jadikan Utama</button>`
+            }
+          </div>
+
+          <div class="text-lg tracking-widest font-mono font-bold my-auto">
+            •••• •••• •••• ${card.last4}
+          </div>
+
+          <div class="flex justify-between items-end text-xs pt-2 border-t border-white/10">
+            <div>
+              <p class="text-[9px] opacity-70 uppercase tracking-wider">Pemegang Kartu</p>
+              <p class="font-bold tracking-wide uppercase truncate max-w-[130px]">${card.name}</p>
+            </div>
+            <div class="text-right">
+              <p class="text-[9px] opacity-70 uppercase tracking-wider">Exp</p>
+              <p class="font-mono font-bold">${card.expiry}</p>
+            </div>
+            <button onclick="deleteCard('${card.id}')" class="text-xs text-rose-300 hover:text-rose-100 p-1 rounded transition opacity-80 group-hover:opacity-100" title="Hapus Kartu">
+              🗑️
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function updateBalanceDisplay() {
+      const formatted = formatRupiah(racikBalance);
+      const sidebarEl = document.getElementById('sidebar-balance');
+      const cardEl = document.getElementById('main-balance-card');
+      if (sidebarEl) sidebarEl.textContent = formatted;
+      if (cardEl) cardEl.textContent = formatted;
+      localStorage.setItem('racik_balance', racikBalance);
+    }
+
+    // Modal Handlers
+    function openAddCardModal() {
+      document.getElementById('modal-add-card').classList.remove('hidden');
+    }
+    function closeAddCardModal() {
+      document.getElementById('modal-add-card').classList.add('hidden');
+      document.getElementById('form-add-card').reset();
+    }
+
+    function openTopupModal() {
+      document.getElementById('modal-topup').classList.remove('hidden');
+    }
+    function closeTopupModal() {
+      document.getElementById('modal-topup').classList.add('hidden');
+    }
+
+    function selectTopupNominal(amount) {
+      document.getElementById('input-topup-amount').value = amount;
+    }
+
+    function handleExecuteTopup(e) {
+      e.preventDefault();
+      const amount = parseInt(document.getElementById('input-topup-amount').value);
+      const source = document.getElementById('select-topup-source').value;
+      if (amount && amount >= 10000) {
+        racikBalance += amount;
+        updateBalanceDisplay();
+        closeTopupModal();
+        showToast(`Berhasil top up ${formatRupiah(amount)} via ${source}!`, '✓');
+      }
+    }
+
+    function setPrimaryCard(cardId) {
+      savedCards = savedCards.map(c => ({
+        ...c,
+        isPrimary: c.id === cardId
+      }));
+      localStorage.setItem('racik_saved_cards', JSON.stringify(savedCards));
+      renderCards();
+      showToast('Metode pembayaran utama berhasil diubah.', '✓');
+    }
+
+    function deleteCard(cardId) {
+      if (confirm('Yakin ingin menghapus kartu ini dari metode pembayaran tersimpan?')) {
+        savedCards = savedCards.filter(c => c.id !== cardId);
+        if (savedCards.length > 0 && !savedCards.some(c => c.isPrimary)) {
+          savedCards[0].isPrimary = true;
+        }
+        localStorage.setItem('racik_saved_cards', JSON.stringify(savedCards));
+        renderCards();
+        showToast('Kartu berhasil dihapus.', '✓');
+      }
+    }
+
+    function deleteBankItem(btn) {
+      if (confirm('Hapus rekening/direct debit ini?')) {
+        const item = btn.closest('.flex-col, .sm\\:flex-row');
+        if (item) item.remove();
+        showToast('Rekening berhasil dihapus.', '✓');
+      }
+    }
+
+    function disconnectEwallet(name) {
+      if (confirm(`Putuskan tautan ${name} dari akun Racik Media Anda?`)) {
+        showToast(`Tautan ${name} telah dinonaktifkan.`, 'ℹ️');
+      }
+    }
+
+    function connectSpecificEwallet(name) {
+      const phone = prompt(`Masukkan nomor HP terdaftar untuk ${name}:`, '081234567890');
+      if (phone) {
+        showToast(`Permintaan OTP verifikasi dikirim ke ${phone} untuk ${name}.`, '📲');
+      }
+    }
+
+    function openConnectEwalletModal() {
+      connectSpecificEwallet('Dompet Digital');
+    }
+
+    function openAddBankModal() {
+      const bank = prompt('Masukkan Nama Bank (BCA / Mandiri / BNI / BRI / BSI):', 'BCA');
+      const acc = prompt('Masukkan Nomor Rekening:');
+      if (bank && acc) {
+        const container = document.getElementById('saved-banks-container');
+        const newEl = document.createElement('div');
+        newEl.className = "flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl border border-slate-200 hover:border-slate-300 bg-white transition gap-3";
+        newEl.innerHTML = `
+          <div class="flex items-center gap-3.5">
+            <div class="w-10 h-10 rounded-lg bg-emerald-50 border border-emerald-100 flex items-center justify-center font-bold text-emerald-800 text-xs">
+              ${bank.toUpperCase().slice(0, 4)}
+            </div>
+            <div>
+              <p class="text-sm font-bold text-slate-800">Bank ${bank.toUpperCase()}</p>
+              <p class="text-xs text-slate-500 mt-0.5">No. Rekening: ${acc} (a.n. Deni Pratama)</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 self-end sm:self-center">
+            <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-1 rounded">
+              ✓ Siap Pakai
+            </span>
+            <button onclick="deleteBankItem(this)" class="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-slate-100 transition" title="Hapus">
+              🗑️
+            </button>
+          </div>
+        `;
+        container.appendChild(newEl);
+        showToast(`Rekening Bank ${bank.toUpperCase()} berhasil ditambahkan.`, '✓');
+      }
+    }
+
+    function handleSaveCard(e) {
+      e.preventDefault();
+      const rawNum = document.getElementById('input-card-number').value.replace(/\s+/g, '');
+      const name = document.getElementById('input-card-name').value.trim().toUpperCase();
+      const expiry = document.getElementById('input-card-expiry').value.trim();
+      const isPrimary = document.getElementById('input-card-primary').checked;
+
+      if (rawNum.length < 15) {
+        alert('Nomor kartu tidak valid (minimal 15-16 digit).');
+        return;
+      }
+
+      const last4 = rawNum.slice(-4);
+      let brand = 'Visa';
+      let bgClass = 'credit-card-generic';
+
+      if (rawNum.startsWith('4')) {
+        brand = 'Visa';
+        bgClass = 'credit-card-mandiri';
+      } else if (rawNum.startsWith('5')) {
+        brand = 'Mastercard';
+        bgClass = 'credit-card-bca';
+      }
+
+      const newCard = {
+        id: 'card-' + Date.now(),
+        bank: 'Bank Mitra',
+        brand: brand,
+        last4: last4,
+        name: name || 'DENI PRATAMA',
+        expiry: expiry || '12/28',
+        isPrimary: isPrimary || savedCards.length === 0,
+        bgClass: bgClass
+      };
+
+      if (newCard.isPrimary) {
+        savedCards = savedCards.map(c => ({ ...c, isPrimary: false }));
+      }
+
+      savedCards.push(newCard);
+      localStorage.setItem('racik_saved_cards', JSON.stringify(savedCards));
+      renderCards();
+      closeAddCardModal();
+      showToast('Kartu baru berhasil disimpan dan siap digunakan.', '✓');
+    }
+
+    // Realtime Card Input Formatter & Preview
+    document.addEventListener('DOMContentLoaded', () => {
+      const numInput = document.getElementById('input-card-number');
+      const nameInput = document.getElementById('input-card-name');
+      const expInput = document.getElementById('input-card-expiry');
+
+      if (numInput) {
+        numInput.addEventListener('input', (e) => {
+          let val = e.target.value.replace(/\D/g, '').substring(0, 16);
+          val = val.match(/.{1,4}/g)?.join(' ') || val;
+          e.target.value = val;
+          document.getElementById('card-preview-number').textContent = val || '•••• •••• •••• ••••';
+          
+          if (val.startsWith('4')) {
+            document.getElementById('card-preview-brand').textContent = 'VISA';
+          } else if (val.startsWith('5')) {
+            document.getElementById('card-preview-brand').textContent = 'MASTERCARD';
+          } else {
+            document.getElementById('card-preview-brand').textContent = 'DEBIT/KREDIT';
+          }
+        });
+      }
+
+      if (nameInput) {
+        nameInput.addEventListener('input', (e) => {
+          document.getElementById('card-preview-name').textContent = e.target.value || 'NAMA LENGKAP';
+        });
+      }
+
+      if (expInput) {
+        expInput.addEventListener('input', (e) => {
+          let val = e.target.value.replace(/\D/g, '').substring(0, 4);
+          if (val.length >= 3) {
+            val = val.substring(0, 2) + '/' + val.substring(2, 4);
+          }
+          e.target.value = val;
+          document.getElementById('card-preview-expiry').textContent = val || 'MM/YY';
+        });
+      }
+
+      renderCards();
+      updateBalanceDisplay();
+    });
+
+    function showToast(msg, icon = '✓') {
+      const toast = document.getElementById('toast-notify');
+      const msgEl = document.getElementById('toast-message');
+      const iconEl = document.getElementById('toast-icon');
+      if (!toast) return;
+
+      msgEl.textContent = msg;
+      iconEl.textContent = icon;
+      toast.classList.remove('hidden');
+      setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 3500);
+    }
+  </script>
+
+  <script src="../../assets/js/lang.js"></script>
+  <script src="../../assets/js/layout.js"></script>
+  <script src="../../assets/js/public-layout.js"></script>
+  <script src="../../assets/js/footer.js"></script>
+</body>
+</html>

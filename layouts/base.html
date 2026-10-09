@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<!--
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  BASE LAYOUT — Racik Media Nusantara (BOB)                      ║
+  ║  Template induk: salin file ini untuk halaman baru.             ║
+  ║  Ganti blok  <!-- PAGE_TITLE -->, <!-- META -->, <!-- CONTENT -->║
+  ╚══════════════════════════════════════════════════════════════════╝
+
+  CARA PAKAI:
+    1. Salin file ini ke lokasi halaman baru, misal: pages/main/checkout.html
+    2. Ganti teks <!-- PAGE_TITLE --> dengan judul halaman
+    3. Isi section <!-- CONTENT --> dengan konten spesifik halaman
+    4. Tambahkan data-id="..." data-en="..." pada elemen yang perlu terjemah
+
+  LANGUAGE SWITCHER:
+    • Otomatis aktif via assets/js/lang.js
+    • Tambah atribut data-id / data-en pada elemen apa pun
+    • Gunakan data-lang-show="id" atau data-lang-show="en" untuk blok konten penuh
+-->
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <!-- Anti-horizontal-overflow: kunci utama mencegah "layar goyang" di mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+  <!-- ══ PAGE_TITLE ══ Ganti teks di bawah ini ══ -->
+  <title>Halaman Baru — BOB · Racik Media Nusantara</title>
+
+  <!-- ══ META SEO ══ Ganti sesuai halaman ══ -->
+  <meta name="description" content="Platform bacaan, marketplace, dan penyedia jasa produk lokal Indonesia." />
+  <meta property="og:title" content="BOB — Racik Media Nusantara" />
+  <meta property="og:image" content="/assets/brand/og-default.jpg" />
+
+  <!-- Tailwind CDN (ganti dengan build output untuk production) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../assets/css/shared.css" />
+  <script src="../assets/js/tailwind-config.js"></script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- Global styles -->
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="stylesheet" href="/assets/css/lang.css" />
+  <link rel="stylesheet" href="/assets/css/public-layout.css" />
+
+  <!-- Anti-overflow + box-sizing sudah ditangani oleh assets/css/shared.css -->
+</head>
+
+<body class="bg-white text-gray-900 antialiased">
+
+  <!-- Navbar global mengikuti format index.html -->
+  <div id="rm-navbar-root"></div>
+
+
+  <!-- ═══════════════════════════════════════════════════════════
+       CONTENT — ganti bagian ini untuk setiap halaman
+       ═══════════════════════════════════════════════════════════ -->
+  <main id="page-content" class="w-full">
+
+    <!-- ══ CONTENT START ══ -->
+
+    <section class="w-full px-4 sm:px-6 lg:px-10 py-16 text-center">
+      <h1 class="font-serif text-3xl font-bold text-gray-900 mb-3"
+          data-id="Judul Halaman Baru"
+          data-en="New Page Title">
+        Judul Halaman Baru
+      </h1>
+      <p class="font-sans text-gray-500 max-w-xl mx-auto"
+         data-id="Ganti ini dengan konten halaman Anda."
+         data-en="Replace this with your page content.">
+        Ganti ini dengan konten halaman Anda.
+      </p>
+    </section>
+
+    <!-- ══ CONTENT END ══ -->
+
+  </main>
+
+
+  <!-- ═══════════════════════════════════════════════════════════
+       FOOTER — satu-satunya tempat diedit untuk semua halaman
+       File sumber: layouts/_footer.html
+       ═══════════════════════════════════════════════════════════ -->
+  <div id="rm-footer-root"></div>
+
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SCRIPTS GLOBAL — urutan penting, jangan ubah
+       ═══════════════════════════════════════════════════════════ -->
+  <script src="/assets/js/lang.js"></script>
+  <script src="/assets/js/layout.js"></script>
+  <script src="/assets/js/public-layout.js"></script>
+  <!-- Script khusus halaman ini (opsional) -->
+  <!-- <script src="/assets/js/halaman-spesifik.js"></script> -->
+
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Laporan Transaksi — Admin BOB</title>
+  <script src="../../api/auth.js"></script>
+  <script>BobAuth.requireRole(['admin', 'master_admin']);</script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/assets/css/public-layout.css" />
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-900">
+  <div id="rm-navbar-root"></div>
+  <header class="border-b bg-white">
+    <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-5 py-4">
+      <div><a href="dashboard.html" class="text-sm font-semibold text-emerald-800 hover:underline">← Dasbor admin</a><h1 class="mt-2 text-2xl font-bold">Laporan transaksi</h1></div>
+    </div>
+  </header>
+  <main class="mx-auto max-w-7xl px-5 py-6">
+    <p class="mb-5 max-w-4xl text-sm leading-6 text-slate-600">Ringkasan dibuat dari status pesanan marketplace dan invoice B2B yang tersimpan. Ini bukan laporan kas, payout, atau rekonsiliasi pembayaran.</p>
+    <form id="reportForm" class="mb-5 flex flex-wrap items-end gap-3 rounded-xl border bg-white p-4">
+      <label class="text-sm font-medium">Dari<input id="startDate" type="date" required class="mt-1 block rounded-lg border border-slate-300 px-3 py-2"></label>
+      <label class="text-sm font-medium">Sampai<input id="endDate" type="date" required class="mt-1 block rounded-lg border border-slate-300 px-3 py-2"></label>
+      <button id="submitButton" class="rounded-lg bg-emerald-800 px-4 py-2.5 text-sm font-bold text-white disabled:opacity-50">Tampilkan laporan</button>
+      <span id="periodLabel" class="text-sm text-slate-500"></span>
+    </form>
+    <p id="message" class="mb-4 hidden rounded-lg p-3 text-sm" role="status" aria-live="polite"></p>
+    <section id="summary" class="mb-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3"></section>
+    <div class="overflow-x-auto rounded-xl border bg-white">
+      <table class="min-w-full text-left text-sm">
+        <thead class="bg-slate-100 text-xs uppercase tracking-wide text-slate-600"><tr><th class="px-4 py-3">Bulan</th><th class="px-4 py-3">Nilai pesanan</th><th class="px-4 py-3">Pesanan terbayar/berjalan</th><th class="px-4 py-3">Refund</th><th class="px-4 py-3">Batal</th><th class="px-4 py-3">Invoice B2B</th><th class="px-4 py-3">Invoice lunas</th><th class="px-4 py-3">Invoice belum lunas</th></tr></thead>
+        <tbody id="monthlyRows" class="divide-y divide-slate-100"></tbody>
+      </table>
+    </div>
+  </main>
+  <script>
+    (function () {
+      var fields = [
+        ['order_value', 'Nilai pesanan'],
+        ['captured_order_value', 'Pesanan berstatus terbayar / berjalan'],
+        ['refunded_order_value', 'Pesanan direfund'],
+        ['cancelled_order_value', 'Pesanan dibatalkan'],
+        ['b2b_invoice_value', 'Nilai invoice B2B nonbatal'],
+        ['paid_b2b_invoice_value', 'Invoice B2B lunas'],
+        ['outstanding_b2b_invoice_value', 'Invoice B2B belum lunas']
+      ];
+      function localDate(date) {
+        return [date.getFullYear(), String(date.getMonth() + 1).padStart(2, '0'), String(date.getDate()).padStart(2, '0')].join('-');
+      }
+      function rupiah(value) {
+        return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(Number(value || 0));
+      }
+      function escapeHtml(value) {
+        return String(value == null ? '' : value).replace(/[&<>"']/g, function (character) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character];
+        });
+      }
+      function setMessage(text, isError) {
+        var element = document.getElementById('message');
+        element.textContent = text;
+        element.className = 'mb-4 rounded-lg p-3 text-sm ' + (isError ? 'bg-rose-50 text-rose-800' : 'bg-emerald-50 text-emerald-800');
+      }
+      var today = new Date();
+      var monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+      document.getElementById('startDate').value = localDate(monthStart);
+      document.getElementById('endDate').value = localDate(today);
+
+      document.getElementById('reportForm').addEventListener('submit', async function (event) {
+        event.preventDefault();
+        var start = document.getElementById('startDate').value;
+        var end = document.getElementById('endDate').value;
+        var button = document.getElementById('submitButton');
+        if (start > end) {
+          setMessage('Tanggal awal harus sebelum atau sama dengan tanggal akhir.', true);
+          return;
+        }
+        button.disabled = true;
+        setMessage('Menghitung laporan…', false);
+        try {
+          var client = await BobAuth.getClient();
+          var result = await client.rpc('get_admin_financial_report', { target_start: start, target_end: end });
+          if (result.error) throw result.error;
+          var report = result.data;
+          var summary = report.summary || {};
+          document.getElementById('summary').innerHTML = fields.map(function (field) {
+            return '<article class="rounded-xl border bg-white p-4"><p class="text-xs font-semibold uppercase tracking-wide text-slate-500">' + escapeHtml(field[1]) + '</p><p class="mt-2 text-xl font-bold">' + escapeHtml(rupiah(summary[field[0]])) + '</p></article>';
+          }).join('');
+          document.getElementById('monthlyRows').innerHTML = (report.monthly || []).map(function (month) {
+            return '<tr><th scope="row" class="whitespace-nowrap px-4 py-3 font-semibold">' + escapeHtml(month.month) + '</th>'
+              + '<td class="whitespace-nowrap px-4 py-3">' + escapeHtml(rupiah(month.order_value)) + '</td>'
+              + '<td class="whitespace-nowrap px-4 py-3">' + escapeHtml(rupiah(month.captured_order_value)) + '</td>'
+              + '<td class="whitespace-nowrap px-4 py-3">' + escapeHtml(rupiah(month.refunded_order_value)) + '</td>'
+              + '<td class="whitespace-nowrap px-4 py-3">' + escapeHtml(rupiah(month.cancelled_order_value)) + '</td>'
+              + '<td class="whitespace-nowrap px-4 py-3">' + escapeHtml(rupiah(month.b2b_invoice_value)) + '</td>'
+              + '<td class="whitespace-nowrap px-4 py-3">' + escapeHtml(rupiah(month.paid_b2b_invoice_value)) + '</td>'
+              + '<td class="whitespace-nowrap px-4 py-3">' + escapeHtml(rupiah(month.outstanding_b2b_invoice_value)) + '</td></tr>';
+          }).join('');
+          document.getElementById('periodLabel').textContent = 'Periode ' + start + ' sampai ' + end;
+          document.getElementById('message').classList.add('hidden');
+        } catch (error) {
+          document.getElementById('summary').replaceChildren();
+          document.getElementById('monthlyRows').replaceChildren();
+          setMessage(error.message || 'Laporan gagal dimuat.', true);
+        } finally {
+          button.disabled = false;
+        }
+      });
+      document.getElementById('reportForm').requestSubmit();
+    })();
+  </script>
+  <script src="../../assets/js/lang.js"></script>
+  <script src="/assets/js/layout.js"></script>
+  <script src="/assets/js/public-layout.js"></script>
+</body>
+</html>

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Detail Jasa — Racik Media</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../../assets/css/shared.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+h1, h2, h3 { font-family: 'Lora', Georgia, serif; }
+    </style>
+    <link rel="stylesheet" href="/assets/css/public-layout.css" />
+</head>
+  <body class="min-h-screen bg-slate-50 text-slate-800 antialiased">
+  <div id="rm-navbar-root"></div>
+    <header class="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur-sm">
+      <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        <a href="../main/etalase.html" aria-label="Racik Media, kembali ke etalase">
+          <img src="../../assets/brand/1.png" alt="Racik Media" class="h-9 w-auto" />
+        </a>
+        <a href="../main/etalase.html" class="text-sm font-semibold text-emerald-800 hover:text-emerald-900">← Kembali ke Etalase</a>
+      </div>
+    </header>
+
+    <main id="serviceContent" class="mx-auto max-w-7xl px-4 py-7 sm:px-6 lg:px-8">
+      <nav aria-label="Breadcrumb" class="mb-6 flex items-center gap-2 text-xs text-slate-500">
+        <a href="../main/etalase.html" class="hover:text-emerald-700">Etalase</a>
+        <span>/</span>
+        <a href="../main/etalase.html?jenis=jasa" class="hover:text-emerald-700">Jasa &amp; Keahlian</a>
+        <span>/</span>
+        <span id="breadcrumbTitle" class="truncate font-semibold text-slate-800">Detail Jasa</span>
+      </nav>
+
+      <div class="grid items-start gap-7 lg:grid-cols-12">
+        <section class="min-w-0 lg:col-span-8">
+          <div class="relative overflow-hidden rounded-2xl bg-slate-200">
+            <img id="serviceImage" src="" alt="" class="aspect-[16/10] w-full object-cover sm:aspect-[16/9]" />
+            <span class="absolute left-4 top-4 rounded-full bg-amber-100 px-3 py-1 text-xs font-bold text-amber-900">Layanan Jasa</span>
+          </div>
+
+          <div class="mt-6">
+            <div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-slate-500">
+              <span id="serviceLocation" class="font-medium text-slate-700"></span>
+              <span aria-hidden="true">•</span>
+              <span><span class="text-amber-500">★</span> <strong id="serviceRating" class="text-slate-800"></strong></span>
+              <span aria-hidden="true">•</span>
+              <span id="serviceActivity"></span>
+            </div>
+            <h1 id="serviceName" class="mt-3 max-w-4xl text-3xl font-bold leading-tight text-slate-900 sm:text-4xl"></h1>
+            <p id="serviceDescription" class="mt-4 max-w-3xl text-base leading-7 text-slate-600"></p>
+          </div>
+
+          <section class="mt-8 border-t border-slate-200 pt-7" aria-labelledby="scopeTitle">
+            <h2 id="scopeTitle" class="text-xl font-bold text-slate-900">Cakupan layanan</h2>
+            <ul id="serviceScope" class="mt-4 grid gap-3 sm:grid-cols-2"></ul>
+          </section>
+
+          <section class="mt-8 border-t border-slate-200 pt-7" aria-labelledby="processTitle">
+            <h2 id="processTitle" class="text-xl font-bold text-slate-900">Alur kerja</h2>
+            <ol id="serviceProcess" class="mt-4 grid gap-3 sm:grid-cols-3"></ol>
+          </section>
+
+          <section class="mt-8 rounded-xl border border-slate-200 bg-white p-5 sm:p-6" aria-labelledby="providerTitle">
+            <h2 id="providerTitle" class="text-lg font-bold text-slate-900">Penyedia layanan</h2>
+            <div class="mt-4 flex items-start gap-3">
+              <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-emerald-100 font-bold text-emerald-900" aria-hidden="true">M</div>
+              <div>
+                <p class="font-semibold text-slate-800">Mitra layanan terkurasi</p>
+                <p id="providerLocation" class="mt-1 text-sm text-slate-500"></p>
+                <p class="mt-2 text-xs leading-5 text-slate-500">Nama kontak dan ketersediaan jadwal akan ditampilkan setelah integrasi penyedia diaktifkan.</p>
+              </div>
+            </div>
+          </section>
+        </section>
+
+        <aside class="lg:sticky lg:top-24 lg:col-span-4">
+          <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6" aria-labelledby="bookingTitle">
+            <p class="text-xs font-semibold uppercase text-emerald-800">Investasi layanan</p>
+            <div class="mt-2 flex flex-wrap items-baseline gap-x-2">
+              <span id="servicePrice" class="font-serif text-3xl font-bold text-slate-900"></span>
+              <span id="serviceUnit" class="text-sm text-slate-500"></span>
+            </div>
+            <div class="mt-4 flex items-center justify-between border-y border-slate-100 py-3 text-sm">
+              <span class="text-slate-500">Lokasi layanan</span>
+              <span id="serviceMode" class="text-right font-semibold text-slate-800"></span>
+            </div>
+
+            <h2 id="bookingTitle" class="mt-5 text-lg font-bold text-slate-900">Atur booking</h2>
+            <p class="mt-1 text-xs leading-5 text-slate-500">Pilih jumlah layanan, tanggal, dan waktu yang Anda inginkan.</p>
+            <a id="serviceBookingLink" href="service-booking.html" class="mt-4 block w-full rounded-xl bg-emerald-800 px-4 py-3 text-center text-sm font-bold text-white hover:bg-emerald-900">Lanjut ke Booking Jasa</a>
+            <p class="mt-4 border-t border-slate-100 pt-3 text-xs leading-5 text-amber-900">Permintaan dan jadwal masih berupa draf. Penyedia belum menerima booking dan pembayaran belum tersedia.</p>
+          </section>
+        </aside>
+      </div>
+    </main>
+
+    <main id="notFound" class="mx-auto hidden max-w-xl px-4 py-20 text-center">
+      <h1 class="text-2xl font-bold text-slate-900">Layanan tidak ditemukan</h1>
+      <p class="mt-3 text-sm text-slate-600">Pilih salah satu layanan dari etalase untuk melihat detailnya.</p>
+      <a href="../main/etalase.html" class="mt-6 inline-flex rounded-xl bg-emerald-800 px-5 py-3 text-sm font-bold text-white hover:bg-emerald-900">Buka Etalase Jasa</a>
+    </main>
+
+    <script>
+      const services = {
+        'srv-01': {
+          name: 'Jasa Pelatihan & Workshop Kriya Rotan',
+          price: 1500000,
+          priceText: 'Rp 1.500.000',
+          unit: 'per batch / grup',
+          location: 'Cirebon / On-site',
+          rating: '5.0',
+          activity: '32 kelas',
+          image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=85',
+          description: 'Lokakarya teknik anyam rotan modern yang dibimbing langsung oleh instruktur pengrajin ahli Tegalwangi.',
+          scope: ['Pengenalan bahan dan alat kriya rotan', 'Latihan teknik dasar anyaman', 'Praktik membuat karya sederhana', 'Format pelatihan untuk kelompok'],
+          process: ['Diskusikan jumlah peserta dan tujuan kelas', 'Konfirmasi jadwal, lokasi, dan kebutuhan bahan', 'Pelaksanaan workshop bersama instruktur'],
+          mode: 'On-site, Cirebon'
+        },
+        'srv-02': {
+          name: 'Jasa Kurasi & Uji Organoleptik Kopi Nusantara',
+          price: 750000,
+          priceText: 'Rp 750.000',
+          unit: 'per sampel / sesi cupping',
+          location: 'Bandung / Online Sample',
+          rating: '4.9',
+          activity: '85 sesi',
+          image: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=1200&q=85',
+          description: 'Evaluasi cita rasa, cupping score, dan lembar audit profil rasa oleh Q-Grader terlisensi.',
+          scope: ['Evaluasi aroma dan karakter rasa', 'Sesi cupping untuk sampel kopi', 'Catatan profil rasa dan hasil evaluasi', 'Pembahasan hasil bersama penyedia'],
+          process: ['Atur pengiriman atau penyerahan sampel', 'Penyedia mengonfirmasi jadwal sesi cupping', 'Terima hasil evaluasi dan diskusikan catatan'],
+          mode: 'Bandung atau sampel online'
+        },
+        'srv-03': {
+          name: 'Jasa Liputan & Dokumentasi Visual UMKM',
+          price: 2200000,
+          priceText: 'Rp 2.200.000',
+          unit: 'per paket narasi + foto',
+          location: 'Seluruh Nusantara',
+          rating: '4.9',
+          activity: '50+ UMKM',
+          image: 'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=1200&q=85',
+          description: 'Liputan jurnalisme foto lapangan untuk membantu membangun cerita merek dan produk lokal UMKM.',
+          scope: ['Diskusi cerita dan tujuan publikasi', 'Liputan visual sesuai kesepakatan', 'Penyusunan narasi untuk profil UMKM', 'Ruang lingkup hasil dikonfirmasi sebelum kerja'],
+          process: ['Ceritakan usaha dan kebutuhan konten', 'Sepakati lokasi, jadwal, dan hasil pekerjaan', 'Liputan dan penyerahan hasil sesuai kesepakatan'],
+          mode: 'Lapangan, seluruh Nusantara'
+        },
+        'srv-04': {
+          name: 'Jasa Pendampingan Sertifikasi Organik & Halal',
+          price: 3500000,
+          priceText: 'Rp 3.500.000',
+          unit: 'per UMKM / siklus',
+          location: 'Jakarta & Yogyakarta',
+          rating: '5.0',
+          activity: '28 klien',
+          image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=1200&q=85',
+          description: 'Pendampingan audit SOP dan penyusunan dokumen, termasuk dukungan uji laboratorium sesuai kebutuhan proses sertifikasi.',
+          scope: ['Pemetaan kesiapan dan kebutuhan usaha', 'Tinjauan SOP dan dokumen pendukung', 'Pendampingan langkah proses sertifikasi', 'Biaya lembaga sertifikasi atau laboratorium dikonfirmasi terpisah'],
+          process: ['Tinjau profil produk dan kondisi usaha', 'Susun ruang lingkup serta dokumen yang diperlukan', 'Dampingi tindak lanjut sesuai proses lembaga terkait'],
+          mode: 'Jakarta atau Yogyakarta'
+        },
+        'srv-05': {
+          name: 'Jasa Workshop Seduh Manual & Barista Komunitas',
+          price: 850000,
+          priceText: 'Rp 850.000',
+          unit: 'per peserta (2 hari)',
+          location: 'Bandung & Malang',
+          rating: '4.9',
+          activity: '64 peserta',
+          image: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=1200&q=85',
+          description: 'Kelas praktik brewing V60, Aeropress, dan Kalita Wave, serta pengenalan karakter green bean Nusantara.',
+          scope: ['Praktik metode V60, Aeropress, dan Kalita Wave', 'Pengenalan karakter biji kopi Nusantara', 'Kelas berlangsung selama dua hari', 'Jumlah peserta dan ketersediaan jadwal dikonfirmasi penyedia'],
+          process: ['Pilih kota dan jumlah peserta', 'Konfirmasi tanggal serta kebutuhan alat', 'Ikuti kelas praktik bersama instruktur'],
+          mode: 'Bandung atau Malang'
+        }
+      };
+
+      const serviceId = new URLSearchParams(window.location.search).get('id');
+      const service = services[serviceId];
+
+      if (!service) {
+        document.getElementById('serviceContent').classList.add('hidden');
+        document.getElementById('notFound').classList.remove('hidden');
+      } else {
+        document.title = service.name + ' — Racik Media';
+        document.getElementById('breadcrumbTitle').textContent = service.name;
+        document.getElementById('serviceName').textContent = service.name;
+        document.getElementById('serviceDescription').textContent = service.description;
+        document.getElementById('serviceImage').src = service.image;
+        document.getElementById('serviceImage').alt = service.name;
+        document.getElementById('serviceLocation').textContent = service.location;
+        document.getElementById('serviceRating').textContent = service.rating;
+        document.getElementById('serviceActivity').textContent = service.activity;
+        document.getElementById('servicePrice').textContent = service.priceText;
+        document.getElementById('serviceUnit').textContent = service.unit;
+        document.getElementById('serviceMode').textContent = service.mode;
+        document.getElementById('providerLocation').textContent = service.location;
+        document.getElementById('serviceBookingLink').href = 'service-booking.html?id=' + encodeURIComponent(serviceId);
+
+        service.scope.forEach(function (detail) {
+          const item = document.createElement('li');
+          item.className = 'flex items-start gap-3 rounded-xl border border-slate-200 bg-white p-4 text-sm leading-6 text-slate-700';
+          const marker = document.createElement('span');
+          marker.className = 'mt-0.5 font-bold text-emerald-700';
+          marker.textContent = '✓';
+          const text = document.createElement('span');
+          text.textContent = detail;
+          item.append(marker, text);
+          document.getElementById('serviceScope').appendChild(item);
+        });
+
+        service.process.forEach(function (detail, index) {
+          const item = document.createElement('li');
+          item.className = 'rounded-xl border border-slate-200 bg-white p-4';
+          const number = document.createElement('span');
+          number.className = 'text-xs font-bold text-emerald-800';
+          number.textContent = 'LANGKAH ' + (index + 1);
+          const text = document.createElement('p');
+          text.className = 'mt-2 text-sm leading-6 text-slate-700';
+          text.textContent = detail;
+          item.append(number, text);
+          document.getElementById('serviceProcess').appendChild(item);
+        });
+
+      }
+    </script>
+    <script src="../../assets/js/lang.js"></script>
+  <script src="/assets/js/layout.js"></script>
+  <script src="/assets/js/public-layout.js"></script>
+</body>
+</html>

@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Draft Analisis — Penerjemahan Otomatis Situs BOB</title>
+  <style>
+    :root { color-scheme: light; --ink: #17231f; --muted: #53635d; --green: #126b51; --pale: #eaf5ef; --line: #dce6e0; --amber: #fff5dc; --red: #fff0ee; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #edf2ef; color: var(--ink); font: 11pt/1.55 "Segoe UI", Arial, sans-serif; }
+    .page { width: 210mm; min-height: 297mm; margin: 12mm auto; padding: 19mm 20mm 18mm; background: white; box-shadow: 0 8px 32px #15291f18; position: relative; }
+    .eyebrow { color: var(--green); font-size: 9pt; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; }
+    h1 { margin: 7mm 0 3mm; font: 700 29pt/1.12 Georgia, serif; letter-spacing: -.035em; }
+    h2 { margin: 8mm 0 3mm; font: 700 16pt/1.2 Georgia, serif; }
+    h3 { margin: 5mm 0 1.5mm; color: var(--green); font-size: 11pt; }
+    p { margin: 0 0 3mm; }
+    .subtitle { max-width: 155mm; color: var(--muted); font-size: 13pt; }
+    .rule { height: 1px; margin: 7mm 0; background: var(--line); }
+    .meta { color: var(--muted); font-size: 9pt; }
+    .status { margin: 6mm 0; padding: 5mm 6mm; border-left: 4px solid #b74d3d; background: var(--red); }
+    .status strong { color: #843629; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; margin: 4mm 0; }
+    .card { border: 1px solid var(--line); border-radius: 3mm; padding: 4mm 5mm; }
+    .card strong { display: block; color: var(--green); font-size: 11pt; }
+    .card small { color: var(--muted); font-size: 9pt; }
+    ul, ol { margin: 2mm 0 4mm; padding-left: 6mm; }
+    li { margin: 1.4mm 0; }
+    .callout { padding: 4mm 5mm; border: 1px solid #f0dca5; border-radius: 2mm; background: var(--amber); }
+    .good { padding: 4mm 5mm; border: 1px solid #bfdccb; border-radius: 2mm; background: var(--pale); }
+    table { width: 100%; border-collapse: collapse; margin: 3mm 0 5mm; font-size: 9.5pt; }
+    th { background: #edf5f0; color: var(--green); text-align: left; }
+    th, td { padding: 2.5mm 3mm; border: 1px solid var(--line); vertical-align: top; }
+    code { padding: .3mm 1mm; border-radius: 1mm; background: #f1f4f2; font: 9pt Consolas, monospace; overflow-wrap: anywhere; }
+    pre { padding: 4mm; border-radius: 2mm; background: #17231f; color: #f3f7f5; white-space: pre-wrap; overflow-wrap: anywhere; font: 9pt/1.5 Consolas, monospace; }
+    .footer { position: absolute; left: 20mm; right: 20mm; bottom: 9mm; padding-top: 2mm; border-top: 1px solid var(--line); color: #7b8983; font-size: 8pt; display: flex; justify-content: space-between; }
+    .page-break { break-before: page; }
+    .check { list-style: none; padding-left: 0; }
+    .check li::before { content: "□"; display: inline-block; width: 6mm; color: var(--green); font-weight: 700; }
+    @page { size: A4; margin: 16mm 18mm; }
+    @media print {
+      body { background: white; }
+      .page { width: auto; min-height: 0; margin: 0; padding: 0; box-shadow: none; }
+      .page-break { break-before: auto; }
+      .footer { position: static; margin-top: 8mm; }
+      h2, h3 { break-after: avoid; }
+      .card, .status, .callout, .good, tr { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <section class="page">
+    <div class="eyebrow">BOB · Racik Media Nusantara</div>
+    <h1>Analisis Status<br>Penerjemahan Otomatis</h1>
+    <p class="subtitle">Mengapa pilihan bahasa belum menerjemahkan seluruh situs, apa yang sudah diverifikasi, dan apa yang perlu dilakukan sebelum fitur diaktifkan.</p>
+    <div class="rule"></div>
+    <p class="meta"><strong>Status dokumen:</strong> Draft untuk analisis lanjutan &nbsp;·&nbsp; <strong>Tanggal:</strong> 5 Oktober 2026</p>
+
+    <div class="status">
+      <strong>Kesimpulan singkat — BELUM berfungsi penuh untuk pengunjung.</strong>
+      <p style="margin:2mm 0 0">Pilihan bahasa dan penyimpanan preferensi sudah berjalan. Namun layanan terjemahan otomatis di backend belum merespons: pengujian endpoint yang dikonfigurasi menghasilkan <strong>HTTP 404 — Requested function was not found</strong>. Karena itu teks situs tidak bisa diterjemahkan sungguhan sampai fungsi dideploy ke proyek Supabase yang benar dan konfigurasi server disiapkan.</p>
+    </div>
+
+    <h2>Ringkasan pemeriksaan</h2>
+    <div class="grid">
+      <div class="card"><strong>46 halaman</strong><small>Telah diverifikasi memuat language engine satu kali.</small></div>
+      <div class="card"><strong>Switch bahasa</strong><small>Tersedia pada halaman yang sebelumnya belum memasang widget.</small></div>
+      <div class="card"><strong>Endpoint live</strong><small>HTTP 404; fungsi translate-page belum ditemukan di URL proyek yang diuji.</small></div>
+      <div class="card"><strong>Pengujian UI</strong><small>Berhasil dengan API tiruan saja, bukan terjemahan Gemini sungguhan.</small></div>
+    </div>
+
+    <h2>Makna hasil tersebut</h2>
+    <p>Pengunjung dapat memilih Indonesia, English, atau 中文. Preferensi disimpan sehingga dapat dipakai di halaman lain. Engine juga mempunyai jalur untuk mengirim teks ke endpoint penerjemah. Tetapi jalur itu berhenti ketika layanan belum tersedia; UI tidak dapat menghasilkan terjemahan dengan sendirinya.</p>
+    <div class="callout">
+      <strong>Catatan penting:</strong> tes browser dengan respons tiruan hanya membuktikan bahwa UI bisa mengganti bahasa dan memulihkan teks sumber. Tes itu bukan bukti bahwa request sungguhan sudah mencapai Gemini atau bahwa biaya/API Gemini sudah aktif.
+    </div>
+
+    <h2>Yang sudah tersedia di implementasi</h2>
+    <ul>
+      <li>Preferensi bahasa lintas halaman melalui <code>localStorage</code>.</li>
+      <li>Bahasa Inggris dan Mandarin sederhana dikirim ke fungsi penerjemah; label yang memiliki terjemahan manual dapat memakai atribut <code>data-id</code>, <code>data-en</code>, dan <code>data-zh</code>.</li>
+      <li>Teks halaman, konten dinamis, placeholder/label tertentu dapat diproses; hasil teks dapat di-cache per sesi browser.</li>
+      <li>Endpoint contoh disiapkan di <code>supabase/functions/translate-page/index.ts</code>; Gemini API key dirancang berada di secret server, bukan HTML/JavaScript publik.</li>
+    </ul>
+
+    <div class="footer"><span>DRAFT · Bahan analisis internal</span><span>Penerjemahan otomatis situs BOB</span></div>
+  </section>
+
+  <section class="page page-break">
+    <div class="eyebrow">01 · Penyebab dan bukti</div>
+    <h2>Akar masalah yang telah ditemukan</h2>
+    <table>
+      <thead><tr><th style="width:34%">Temuan</th><th>Dampak terhadap pengunjung</th></tr></thead>
+      <tbody>
+        <tr><td>Engine lama hanya memakai teks dengan atribut terjemahan eksplisit.</td><td>Bagian yang tidak memiliki <code>data-id</code>/<code>data-en</code>/<code>data-zh</code> tetap pada bahasa sumber.</td></tr>
+        <tr><td>Awalnya hanya sebagian halaman memuat engine bahasa.</td><td>Switch bahasa tidak tersedia atau tidak berjalan di halaman lain. Engine sekarang sudah ditambahkan ke seluruh 46 halaman.</td></tr>
+        <tr><td>Fungsi Gemini sebelumnya menangani terjemahan artikel, bukan semua antarmuka.</td><td>Tidak ada endpoint terpasang yang melayani teks seluruh halaman.</td></tr>
+        <tr><td>Endpoint <code>translate-page</code> pada URL Supabase yang diuji membalas HTTP 404.</td><td>Browser tidak menerima daftar terjemahan. Ini hambatan utama yang masih aktif.</td></tr>
+        <tr><td>Origin situs harus cocok dengan <code>APP_ALLOWED_ORIGINS</code>.</td><td>Origin tidak terdaftar atau pengujian melalui <code>file://</code> akan ditolak meskipun fungsi sudah dideploy.</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Batas kesimpulan saat ini</h2>
+    <p>Belum dapat disimpulkan bahwa konfigurasi Gemini, secret, atau origin berfungsi di produksi, sebab request belum melewati tahap penemuan fungsi (404 terjadi sebelum validasi konfigurasi tersebut dapat dibuktikan). CLI Supabase dan Deno juga tidak tersedia di lingkungan pemeriksaan; deployment dan pemeriksaan tipe Edge Function belum dilakukan.</p>
+
+    <h2>Pemeriksaan saat ini vs. pemeriksaan yang belum dilakukan</h2>
+    <table>
+      <thead><tr><th style="width:43%">Pemeriksaan</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>JavaScript language engine: sintaks</td><td>Lulus <code>node --check</code>.</td></tr>
+        <tr><td>Language engine pada 46 halaman</td><td>Semua terverifikasi memuat skrip satu kali.</td></tr>
+        <tr><td>Switch bahasa serta terjemahan teks dinamis via mock</td><td>Lulus di browser menggunakan respons API tiruan.</td></tr>
+        <tr><td>Endpoint Supabase yang dikonfigurasi</td><td>Gagal — HTTP 404.</td></tr>
+        <tr><td>Gemini live, secret, dan terjemahan nyata</td><td>Belum dapat diuji sebelum endpoint tersedia.</td></tr>
+        <tr><td>Build / type-check Supabase Edge Function</td><td>Belum dilakukan — Deno CLI tidak terpasang.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="footer"><span>DRAFT · Bahan analisis internal</span><span>Halaman 2</span></div>
+  </section>
+
+  <section class="page page-break">
+    <div class="eyebrow">02 · Rencana aktivasi</div>
+    <h2>Langkah agar terjemahan sungguhan berfungsi</h2>
+    <ol>
+      <li><strong>Pastikan proyek Supabase tepat.</strong> Cocokkan URL proyek pada konfigurasi browser dengan proyek tempat fungsi akan di-deploy.</li>
+      <li><strong>Siapkan kredensial secara aman.</strong> Simpan Gemini API key sebagai secret Edge Function; jangan pernah menaruhnya pada HTML, JavaScript, atau PDF publik.</li>
+      <li><strong>Daftarkan origin produksi dan pengujian.</strong> Isi <code>APP_ALLOWED_ORIGINS</code> dengan origin persis, misalnya <code>https://domain-situs</code>. Untuk tes lokal, jalankan situs lewat server lokal HTTP dan daftarkan origin seperti <code>http://localhost:5500</code>.</li>
+      <li><strong>Deploy Edge Function</strong> <code>translate-page</code> ke proyek yang sama dengan konfigurasi browser.</li>
+      <li><strong>Uji request live.</strong> Pastikan tidak lagi 404; cek hasil terjemahan, log function, batas penggunaan, dan error dari Gemini.</li>
+      <li><strong>Uji seluruh alur pengguna.</strong> Pilih EN/中文, pindah halaman, muat konten dinamis, kembali ke ID, dan verifikasi halaman yang gagal menampilkan pesan yang jelas.</li>
+    </ol>
+
+    <h3>Contoh perintah deployment (setelah CLI terhubung ke proyek)</h3>
+    <pre>supabase secrets set GEMINI_API_KEY=&lt;API_KEY_GEMINI&gt; APP_ALLOWED_ORIGINS=https://domain-situs-anda,http://localhost:5500
+supabase functions deploy translate-page</pre>
+    <p class="meta">Perintah ini belum dijalankan. Ganti origin contoh dengan domain sungguhan, dan jangan menulis nilai secret ke repository atau dokumen ini.</p>
+
+    <h2>Hal yang perlu diputuskan sebelum produksi</h2>
+    <div class="good">
+      <ul style="margin-bottom:0">
+        <li><strong>Anggaran dan batas pemakaian:</strong> endpoint publik berpotensi menerima permintaan berulang. Batas di memori per instance bersifat best-effort, tidak setara rate limit terpusat.</li>
+        <li><strong>Privasi teks:</strong> teks antarmuka dan konten yang terlihat dapat dikirim ke Gemini untuk diterjemahkan. Konten sensitif harus dikecualikan secara eksplisit.</li>
+        <li><strong>Jangkauan istilah “seluruh web”:</strong> teks biasa dan atribut terpilih dapat diterjemahkan. Gambar, teks di dalam gambar/PDF, canvas, serta format angka/mata uang/waktu belum otomatis dilokalkan.</li>
+        <li><strong>Kualitas editorial:</strong> terjemahan mesin dapat keliru pada istilah lokal, nama produk, konteks budaya, harga, atau informasi hukum. Hal kritis sebaiknya memakai terjemahan yang ditinjau manusia.</li>
+      </ul>
+    </div>
+
+    <h2>Checklist tindak lanjut</h2>
+    <ul class="check">
+      <li>Konfirmasi URL proyek Supabase dan akses deployment.</li>
+      <li>Tentukan domain/origin produksi serta origin lokal yang akan dipakai.</li>
+      <li>Konfigurasi secret Gemini dan kebijakan kuota/anggaran.</li>
+      <li>Deploy fungsi; pastikan endpoint bukan 404 dan lolos uji CORS.</li>
+      <li>Uji EN dan 中文 dengan request Gemini nyata.</li>
+      <li>Tinjau privasi, pembatasan penyalahgunaan, dan istilah konten.</li>
+    </ul>
+
+    <div class="footer"><span>DRAFT · Bahan analisis internal</span><span>Halaman 3</span></div>
+  </section>
+</body>
+</html>

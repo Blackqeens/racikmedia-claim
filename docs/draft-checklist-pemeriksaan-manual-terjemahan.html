@@ -1,0 +1,143 @@
+echo ".history/" >> .gitignore
+echo "**/.history/" >> .gitignore
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Draft Checklist Pemeriksaan Manual Terjemahan</title>
+  <style>
+    :root { color-scheme: light; --ink: #17202a; --muted: #586574; --line: #d5dce3; --green: #126b52; --amber: #8a5a00; --red: #a52b2b; }
+    * { box-sizing: border-box; }
+    body { max-width: 920px; margin: 36px auto; padding: 0 24px 48px; color: var(--ink); font: 15px/1.55 "Segoe UI", Arial, sans-serif; }
+    h1 { margin-bottom: 6px; font-size: 30px; line-height: 1.2; }
+    h2 { margin: 30px 0 10px; padding-bottom: 6px; border-bottom: 1px solid var(--line); font-size: 21px; }
+    h3 { margin: 18px 0 8px; font-size: 16px; }
+    p, li { color: #263442; }
+    .meta, .muted { color: var(--muted); }
+    .callout { margin: 18px 0; padding: 14px 16px; border-left: 4px solid var(--amber); background: #fff7e5; }
+    .status { display: inline-block; margin: 3px 4px 3px 0; padding: 3px 8px; border-radius: 12px; font-size: 12px; font-weight: 700; }
+    .pass { color: var(--green); background: #e8f5ef; }
+    .fail { color: var(--red); background: #fdecec; }
+    .pending { color: var(--amber); background: #fff2d5; }
+    table { width: 100%; border-collapse: collapse; margin: 12px 0 18px; }
+    th, td { border: 1px solid var(--line); padding: 9px 10px; text-align: left; vertical-align: top; }
+    th { background: #f2f5f7; }
+    td.check { width: 68px; text-align: center; font-size: 19px; }
+    code, pre { font-family: Consolas, "Courier New", monospace; }
+    code { overflow-wrap: anywhere; }
+    pre { overflow-wrap: anywhere; white-space: pre-wrap; background: #f2f5f7; padding: 12px; border: 1px solid var(--line); border-radius: 4px; }
+    .result-line { display: inline-block; min-width: 180px; border-bottom: 1px solid #84909b; }
+    .small { font-size: 13px; }
+    @media print {
+      body { max-width: none; margin: 0; padding: 0; font-size: 11pt; }
+      h1 { font-size: 23pt; }
+      h2 { break-after: avoid; }
+      tr, .callout { break-inside: avoid; }
+      a { color: inherit; text-decoration: none; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <p class="meta">Racik Media · Draft untuk pemeriksaan manual</p>
+    <h1>Checklist Pemeriksaan Manual<br>Terjemahan Otomatis</h1>
+    <p class="meta">Tanggal pemeriksaan otomatis: 7 Oktober 2026 · Lingkungan: Netlify + Supabase Edge Function + Google Gemini</p>
+  </header>
+
+  <div class="callout">
+    <strong>Ringkasan saat draft dibuat:</strong>
+    <span class="status pass">Fungsi aktif · versi 3</span>
+    <span class="status pass">CORS produksi · HTTP 200</span>
+    <span class="status fail">Request terjemahan · HTTP 502</span>
+    <p>Uji POST melewati endpoint Supabase, tetapi fungsi melaporkan HTTP 404 dari Gemini untuk model default <code>gemini-2.5-flash</code>. CORS dan deployment bukan lagi hambatan utama. Checklist di bawah membantu memastikan model, API key, payload, dan hasil langsung dari akun pemilik.</p>
+  </div>
+
+  <h2>1. Pastikan proyek dan deployment yang diperiksa benar</h2>
+  <table>
+    <thead><tr><th>Pemeriksaan</th><th>Langkah manual</th><th class="check">Hasil</th></tr></thead>
+    <tbody>
+      <tr><td>Proyek Supabase</td><td>Pastikan dashboard yang dibuka adalah proyek <code>racik media</code>, ref <code>bwyzqqetpgcqjnnwrzhh</code>.</td><td class="check">☐</td></tr>
+      <tr><td>Edge Function</td><td>Dashboard → Edge Functions → <code>translate-page</code>. Pastikan status aktif dan source terakhir sudah memuat URL <code>generativelanguage.googleapis.com/v1beta/models/...:generateContent</code>.</td><td class="check">☐</td></tr>
+      <tr><td>JWT verification</td><td>Pastikan verify JWT nonaktif untuk fungsi publik ini, sesuai konfigurasi dan header publishable key yang dipakai frontend.</td><td class="check">☐</td></tr>
+      <tr><td>File situs</td><td>Pastikan Netlify menerbitkan folder/build dari proyek yang benar dan halaman memuat versi terbaru <code>assets/js/lang.js</code>.</td><td class="check">☐</td></tr>
+    </tbody>
+  </table>
+
+  <h2>2. Periksa secrets tanpa menyalin atau membagikan nilainya</h2>
+  <table>
+    <thead><tr><th>Secret</th><th>Yang perlu dicek</th><th class="check">Hasil</th></tr></thead>
+    <tbody>
+      <tr><td><code>GEMINI_API_KEY</code></td><td>Ada, tidak kosong, masih aktif, berasal dari proyek Google Cloud/AI Studio yang dimaksud, dan tidak kedaluwarsa/dicabut. Jangan menaruh nilainya di chat, screenshot, log publik, HTML, atau JavaScript browser.</td><td class="check">☐</td></tr>
+      <tr><td><code>GEMINI_TRANSLATION_MODEL</code></td><td>Jika secret ini ada, nilainya menimpa default kode. Hapus/nonaktifkan override lama atau ubah ke model yang memang tersedia dan dapat dipanggil oleh API key tersebut.</td><td class="check">☐</td></tr>
+      <tr><td><code>APP_ALLOWED_ORIGINS</code></td><td>Berisi origin persis <code>https://dapper-bienenstitch-b63263.netlify.app</code> (tanpa slash/path akhir). Jangan memakai wildcard.</td><td class="check">☐</td></tr>
+      <tr><td>Nilai rahasia baru</td><td>Jika API key baru saja diganti, pastikan secret tersimpan pada proyek yang sama dengan fungsi, lalu deploy ulang fungsi jika dashboard mensyaratkan restart agar secret baru dimuat.</td><td class="check">☐</td></tr>
+    </tbody>
+  </table>
+
+  <h2>3. Pastikan model dan akses Gemini</h2>
+  <ol>
+    <li>Buka Google AI Studio/API Keys dan pastikan key terikat ke proyek Google Cloud yang benar.</li>
+    <li>Di Google Cloud Console, pastikan <strong>Generative Language API</strong> aktif pada proyek terkait.</li>
+    <li>Pastikan pembatasan API key mengizinkan Generative Language API. Jangan menghapus pembatasan keamanan secara permanen hanya untuk mengatasi uji gagal.</li>
+    <li>Periksa model yang tersedia/diizinkan untuk key tersebut di dokumentasi atau daftar model resmi. Cocokkan nama model persis dengan <code>GEMINI_TRANSLATION_MODEL</code> atau default source.</li>
+    <li>Periksa status billing, kuota, rate limit, pembatasan wilayah, dan status layanan Google. HTTP 404 perlu dicocokkan dengan pesan provider; bisa berarti model/path tidak tersedia untuk konfigurasi itu.</li>
+    <li>Gunakan metode API dan model yang sama saat menguji manual. Jangan menyimpulkan hanya dari nama model yang terlihat di contoh lama.</li>
+  </ol>
+  <p class="small"><strong>Catatan keamanan:</strong> fungsi saat ini mengirim key ke Google melalui query parameter <code>?key=...</code> dari secret server, bukan dari browser. Query string dapat tercatat di sistem observabilitas/proxy; batasi akses log dan jangan pernah mencetak URL lengkap yang berisi key.</p>
+
+  <h2>4. Tes jalur HTTP/CORS dan POST</h2>
+  <h3>A. Preflight CORS</h3>
+  <p>Dari terminal, jalankan permintaan OPTIONS berikut. Respons yang diharapkan adalah HTTP 200 dan <code>Access-Control-Allow-Origin</code> yang tepat:</p>
+  <pre>curl.exe -i -X OPTIONS "https://bwyzqqetpgcqjnnwrzhh.supabase.co/functions/v1/translate-page" `
+  -H "Origin: https://dapper-bienenstitch-b63263.netlify.app" `
+  -H "Access-Control-Request-Method: POST" `
+  -H "Access-Control-Request-Headers: content-type,authorization,apikey"</pre>
+  <p>Hasil aktual: <span class="result-line"></span> &nbsp; Tanggal/jam: <span class="result-line"></span></p>
+
+  <h3>B. Uji POST lewat halaman situs</h3>
+  <ol>
+    <li>Buka situs Netlify secara normal, login bila deployment meminta autentikasi, lalu buka Developer Tools → Network.</li>
+    <li>Pilih English. Cari request <code>/functions/v1/translate-page</code>; pastikan method POST dan payload berisi <code>{"lang":"en","texts":[...]}</code>.</li>
+    <li>Pastikan request hanya mengirim teks halaman di body; frontend tidak mengirim URL halaman untuk di-fetch oleh fungsi.</li>
+    <li>Periksa response. Target sukses: HTTP 200, JSON <code>{"translations":["..."]}</code>, jumlah hasil sama dengan jumlah teks yang dikirim, dan hasil terjemahan tidak kosong.</li>
+    <li>Uji satu teks sederhana lebih dulu, kemudian ganti bahasa/halaman untuk melihat apakah teks terjemahan diterapkan dan tersimpan di cache.</li>
+  </ol>
+  <table>
+    <thead><tr><th>Uji</th><th>Hasil yang diharapkan</th><th>Hasil manual</th></tr></thead>
+    <tbody>
+      <tr><td>POST 1 teks bahasa Indonesia</td><td>200 dan satu terjemahan Inggris</td><td></td></tr>
+      <tr><td>POST beberapa teks</td><td>200 dan array urutannya tetap sama</td><td></td></tr>
+      <tr><td>Ganti bahasa lalu kembali ke Indonesia</td><td>Teks kembali ke sumber tanpa duplikasi/teks rusak</td><td></td></tr>
+      <tr><td>Reload dan buka halaman lain</td><td>Preferensi bahasa tetap konsisten</td><td></td></tr>
+    </tbody>
+  </table>
+
+  <h2>5. Jika gagal, catat bukti yang aman</h2>
+  <table>
+    <thead><tr><th>Gejala</th><th>Yang dicek berikutnya</th><th>Jangan dibagikan</th></tr></thead>
+    <tbody>
+      <tr><td>Preflight bukan 200 / tidak ada ACAO</td><td>Origin persis, secret allowlist, deployment fungsi terbaru, dan domain aktual pada address bar.</td><td>Token/kunci, cookies, Authorization header.</td></tr>
+      <tr><td>POST 401/403 dari Supabase</td><td>Fungsi yang aktif, verify JWT, publishable key frontend, dan origin allowlist.</td><td>Supabase secret/service-role key atau bearer token.</td></tr>
+      <tr><td>POST 502 dengan provider 404</td><td>Pesan error aman di Edge Function Logs, model aktif/override, proyek dan API key Google, Generative Language API.</td><td>URL provider lengkap bila mengandung <code>?key=...</code>.</td></tr>
+      <tr><td>POST 502 dengan provider 429/503</td><td>Kuota, billing, rate limit, permintaan sementara, dan retry setelah jeda.</td><td>Isi halaman sensitif yang ikut dikirim sebagai teks.</td></tr>
+      <tr><td>POST 200 tetapi UI masih bahasa sumber</td><td>JSON response, jumlah elemen/teks, cache browser, Console errors, dan apakah halaman dimuat via HTTPS/HTTP server.</td><td>Data pribadi pengunjung atau teks privat.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>6. Catatan hasil pemeriksaan otomatis terakhir</h2>
+  <ul>
+    <li>Fungsi Supabase <code>translate-page</code>: ACTIVE, versi 3 pada proyek yang diperiksa.</li>
+    <li>Preflight CORS untuk origin Netlify: HTTP 200 dengan origin yang sesuai.</li>
+    <li>POST dari halaman lokal ke fungsi: HTTP 502, provider Gemini HTTP 404 untuk model default <code>gemini-2.5-flash</code>.</li>
+    <li>Secret <code>GEMINI_API_KEY</code> dan <code>APP_ALLOWED_ORIGINS</code> ditemukan di proyek saat listing secret; nilainya tidak dibaca untuk laporan ini.</li>
+    <li>Situs Netlify merespons 401 pada pemeriksaan HTTP tanpa sesi. Verifikasi konten UI melalui browser dengan akses normal.</li>
+  </ul>
+
+  <h2>Catatan pemilik</h2>
+  <p>Model yang diuji manual: <span class="result-line"></span></p>
+  <p>Pesan/status provider (hapus key/token): <span class="result-line"></span></p>
+  <p>Tindakan lanjutan: <span class="result-line"></span></p>
+  <p class="muted small">Draft ini adalah daftar pemeriksaan, bukan bukti audit konfigurasi Google Cloud. Jangan menempelkan API key, JWT, service-role key, atau URL query yang mengandung key ke laporan.</p>
+</body>
+</html>

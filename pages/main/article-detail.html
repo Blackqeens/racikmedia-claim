@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Artikel — Racik Media</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../../assets/css/shared.css">
+  <script src="../../api/auth.js"></script>
+  <script src="../../assets/js/public-articles.js"></script>
+  <link rel="stylesheet" href="/assets/css/public-layout.css" />
+</head>
+<body class="min-h-screen bg-white text-slate-800">
+  <div id="rm-navbar-root"></div>
+  <header class="border-b border-slate-200">
+    <div class="mx-auto flex max-w-4xl items-center justify-between px-4 py-4">
+      <a href="articles.html" class="font-bold text-emerald-900">Racik Media · Jurnal</a>
+      <a href="bookmarks.html" class="text-sm font-semibold text-emerald-800 hover:underline">Artikel tersimpan</a>
+    </div>
+  </header>
+  <main class="mx-auto max-w-4xl px-4 py-10">
+    <div id="pageMessage" class="mb-5 text-sm text-slate-600" role="status" aria-live="polite">Memuat artikel...</div>
+    <article id="article" class="hidden">
+      <div id="articleMeta" class="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-wide text-emerald-800"></div>
+      <h1 id="articleTitle" class="mt-4 font-serif text-3xl font-bold leading-tight text-slate-900 sm:text-5xl"></h1>
+      <p id="articleExcerpt" class="mt-5 text-lg leading-8 text-slate-600"></p>
+      <div class="mt-5 flex flex-wrap items-center gap-2 border-y border-slate-100 py-4 text-sm text-slate-500">
+        <span>Ditulis oleh</span><a id="authorLink" class="font-semibold text-emerald-800 hover:underline"></a>
+        <span>·</span><time id="articleDate"></time>
+      </div>
+      <img id="coverImage" class="mt-8 hidden max-h-[32rem] w-full rounded-2xl object-cover" alt="">
+      <div id="articleContent" class="prose prose-lg mt-8 max-w-none leading-8"></div>
+      <div id="articleTags" class="mt-8 flex flex-wrap gap-2"></div>
+      <section class="mt-8 rounded-xl bg-emerald-50 p-4" aria-label="Interaksi artikel">
+        <div class="flex flex-wrap items-center gap-3">
+          <button id="likeButton" type="button" class="rounded-lg border border-emerald-800 px-4 py-2 text-sm font-semibold text-emerald-900">Suka · <span id="likeCount">0</span></button>
+          <button id="bookmarkButton" type="button" class="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700">Simpan artikel</button>
+          <span class="text-sm text-slate-600"><span id="commentCount">0</span> komentar</span>
+        </div>
+        <p id="interactionMessage" class="mt-3 text-sm text-slate-600" role="status" aria-live="polite"></p>
+      </section>
+    </article>
+
+    <section id="commentsSection" class="mt-12 border-t border-slate-200 pt-8">
+      <h2 class="font-serif text-2xl font-bold">Komentar pembaca</h2>
+      <p class="mt-1 text-sm text-slate-500">Silakan masuk untuk ikut berdiskusi. Maksimal 2.000 karakter per komentar.</p>
+      <form id="commentForm" class="mt-5">
+        <label for="commentText" class="sr-only">Tulis komentar</label>
+        <textarea id="commentText" required maxlength="2000" rows="4" class="w-full rounded-xl border border-slate-300 p-3 text-sm focus:border-emerald-700 focus:outline-none" placeholder="Tulis komentar yang sopan dan relevan..."></textarea>
+        <div class="mt-2 flex items-center justify-between gap-3">
+          <span id="commentFormMessage" class="text-sm text-slate-600" role="status" aria-live="polite"></span>
+          <button id="commentSubmit" class="rounded-lg bg-emerald-800 px-4 py-2 text-sm font-bold text-white hover:bg-emerald-900">Kirim komentar</button>
+        </div>
+      </form>
+      <div id="commentsList" class="mt-6 space-y-4"></div>
+    </section>
+  </main>
+  <script>
+    (function () {
+      var articleId = new URLSearchParams(window.location.search).get('id');
+      var articleNode = document.getElementById('article');
+      var pageMessage = document.getElementById('pageMessage');
+      var interactionMessage = document.getElementById('interactionMessage');
+      var commentFormMessage = document.getElementById('commentFormMessage');
+      var commentForm = document.getElementById('commentForm');
+      var viewerId = null;
+
+      function escape(value) { return PublicArticles.escapeHtml(value); }
+      function login() {
+        var next = encodeURIComponent(window.location.href);
+        window.location.href = '../auth/login.html?next=' + next;
+      }
+      function showError(element, error) {
+        element.textContent = error.message || 'Terjadi kesalahan.';
+        element.classList.add('text-rose-700');
+      }
+      function renderComments(comments) {
+        var list = document.getElementById('commentsList');
+        if (!comments.length) {
+          list.innerHTML = '<p class="rounded-xl bg-slate-50 p-4 text-sm text-slate-500">Belum ada komentar. Jadilah pembaca pertama yang berdiskusi.</p>';
+          return;
+        }
+        list.innerHTML = comments.map(function (comment) {
+          var removeButton = viewerId === comment.author_id
+            ? '<button type="button" data-delete-comment="' + escape(comment.id) + '" class="text-xs font-semibold text-rose-700 hover:underline">Hapus komentar</button>'
+            : '';
+          return '<article class="rounded-xl border border-slate-200 p-4"><div class="flex flex-wrap items-center justify-between gap-2"><strong class="text-sm">' + escape(comment.author_name) + '</strong><time class="text-xs text-slate-400">' + escape(PublicArticles.dateLabel(comment.created_at)) + '</time></div><p class="mt-3 whitespace-pre-wrap break-words text-sm leading-6">' + escape(comment.comment_text) + '</p><div class="mt-3">' + removeButton + '</div></article>';
+        }).join('');
+      }
+      async function loadComments() {
+        renderComments(await PublicArticles.getComments(articleId));
+      }
+      async function loadEngagement() {
+        var engagement = await PublicArticles.getEngagement(articleId);
+        if (!engagement) throw new Error('Interaksi artikel tidak tersedia.');
+        document.getElementById('likeCount').textContent = String(engagement.like_count || 0);
+        document.getElementById('commentCount').textContent = String(engagement.comment_count || 0);
+        var likeButton = document.getElementById('likeButton');
+        var bookmarkButton = document.getElementById('bookmarkButton');
+        likeButton.classList.toggle('bg-emerald-800', Boolean(engagement.liked));
+        likeButton.classList.toggle('text-white', Boolean(engagement.liked));
+        likeButton.setAttribute('aria-pressed', String(Boolean(engagement.liked)));
+        bookmarkButton.textContent = engagement.bookmarked ? 'Tersimpan · hapus' : 'Simpan artikel';
+        bookmarkButton.classList.toggle('bg-slate-800', Boolean(engagement.bookmarked));
+        bookmarkButton.classList.toggle('text-white', Boolean(engagement.bookmarked));
+        bookmarkButton.setAttribute('aria-pressed', String(Boolean(engagement.bookmarked)));
+      }
+      async function loadArticle() {
+        if (!articleId) throw new Error('ID artikel tidak tersedia.');
+        var article = await PublicArticles.get(articleId);
+        if (!article) throw new Error('Artikel tidak ditemukan atau tidak lagi tersedia.');
+        document.title = article.title + ' — Racik Media';
+        document.getElementById('articleTitle').textContent = article.title;
+        document.getElementById('articleExcerpt').textContent = article.excerpt || '';
+        document.getElementById('articleMeta').innerHTML = '<a class="hover:underline" href="articles.html?category=' + encodeURIComponent(article.category) + '">' + escape(article.category) + '</a>';
+        var authorLink = document.getElementById('authorLink');
+        authorLink.textContent = article.author_name || 'Penulis Racik Media';
+        authorLink.href = 'author-profile.html?id=' + encodeURIComponent(article.author_id);
+        var date = new Date(article.published_at);
+        document.getElementById('articleDate').textContent = PublicArticles.dateLabel(article.published_at);
+        document.getElementById('articleDate').dateTime = date.toISOString();
+        var cover = document.getElementById('coverImage');
+        var safeCoverUrl = PublicArticles.safeImageUrl(article.cover_url);
+        if (safeCoverUrl) {
+          cover.src = safeCoverUrl;
+          cover.alt = article.title;
+          cover.classList.remove('hidden');
+        }
+        document.getElementById('articleContent').innerHTML = PublicArticles.sanitizeContent(article.content);
+        document.getElementById('articleTags').innerHTML = (article.tags || []).map(function (tag) {
+          return '<a class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700 hover:bg-emerald-50 hover:text-emerald-800" href="articles.html?tag=' + encodeURIComponent(tag) + '">#' + escape(tag) + '</a>';
+        }).join('');
+        articleNode.classList.remove('hidden');
+        pageMessage.textContent = '';
+        var client = await BobAuth.getClient();
+        var auth = await client.auth.getUser();
+        if (auth.error) throw auth.error;
+        viewerId = auth.data.user ? auth.data.user.id : null;
+        await Promise.all([loadComments(), loadEngagement()]);
+      }
+      document.getElementById('likeButton').addEventListener('click', async function () {
+        try {
+          if (!viewerId) return login();
+          await PublicArticles.toggleReaction(articleId, 'like');
+          await loadEngagement();
+        } catch (error) { showError(interactionMessage, error); }
+      });
+      document.getElementById('bookmarkButton').addEventListener('click', async function () {
+        try {
+          if (!viewerId) return login();
+          await PublicArticles.toggleReaction(articleId, 'bookmark');
+          await loadEngagement();
+          interactionMessage.textContent = 'Status artikel tersimpan diperbarui.';
+          interactionMessage.classList.remove('text-rose-700');
+        } catch (error) { showError(interactionMessage, error); }
+      });
+      commentForm.addEventListener('submit', async function (event) {
+        event.preventDefault();
+        try {
+          if (!viewerId) return login();
+          var submit = document.getElementById('commentSubmit');
+          submit.disabled = true;
+          await PublicArticles.addComment(articleId, document.getElementById('commentText').value);
+          commentForm.reset();
+          commentFormMessage.textContent = 'Komentar berhasil dikirim.';
+          commentFormMessage.classList.remove('text-rose-700');
+          await Promise.all([loadComments(), loadEngagement()]);
+        } catch (error) { showError(commentFormMessage, error); }
+        finally { document.getElementById('commentSubmit').disabled = false; }
+      });
+      document.getElementById('commentsList').addEventListener('click', async function (event) {
+        var button = event.target.closest('[data-delete-comment]');
+        if (!button || !window.confirm('Hapus komentar ini?')) return;
+        try {
+          await PublicArticles.deleteComment(button.dataset.deleteComment);
+          await Promise.all([loadComments(), loadEngagement()]);
+        } catch (error) { showError(commentFormMessage, error); }
+      });
+      loadArticle().catch(function (error) {
+        pageMessage.textContent = error.message || 'Artikel gagal dimuat.';
+        pageMessage.classList.add('text-rose-700');
+        commentForm.classList.add('hidden');
+      });
+    })();
+  </script>
+  <script src="../../assets/js/lang.js"></script>
+  <script src="/assets/js/layout.js"></script>
+  <script src="/assets/js/public-layout.js"></script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "liveServer.settings.port": 5501,
+  "chat.hookFilesLocations": {
+    ".github/hooks": true,
+    ".claude/settings.local.json": true,
+    ".claude/settings.json": true,
+    "~/.copilot/hooks": true,
+    "~/.claude/settings.json": true,
+    "~/.agents/hooks": true,
+    ".agents/hooks": true
+  }
+}

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login / Daftar Member — BOB</title>
+  
+  <!-- FIX TASK 1: Urutan pemanggilan script CDN & Config yang benar -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../../assets/css/shared.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../../assets/js/supabase-config.js"></script>
+  <script src="../../api/auth.js"></script>
+
+  <link rel="preconnect" href="https://googleapis.com" />
+  <link rel="preconnect" href="https://gstatic.com" crossorigin />
+  <link href="https://googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+h1, h2, .font-serif { font-family: 'Lora', Georgia, serif; }
+    .gradient-bg { background: linear-gradient(135deg, #ecfdf5 0%, #e0f2fe 50%, #f0fdf4 100%); min-height: 100vh; }
+    .card { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 20px; box-shadow: 0 8px 40px rgba(0,0,0,0.08); }
+    .input-field { width: 100%; padding: 11px 16px; border: 1.5px solid #e5e7eb; border-radius: 99px; font-size: 14px; outline: none; transition: border-color .2s, box-shadow .2s; background: #fafafa; }
+    .input-field:focus { border-color: #34d399; box-shadow: 0 0 0 3px rgba(52,211,153,.15); background: #fff; }
+    .btn-primary { width: 100%; padding: 12px 20px; border-radius: 99px; background: linear-gradient(135deg, #34d399 0%, #38bdf8 100%); color: #064e3b; font-size: 14px; font-weight: 700; border: none; cursor: pointer; }
+    .tab-btn { flex: 1; padding: 8px; border-radius: 99px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; background: transparent; color: #6b7280; }
+    .tab-btn.active { background: linear-gradient(135deg, #34d399 0%, #38bdf8 100%); color: #064e3b; }
+    .error-msg { color: #dc2626; font-size: 13px; text-align: center; margin-top: 4px; display: none; }
+  </style>
+  <link rel="stylesheet" href="/assets/css/public-layout.css" />
+</head>
+<body class="gradient-bg flex items-center justify-center px-4 py-12">
+  <div id="rm-navbar-root"></div>
+  <div class="w-full max-w-md flex flex-col gap-6">
+    <div class="text-center">
+      <a href="../main/homepage.html" class="font-serif text-3xl font-bold text-gray-900">BOB</a>
+      <p class="text-sm text-gray-500 mt-1">Platform Editorial & Commerce Lokal Indonesia</p>
+    </div>
+    <div class="card p-8 flex flex-col gap-6">
+      <div class="flex items-center gap-1 bg-gray-100 rounded-full p-1">
+        <button id="tab-login" class="tab-btn active">Masuk</button>
+        <button id="tab-register" class="tab-btn">Daftar Member</button>
+      </div>
+
+      <div id="panel-login" class="flex flex-col gap-5">
+        <div>
+          <h2 class="font-serif text-xl font-bold text-gray-900">Selamat datang kembali 👋</h2>
+          <p class="text-sm text-gray-500 mt-1">Masuk untuk melanjutkan pengalaman Anda di BOB.</p>
+        </div>
+        <!-- FIX TASK 1 & 2: Form submit asinkronus dengan penanganan pesan inline -->
+        <form onsubmit="return handleEmailLogin(event)" class="flex flex-col gap-3">
+          <input type="email" id="login-email" placeholder="Alamat email" class="input-field" required />
+          <input type="password" id="login-password" placeholder="Kata sandi" class="input-field" required />
+          <a href="forgot-password.html" class="self-end text-xs font-semibold text-emerald-800 hover:underline">Lupa kata sandi?</a>
+          <div id="login-error" class="error-msg"></div>
+          <button type="submit" class="btn-primary mt-2">Masuk ke Akun</button>
+        </form>
+        <button type="button" onclick="handleGoogleLogin()" class="w-full rounded-full border border-slate-300 px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50">
+          Lanjutkan dengan Google
+        </button>
+        <p class="text-center text-xs text-slate-500">Belum punya akun? <a href="register.html" class="font-semibold text-emerald-800 hover:underline">Daftar</a></p>
+        <p class="text-center text-xs text-slate-500">Belum menerima email konfirmasi? <a href="verify-email.html" class="font-semibold text-emerald-800 hover:underline">Kirim ulang</a></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (async function initializeLoginPage() {
+      const params = new URLSearchParams(window.location.search);
+      const requestedEmail = params.get('email');
+      if (requestedEmail) document.getElementById('login-email').value = requestedEmail;
+      await BobAuth.redirectIfAuthenticated();
+      if (new URLSearchParams(window.location.search).get('switchError') === 'account_mismatch') {
+        showLoginError('Akun Google yang dipilih berbeda dari akun tujuan. Pilih akun yang sesuai lalu coba lagi.');
+      }
+    })();
+
+    document.getElementById('tab-register').addEventListener('click', function () {
+      const params = new URLSearchParams(window.location.search);
+      const next = params.get('next');
+      const email = params.get('email');
+      const registrationUrl = new URL('register.html', window.location.href);
+      if (next) registrationUrl.searchParams.set('next', next);
+      if (email) registrationUrl.searchParams.set('email', email);
+      window.location.href = registrationUrl.href;
+    });
+
+    function showLoginError(message) {
+      const errorDiv = document.getElementById('login-error');
+      errorDiv.textContent = message;
+      errorDiv.style.display = 'block';
+    }
+
+    async function handleGoogleLogin() {
+      const params = new URLSearchParams(window.location.search);
+      const result = await BobAuth.loginSocial('google', {
+        promptAccountSelection: params.get('switchAccount') === '1'
+      });
+      if (!result.success) showLoginError(result.error);
+    }
+
+    async function handleEmailLogin(event) {
+      event.preventDefault();
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+      const errorDiv = document.getElementById('login-error');
+      
+      errorDiv.style.display = 'none';
+
+      // Memanggil fungsi Overhaul BobAuth
+      const hasil = await BobAuth.login(email, password);
+
+      if (!hasil.success) {
+        showLoginError(hasil.error);
+      }
+      return false;
+    }
+  </script>
+  <script src="../../assets/js/lang.js"></script>
+  <script src="/assets/js/layout.js"></script>
+  <script src="/assets/js/public-layout.js"></script>
+</body>
+</html>

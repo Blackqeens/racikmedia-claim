@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kurasi Headline Beranda — Master Admin BOB Racik Media</title>
+
+  <!-- ROUTE GUARD: Hanya Master Admin yang berhak mengakses -->
+  <script src="../../api/auth.js"></script>
+  <script>BobAuth.requireRole('master_admin');</script>
+
+  <!-- External Stylesheets -->
+  <link rel="stylesheet" href="../../style.css" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../../assets/css/shared.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+/* ── Master Sidebar ── */
+    .master-sidebar {
+      position: fixed; top: 0; left: 0; bottom: 0;
+      width: 250px; background: #0b0f19;
+      border-right: 1px solid rgba(255,255,255,.07);
+      display: flex; flex-direction: column;
+      z-index: 40; overflow-y: auto;
+    }
+    .master-logo {
+      padding: 22px 20px 20px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .master-badge {
+      font-size: 10px; font-weight: 800; letter-spacing: .08em;
+      background: linear-gradient(135deg, #a855f7, #6366f1);
+      color: #fff; padding: 3px 9px; border-radius: 99px;
+      box-shadow: 0 0 12px rgba(168,85,247,.35);
+    }
+    .m-section {
+      font-size: 10px; font-weight: 800; color: rgba(255,255,255,.3);
+      letter-spacing: .09em; text-transform: uppercase;
+      padding: 18px 20px 6px;
+    }
+    .m-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 20px; font-size: 13px; color: rgba(255,255,255,.65);
+      text-decoration: none; border-left: 3px solid transparent;
+      transition: all .15s ease; cursor: pointer;
+    }
+    .m-item:hover { color: #fff; background: rgba(255,255,255,.05); }
+    .m-item.active { color: #fff; background: rgba(168,85,247,.12); border-left-color: #a855f7; font-weight: 600; }
+    .m-item svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+    /* ── Master Topbar ── */
+    .master-topbar {
+      position: fixed; top: 0; left: 250px; right: 0; height: 60px;
+      background: #0b0f19; border-bottom: 1px solid rgba(255,255,255,.07);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 32px; z-index: 30;
+    }
+
+    /* ── Content Layout ── */
+    .main-wrap { margin-left: 250px; padding-top: 60px; min-height: 100vh; }
+    .content   { padding: 32px 36px 60px; }
+
+    .m-card {
+      background: #1e293b; border: 1px solid rgba(255,255,255,.08);
+      border-radius: 14px; box-shadow: 0 4px 20px rgba(0,0,0,.25);
+    }
+
+    /* ── Star Button Hover Glow ── */
+    .btn-star-active {
+      background: linear-gradient(135deg, #059669, #10b981);
+      box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+    }
+    .btn-star-inactive {
+      background: linear-gradient(135deg, #7c3aed, #6366f1);
+      box-shadow: 0 0 10px rgba(124, 58, 237, 0.25);
+    }
+    .btn-star-inactive:hover {
+      background: linear-gradient(135deg, #6d28d9, #4f46e5);
+      box-shadow: 0 0 16px rgba(124, 58, 237, 0.45);
+    }
+
+    /* Modal styling */
+    .modal-backdrop {
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(6px);
+    }
+  </style>
+  <link rel="stylesheet" href="/assets/css/public-layout.css" />
+</head>
+<body data-chat-context="master_admin_headline_curation">
+  <div id="rm-navbar-root"></div>
+
+<!-- ══════════════════════════════════════
+     SIDEBAR MASTER ADMIN
+     ══════════════════════════════════════ -->
+<aside class="master-sidebar">
+  <div class="master-logo">
+    <div class="flex items-center gap-3">
+      <img src="../../assets/brand/1.png" alt="Racik Media" class="h-8 w-auto" />
+      <div>
+        <span class="font-serif text-lg font-bold text-white tracking-tight">BOB</span>
+        <p class="text-[9px] text-purple-400 font-semibold uppercase tracking-widest">Racik Media</p>
+      </div>
+    </div>
+    <span class="master-badge">MASTER</span>
+  </div>
+
+  <div class="m-section">Kontrol Platform</div>
+  <a href="dashboard.html" class="m-item" id="menu-overview">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+    Overview Sistem
+  </a>
+  <a href="dashboard.html#tab-admin-mgmt" class="m-item" id="menu-admin-mgmt">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+    Kelola Akun Admin
+  </a>
+  <a href="kurasi-headline.html" class="m-item active" id="menu-headline">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
+    Kurasi Headline Beranda
+    <span class="ml-auto text-[10px] bg-purple-600 px-2 py-0.5 rounded-full font-bold text-white" id="badge-ready-count">Memuat…</span>
+  </a>
+
+  <div class="m-section">Akses Khusus</div>
+  <a href="../admin/dashboard.html" class="m-item">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+    Buka Meja Admin Biasa
+  </a>
+  <a href="../main/dashboard.html" class="m-item">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0h6"/></svg>
+    Lihat Tampilan Pembeli
+  </a>
+
+  <div class="mt-auto p-4 border-t border-slate-800/80">
+    <button onclick="BobAuth.logout()" class="w-full flex items-center justify-center gap-2 py-2 px-3 text-xs font-semibold text-rose-400 hover:text-white hover:bg-rose-900/40 rounded-lg transition-colors">
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+      Keluar Sesi Master
+    </button>
+  </div>
+</aside>
+
+<!-- ══════════════════════════════════════
+     TOPBAR MASTER ADMIN
+     ══════════════════════════════════════ -->
+<header class="master-topbar">
+  <div class="flex items-center gap-3">
+    <span class="w-2.5 h-2.5 rounded-full bg-purple-500 animate-pulse"></span>
+    <span class="text-xs font-medium text-slate-300">Sistem Berjalan Normal · Blackqeens's Org</span>
+    <span class="text-xs text-slate-600">|</span>
+    <span id="status-supabase" class="text-xs text-amber-300 bg-amber-950/60 border border-amber-800/50 px-2 py-0.5 rounded font-mono">Supabase: memeriksa…</span>
+    <span id="status-astra" class="text-xs text-slate-400 bg-slate-800 border border-slate-700 px-2 py-0.5 rounded font-mono">Astra: belum terhubung</span>
+    <button id="retry-astra-sync" class="text-xs text-slate-300 hover:text-white border border-slate-700 px-2 py-0.5 rounded">Coba sync</button>
+  </div>
+
+  <div class="flex items-center gap-4">
+    <div class="text-right">
+      <p class="text-xs font-bold text-white" id="master-user-name">Deni Pratama (Master)</p>
+      <p class="text-[11px] text-purple-300" id="master-user-email">master@bob.id</p>
+    </div>
+    <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-purple-600 to-indigo-500 text-white flex items-center justify-center font-bold text-xs shadow-lg shadow-purple-500/30">
+      👑
+    </div>
+  </div>
+</header>
+
+<!-- ══════════════════════════════════════
+     MAIN CONTENT: KURASI HEADLINE
+     ══════════════════════════════════════ -->
+<main class="main-wrap">
+  <div class="content">
+
+    <!-- Header Section -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-7">
+      <div>
+        <div class="flex items-center gap-2 mb-1">
+          <span class="text-xs font-bold uppercase tracking-wider text-purple-400 bg-purple-950/80 border border-purple-800/60 px-2.5 py-0.5 rounded-full">
+            Alur Dua Tahap · Tahap 3 (Final)
+          </span>
+          <span class="text-xs text-slate-500">Otoritas Penetapan Homepage</span>
+        </div>
+        <h1 class="text-2xl font-bold text-white">Kurasi Headline Beranda Utama</h1>
+        <p class="text-sm text-slate-400 mt-1 max-w-3xl">
+          Artikel di bawah ini telah diverifikasi kelayakannya oleh <strong>Admin Moderator</strong>. Pilih artikel unggulan menggunakan tombol bintang (<span class="text-amber-400">★</span>) untuk menampilkannya pada banner headline teratas pengunjung.
+        </p>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <a href="../main/homepage.html" target="_blank" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-lg border border-slate-700 flex items-center gap-1.5 transition">
+          <span>🌐</span> Pratinjau Beranda Publik
+        </a>
+      </div>
+    </div>
+
+    <!-- ── STEPPER ALUR DUA TAHAP ── -->
+    <div class="m-card p-5 mb-8 border border-purple-500/20 bg-slate-900/60">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        
+        <div class="p-3.5 rounded-xl bg-slate-800/50 border border-slate-700/60 flex items-start gap-3">
+          <div class="w-7 h-7 rounded-lg bg-slate-700 text-slate-300 flex items-center justify-center font-bold text-xs shrink-0">1</div>
+          <div>
+            <p class="text-xs font-bold text-slate-200">Pengajuan Penulis</p>
+            <p class="text-[11px] text-slate-400 mt-0.5">Penulis lokal mengirim draf melalui editor artikel.</p>
+          </div>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-emerald-950/30 border border-emerald-800/40 flex items-start gap-3">
+          <div class="w-7 h-7 rounded-lg bg-emerald-900 text-emerald-300 flex items-center justify-center font-bold text-xs shrink-0">2</div>
+          <div>
+            <div class="flex items-center gap-1.5">
+              <p class="text-xs font-bold text-emerald-300">Review Admin Moderator</p>
+              <span class="text-[9px] bg-emerald-900/60 text-emerald-200 px-1.5 py-0.2 rounded font-semibold">Selesai</span>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-0.5">Pemeriksaan tata bahasa, visual estetika, dan orisinalitas.</p>
+          </div>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-purple-950/40 border border-purple-500/40 flex items-start gap-3">
+          <div class="w-7 h-7 rounded-lg bg-purple-600 text-white flex items-center justify-center font-bold text-xs shrink-0">3</div>
+          <div>
+            <div class="flex items-center gap-1.5">
+              <p class="text-xs font-bold text-purple-200">Kurasi Master Admin</p>
+              <span class="text-[9px] bg-purple-600 text-white px-1.5 py-0.2 rounded font-bold">Saat Ini</span>
+            </div>
+            <p class="text-[11px] text-purple-300 mt-0.5">Klik tombol bintang untuk menetapkan posisi Headline Utama.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── STATS & STATUS HEADLINE AKTIF ── -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-7">
+      <div class="m-card p-4 border-l-4 border-l-purple-500 flex items-center justify-between">
+        <div>
+          <p class="text-xs font-semibold text-slate-400">Total Siap Kurasi</p>
+          <p class="text-2xl font-bold text-white mt-0.5" id="stat-ready-count">—</p>
+        </div>
+        <div class="w-10 h-10 rounded-xl bg-purple-950/80 text-purple-300 flex items-center justify-center text-lg">
+          📄
+        </div>
+      </div>
+
+      <div class="m-card p-4 border-l-4 border-l-emerald-500 flex items-center justify-between">
+        <div>
+          <p class="text-xs font-semibold text-slate-400">Headline Terpilih Aktif</p>
+          <p class="text-2xl font-bold text-emerald-400 mt-0.5" id="stat-active-count">—</p>
+        </div>
+        <div class="w-10 h-10 rounded-xl bg-emerald-950/80 text-emerald-300 flex items-center justify-center text-lg">
+          ★
+        </div>
+      </div>
+
+      <div class="m-card p-4 border-l-4 border-l-blue-500 flex items-center justify-between">
+        <div>
+          <p class="text-xs font-semibold text-slate-400">Slot Maksimum Headline</p>
+          <p class="text-2xl font-bold text-blue-400 mt-0.5">4 <span class="text-xs text-slate-400 font-normal">Slot Carousel</span></p>
+        </div>
+        <div class="w-10 h-10 rounded-xl bg-blue-950/80 text-blue-300 flex items-center justify-center text-lg">
+          🖼️
+        </div>
+      </div>
+    </div>
+
+    <!-- ── FILTER & SEARCH BAR ── -->
+    <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 mb-6">
+      
+      <!-- Category Filter Pills -->
+      <div class="flex items-center gap-1.5 overflow-x-auto pb-1" id="filter-container">
+        <button data-filter="all" class="filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-purple-600 text-white transition-all whitespace-nowrap">Semua</button>
+        <button data-filter="active" class="filter-btn px-3 py-1.5 rounded-lg text-xs font-medium text-slate-400 bg-slate-800/80 hover:bg-slate-700 hover:text-white transition-all whitespace-nowrap">★ Headline Aktif</button>
+        <button data-filter="archived" class="filter-btn px-3 py-1.5 rounded-lg text-xs font-medium text-slate-400 bg-slate-800/80 hover:bg-slate-700 hover:text-white transition-all whitespace-nowrap">Arsip</button>
+      </div>
+
+      <!-- Search Input -->
+      <div class="relative w-full sm:w-64 shrink-0">
+        <input type="text" id="search-input" oninput="handleSearch()" placeholder="Cari judul, penulis, admin..." class="w-full bg-slate-900 border border-slate-700 rounded-lg pl-8 pr-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-purple-500 transition" />
+        <svg class="w-4 h-4 text-slate-500 absolute left-2.5 top-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+      </div>
+
+    </div>
+
+    <!-- ── ARTICLE CARDS GRID ── -->
+    <div class="flex justify-end mb-4">
+      <button id="create-article-button" class="px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold rounded-lg transition">+ Artikel Baru</button>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="articles-grid" aria-live="polite">
+      <div class="col-span-full p-12 text-center text-sm text-slate-400">Memuat artikel dari Supabase…</div>
+    </div>
+
+  </div>
+</main>
+
+<!-- ══════════════════════════════════════
+     MODAL PREVIEW ARTIKEL LENGKAP
+     ══════════════════════════════════════ -->
+<div id="preview-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 modal-backdrop">
+  <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl flex flex-col">
+    
+    <div class="p-6 border-b border-slate-800 flex items-start justify-between">
+      <div>
+        <span id="modal-category" class="px-2.5 py-0.5 rounded text-[10px] font-bold bg-purple-950 text-purple-300 border border-purple-800">Kategori</span>
+        <h2 id="modal-title" class="text-xl font-serif font-bold text-white mt-2">Judul Artikel</h2>
+        <p class="text-xs text-slate-400 mt-1">Oleh <span id="modal-author" class="text-white font-semibold">-</span> · Disetujui Admin: <span id="modal-reviewer" class="text-emerald-400 font-semibold">-</span></p>
+      </div>
+      <button onclick="closeModal()" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center text-sm font-bold transition">✕</button>
+    </div>
+
+    <div class="p-6 space-y-4">
+      <img id="modal-image" src="" alt="Thumbnail" class="w-full h-56 object-cover rounded-xl border border-slate-800" />
+      
+      <div class="p-4 bg-slate-950/70 border border-slate-800 rounded-xl space-y-1.5">
+        <p class="text-xs font-bold text-emerald-400 flex items-center gap-1.5">
+          <span>✓</span> Verifikasi Moderasi Admin Selesai
+        </p>
+        <p id="modal-notes" class="text-xs text-slate-400 leading-relaxed italic">"Naskah telah disunting dari segi tata letak, orisinalitas naskah teruji, dan sesuai panduan nilai tabayyun Racik Media."</p>
+      </div>
+
+      <div class="space-y-2">
+        <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider">Ringkasan Narasi</h4>
+        <p id="modal-content" class="text-xs text-slate-300 leading-relaxed font-light">Isi konten...</p>
+      </div>
+    </div>
+
+    <div class="p-4 border-t border-slate-800 flex items-center justify-between bg-slate-950/40 rounded-b-2xl">
+      <span class="text-xs text-slate-400">Status Headline: <strong id="modal-headline-status" class="text-white">-</strong></span>
+      <div class="flex gap-2">
+        <button onclick="closeModal()" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-300 transition">Tutup</button>
+        <button id="modal-toggle-btn" onclick="toggleFromModal()" class="px-4 py-2 rounded-lg text-xs font-bold text-white transition flex items-center gap-1.5">
+          ★ Jadikan Headline Utama
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     TOAST NOTIFIKASI
+     ══════════════════════════════════════ -->
+<div id="master-toast" class="fixed bottom-6 right-6 z-50 bg-slate-900 border border-purple-500/50 text-white px-4 py-3 rounded-xl shadow-2xl text-xs font-medium hidden flex items-center gap-3 transition-all duration-300">
+  <span id="toast-icon" class="text-base">★</span>
+  <span id="toast-msg">Perubahan tersimpan.</span>
+</div>
+
+<!-- ══════════════════════════════════════
+     JAVASCRIPT: CONTROLLER & STORAGE
+     ══════════════════════════════════════ -->
+<script type="application/json">
+  /* ── DATA DUMMY AWAL (Lolos Review Admin) ── */
+  const DEFAULT_ARTICLES = [
+    {
+      id: "art-01",
+      title: "Menjaga Napas Tenun Tradisional di Ranah Minang",
+      category: "Wawasan Nusantara",
+      author: "Sinta Maharani",
+      authorCity: "Bukittinggi",
+      reviewer: "Admin BOB (Utama)",
+      reviewDate: "30 Sep 2026",
+      isHeadline: true,
+      headlineOrder: 1,
+      image: "https://images.unsplash.com/photo-1606760227091-3dd870d97f1d?w=600&q=75",
+      excerpt: "Eksplorasi mendalam tentang pengrajin tenun yang mempertahankan pewarna alami dari akar pohon dan getah kayu hutan demi menjaga warisan leluhur.",
+      notes: "Format tata letak rapi, visual foto resolusi tinggi, siap tampil di posisi hero banner."
+    },
+    {
+      id: "art-02",
+      title: "Kopi Robusta Lereng Kelud: Aroma Tanah Vulkanik",
+      category: "Jelajah Jurnal",
+      author: "Reza Pratama",
+      authorCity: "Kediri",
+      reviewer: "Admin Kedua (Regional Bandung)",
+      reviewDate: "29 Sep 2026",
+      isHeadline: true,
+      headlineOrder: 2,
+      image: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=600&q=75",
+      excerpt: "Perjalanan petani muda membudidayakan kopi dengan metode ramah lingkungan dan pasca panen fermentasi alami yang melahirkan cita rasa khas.",
+      notes: "Sangat direkomendasikan untuk pembeli pasar yang tertarik dengan komoditas kopi single origin."
+    },
+    {
+      id: "art-03",
+      title: "Filosofi Beras Merah Organik: Menghidupkan Sawah Ramah Hayati",
+      category: "Wawasan Nusantara",
+      author: "Dedi Supriyadi",
+      authorCity: "Boyolali",
+      reviewer: "Admin BOB (Utama)",
+      reviewDate: "28 Sep 2026",
+      isHeadline: false,
+      headlineOrder: 0,
+      image: "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=600&q=75",
+      excerpt: "Gerakan kelompok tani mengembalikan kesuburan tanah dengan pupuk kompos alami, menjaga mikroba sawah dan kesejahteraan generasi mendatang.",
+      notes: "Artikel telah lolos pengecekan konten; sangat cocok untuk headline kategori pangan organik."
+    },
+    {
+      id: "art-04",
+      title: "Etika Berniaga Berkeadilan dalam Spirit Tabayyun",
+      category: "Siar Islami",
+      author: "Ustadz Hilman Hakim",
+      authorCity: "Yogyakarta",
+      reviewer: "Admin BOB (Utama)",
+      reviewDate: "27 Sep 2026",
+      isHeadline: false,
+      headlineOrder: 0,
+      image: "https://images.unsplash.com/photo-1542838132-92c53300491e?w=600&q=75",
+      excerpt: "Menilik prinsip transparansi rantai pasok dan kejelasan akad dalam transaksi digital agar jual beli menjadi sarana keberkahan bersama.",
+      notes: "Naskah penguatan nilai 'Asal-Usul Benar' yang menjadi fondasi Racik Media."
+    },
+    {
+      id: "art-05",
+      title: "Madu Hutan Sumbawa: Berkah Lestari dari Sarang Pohon Tinggi",
+      category: "Jelajah Jurnal",
+      author: "Nabila Kusuma",
+      authorCity: "Sumbawa Besar",
+      reviewer: "Admin Kedua (Regional Bandung)",
+      reviewDate: "26 Sep 2026",
+      isHeadline: false,
+      headlineOrder: 0,
+      image: "https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=600&q=75",
+      excerpt: "Kisah para pemanjat pohon hutan liar memanen madu murni tanpa merusak sarang lebah demi menjaga keseimbangan ekosistem hutan tropis.",
+      notes: "Lolos moderasi visual dan bebas plagiasi 100%."
+    }
+  ];
+
+  /* ── LOCAL STORAGE INITIALIZATION ── */
+  function getArticles() {
+    const raw = localStorage.getItem('bob_master_headlines');
+    if (!raw) {
+      localStorage.setItem('bob_master_headlines', JSON.stringify(DEFAULT_ARTICLES));
+      return DEFAULT_ARTICLES;
+    }
+    try {
+      return JSON.parse(raw);
+    } catch(e) {
+      return DEFAULT_ARTICLES;
+    }
+  }
+
+  function saveArticles(list) {
+    localStorage.setItem('bob_master_headlines', JSON.stringify(list));
+  }
+
+  let currentFilter = 'all';
+  let searchQuery = '';
+  let activeModalArticleId = null;
+
+  /* ── RENDER ARTIKEL CARDS ── */
+  function renderArticles() {
+    const container = document.getElementById('articles-grid');
+    const articles = getArticles();
+
+    // Hitung counts
+    const readyCount = articles.length;
+    const activeCount = articles.filter(a => a.isHeadline).length;
+    
+    document.getElementById('stat-ready-count').textContent = readyCount;
+    document.getElementById('stat-active-count').textContent = activeCount;
+    document.getElementById('badge-ready-count').textContent = activeCount + ' Headline Aktif';
+
+    // Filtering
+    let filtered = articles.filter(a => {
+      // Filter kategori / headline
+      if (currentFilter === 'active' && !a.isHeadline) return false;
+      if (currentFilter !== 'all' && currentFilter !== 'active' && a.category !== currentFilter) return false;
+
+      // Filter search query
+      if (searchQuery) {
+        const q = searchQuery.toLowerCase();
+        const matchTitle = a.title.toLowerCase().includes(q);
+        const matchAuthor = a.author.toLowerCase().includes(q);
+        const matchReviewer = a.reviewer.toLowerCase().includes(q);
+        const matchCategory = a.category.toLowerCase().includes(q);
+        if (!matchTitle && !matchAuthor && !matchReviewer && !matchCategory) return false;
+      }
+      return true;
+    });
+
+    if (filtered.length === 0) {
+      container.innerHTML = `
+        <div class="col-span-full p-12 text-center bg-slate-900/40 rounded-2xl border border-slate-800">
+          <p class="text-3xl mb-2">🔍</p>
+          <p class="text-sm font-bold text-white">Tidak ada artikel yang cocok dengan filter</p>
+          <p class="text-xs text-slate-400 mt-1">Coba gunakan kata kunci lain atau ubah pilihan kategori di atas.</p>
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = filtered.map(a => {
+      const isH = a.isHeadline;
+      return `
+        <div class="m-card flex flex-col justify-between overflow-hidden transition-all duration-200 hover:border-purple-500/40 ${isH ? 'ring-2 ring-emerald-500/60 bg-gradient-to-b from-slate-800/90 to-slate-900' : ''}">
+          
+          <div>
+            <!-- Thumbnail cover -->
+            <div class="relative h-44 w-full overflow-hidden bg-slate-950">
+              <img src="${a.image}" alt="${a.title}" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" />
+              <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-transparent to-transparent"></div>
+              
+              <!-- Badges -->
+              <div class="absolute top-3 left-3 flex flex-wrap gap-1.5">
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-900/90 text-purple-300 border border-purple-500/40 backdrop-blur-md">
+                  ${a.category}
+                </span>
+                ${isH ? `
+                  <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-600 text-white shadow-lg flex items-center gap-1">
+                    ★ Headline Aktif
+                  </span>
+                ` : ''}
+              </div>
+
+              <div class="absolute bottom-2 left-3 right-3 text-[11px] text-slate-300 flex justify-between items-center">
+                <span>Oleh: <strong class="text-white">${a.author}</strong> (${a.authorCity})</span>
+              </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="p-5">
+              <div class="flex items-center gap-1.5 text-[10px] text-emerald-400 font-semibold mb-2">
+                <span>✓ Disetujui Admin:</span>
+                <span class="text-slate-300">${a.reviewer}</span>
+              </div>
+
+              <h3 class="font-serif text-base font-bold text-white leading-snug line-clamp-2 hover:text-purple-300 cursor-pointer transition" onclick="openPreview('${a.id}')">
+                ${a.title}
+              </h3>
+              
+              <p class="text-xs text-slate-400 mt-2 line-clamp-3 leading-relaxed">
+                ${a.excerpt}
+              </p>
+            </div>
+          </div>
+
+          <!-- Bottom Action Strip -->
+          <div class="p-4 pt-3 border-t border-slate-800 bg-slate-950/40 flex items-center justify-between gap-2">
+            <button onclick="openPreview('${a.id}')" class="text-xs font-semibold text-slate-400 hover:text-purple-300 transition flex items-center gap-1">
+              👁️ <span>Detail</span>
+            </button>
+
+            <!-- TOMBOL BINTANG DUA TAHAP -->
+            <button onclick="toggleHeadline('${a.id}')" class="px-3.5 py-1.5 rounded-lg text-xs font-bold text-white transition-all flex items-center gap-1.5 ${isH ? 'btn-star-active' : 'btn-star-inactive'}">
+              <span>★</span>
+              <span>${isH ? 'Headline Terpasang' : 'Pilih Jadi Headline'}</span>
+            </button>
+          </div>
+
+        </div>
+      `;
+    }).join('');
+  }
+
+  /* ── TOGGLE HEADLINE STATUS ── */
+  function toggleHeadline(id) {
+    const articles = getArticles();
+    const item = articles.find(a => a.id === id);
+    if (!item) return;
+
+    item.isHeadline = !item.isHeadline;
+    saveArticles(articles);
+    renderArticles();
+
+    if (item.isHeadline) {
+      showToast(`" ${item.title} " berhasil ditetapkan sebagai Headline Beranda Utama!`, '★');
+    } else {
+      showToast(`" ${item.title} " dilepas dari Headline Beranda Utama.`, 'ℹ️');
+    }
+
+    // Refresh modal button jika modal sedang terbuka
+    if (activeModalArticleId === id) {
+      updateModalButton(item);
+    }
+  }
+
+  /* ── FILTER & SEARCH HANDLERS ── */
+  function setFilter(cat, btn) {
+    currentFilter = cat;
+    document.querySelectorAll('.filter-btn').forEach(b => {
+      b.className = "filter-btn px-3 py-1.5 rounded-lg text-xs font-medium text-slate-400 bg-slate-800/80 hover:bg-slate-700 hover:text-white transition-all whitespace-nowrap";
+    });
+    btn.className = "filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-purple-600 text-white transition-all whitespace-nowrap";
+    renderArticles();
+  }
+
+  function handleSearch() {
+    searchQuery = document.getElementById('search-input').value.trim();
+    renderArticles();
+  }
+
+  /* ── MODAL PREVIEW FUNCTIONS ── */
+  function openPreview(id) {
+    const articles = getArticles();
+    const item = articles.find(a => a.id === id);
+    if (!item) return;
+
+    activeModalArticleId = id;
+    document.getElementById('modal-category').textContent = item.category;
+    document.getElementById('modal-title').textContent = item.title;
+    document.getElementById('modal-author').textContent = `${item.author} (${item.authorCity})`;
+    document.getElementById('modal-reviewer').textContent = item.reviewer;
+    document.getElementById('modal-image').src = item.image;
+    document.getElementById('modal-notes').textContent = `"${item.notes}"`;
+    document.getElementById('modal-content').textContent = item.excerpt;
+
+    updateModalButton(item);
+    document.getElementById('preview-modal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function updateModalButton(item) {
+    const btn = document.getElementById('modal-toggle-btn');
+    const statusText = document.getElementById('modal-headline-status');
+    if (item.isHeadline) {
+      statusText.innerHTML = '<span class="text-emerald-400 font-bold">★ Sedang Tayang di Beranda Utama</span>';
+      btn.className = "px-4 py-2 rounded-lg text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 transition flex items-center gap-1.5";
+      btn.innerHTML = '✕ Lepas dari Headline';
+    } else {
+      statusText.innerHTML = '<span class="text-slate-400">Belum Ditayangkan</span>';
+      btn.className = "px-4 py-2 rounded-lg text-xs font-bold text-white btn-star-inactive transition flex items-center gap-1.5";
+      btn.innerHTML = '★ Jadikan Headline Utama';
+    }
+  }
+
+  function toggleFromModal() {
+    if (activeModalArticleId) {
+      toggleHeadline(activeModalArticleId);
+    }
+  }
+
+  function closeModal() {
+    document.getElementById('preview-modal').classList.add('hidden');
+    document.body.style.overflow = '';
+    activeModalArticleId = null;
+  }
+
+  /* ── TOAST NOTIFIKASI ── */
+  function showToast(msg, icon = '★') {
+    const toast = document.getElementById('master-toast');
+    document.getElementById('toast-msg').textContent = msg;
+    document.getElementById('toast-icon').textContent = icon;
+    toast.classList.remove('hidden');
+    setTimeout(() => {
+      toast.classList.add('hidden');
+    }, 3800);
+  }
+
+  /* ── INITIAL LOAD ── */
+  document.addEventListener('DOMContentLoaded', () => {
+    // Sesi Master Admin
+    const session = BobAuth.getSession();
+    if (session) {
+      if (document.getElementById('master-user-name')) document.getElementById('master-user-name').textContent = (session.name || 'Deni Pratama') + ' (Master)';
+      if (document.getElementById('master-user-email')) document.getElementById('master-user-email').textContent = session.email || 'master@bob.id';
+    }
+
+    renderArticles();
+  });
+
+  // Close modal on Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeModal();
+  });
+</script>
+<script src="../../api/master-articles.js"></script>
+<script src="../../assets/js/master-articles-ui.js"></script>
+
+  <script src="../../assets/js/lang.js"></script>
+  <script src="/assets/js/layout.js"></script>
+  <script src="/assets/js/public-layout.js"></script>
+</body>
+</html>

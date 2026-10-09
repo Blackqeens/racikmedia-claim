@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pengajuan Toko Diterima — BOB</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../../assets/js/supabase-config.js"></script>
+  <script src="../../api/auth.js"></script>
+  <script>BobAuth.requireAuth();</script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../../assets/css/shared.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    body { background: #f0fdf4; min-height: 100vh; font-family: 'Inter', sans-serif; }
+    .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 20px; box-shadow: 0 4px 24px rgba(0,0,0,.06); }
+    .step-item { display: flex; align-items: flex-start; gap: 14px; padding: 14px 0; border-bottom: 1px solid #f3f4f6; }
+    .step-item:last-child { border-bottom: none; }
+    .step-num { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+    .step-done   { background: #059669; color: #fff; }
+    .step-active { background: #fef3c7; color: #92400e; border: 2px solid #f59e0b; }
+    .step-wait   { background: #f3f4f6; color: #9ca3af; }
+    @keyframes pulse-ring {
+      0%   { box-shadow: 0 0 0 0 rgba(5,150,105,.35); }
+      70%  { box-shadow: 0 0 0 14px rgba(5,150,105,0); }
+      100% { box-shadow: 0 0 0 0 rgba(5,150,105,0); }
+    }
+    .pulse-icon { animation: pulse-ring 2s ease-out infinite; border-radius: 50%; display: inline-flex; }
+  </style>
+  <link rel="stylesheet" href="/assets/css/public-layout.css" />
+</head>
+<body class="flex flex-col items-center justify-start px-4 py-10">
+  <div id="rm-navbar-root"></div>
+
+  <!-- Header brand -->
+  <div class="mb-8 text-center">
+    <a href="../main/dashboard.html" class="inline-flex items-center gap-2">
+      <img src="../../assets/brand/1.png" alt="BOB" style="height:36px;width:auto;" onerror="this.style.display='none'" />
+      <span style="font-family:'Lora',serif;font-size:22px;font-weight:700;color:#1f2328;">BOB</span>
+    </a>
+  </div>
+
+  <!-- Main card -->
+  <div class="card w-full max-w-lg p-8">
+
+    <!-- Icon + judul -->
+    <div class="flex flex-col items-center text-center mb-7">
+      <div class="pulse-icon mb-5">
+        <div style="width:72px;height:72px;background:linear-gradient(135deg,#34d399,#059669);border-radius:50%;display:flex;align-items:center;justify-content:center;">
+          <svg class="w-9 h-9 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+      </div>
+      <h1 style="font-family:'Lora',serif;font-size:22px;font-weight:700;color:#1f2328;">Pengajuan Berhasil Dikirim!</h1>
+      <p class="text-sm text-slate-500 mt-2 leading-relaxed max-w-sm">
+        Dokumen persyaratan toko Anda sedang dalam proses peninjauan oleh admin.<br>
+        Harap menunggu maksimal <strong class="text-slate-700">1×24 jam</strong>.
+      </p>
+    </div>
+
+    <!-- Info toko -->
+    <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:14px 18px;margin-bottom:24px;">
+      <p class="text-xs font-bold text-emerald-700 uppercase tracking-wide mb-2">Detail Pengajuan</p>
+      <div class="flex justify-between text-sm mb-1">
+        <span class="text-slate-500">Nama Toko</span>
+        <span class="font-semibold text-slate-800" id="info-shop-name">—</span>
+      </div>
+      <div class="flex justify-between text-sm mb-1">
+        <span class="text-slate-500">Jenis Toko</span>
+        <span class="font-semibold text-slate-800" id="info-shop-type">—</span>
+      </div>
+      <div class="flex justify-between text-sm">
+        <span class="text-slate-500">Status</span>
+        <span id="verif-status-badge" class="px-2 py-0.5 bg-amber-100 text-amber-800 text-xs font-bold rounded-full">⏳ Dalam Peninjauan</span>
+      </div>
+    </div>
+
+    <!-- Timeline langkah -->
+    <div class="mb-6">
+      <p class="text-xs font-bold text-slate-400 uppercase tracking-wide mb-3">Proses Verifikasi</p>
+      <div class="step-item">
+        <div class="step-num step-done">✓</div>
+        <div>
+          <p class="text-sm font-semibold text-slate-800">Pengajuan & Dokumen Dikirim</p>
+          <p class="text-xs text-slate-400 mt-0.5">KTP dan selfie berhasil diunggah ke sistem</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num step-active">2</div>
+        <div>
+          <p class="text-sm font-semibold text-amber-700">Pengecekan Dokumen oleh Admin</p>
+          <p class="text-xs text-slate-400 mt-0.5">Admin sedang memeriksa kelengkapan & keaslian dokumen</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num step-wait">3</div>
+        <div>
+          <p class="text-sm font-semibold text-slate-400">Toko Diaktifkan</p>
+          <p class="text-xs text-slate-400 mt-0.5">Setelah disetujui, Anda bisa langsung berjualan</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pesan info -->
+    <div id="warn-pending" style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:12px 16px;margin-bottom:24px;">
+      <p class="text-xs text-amber-800 leading-relaxed">
+        ⚠️ <strong>Toko Anda belum bisa diakses</strong> sebelum admin menyelesaikan verifikasi.
+        Anda akan dihubungi melalui email terdaftar setelah proses selesai.
+      </p>
+    </div>
+
+    <!-- Tombol kembali ke menu utama -->
+    <a href="../main/dashboard.html"
+       style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px;background:linear-gradient(135deg,#34d399,#059669);color:#fff;font-size:14px;font-weight:700;border-radius:10px;text-decoration:none;transition:opacity .15s;"
+       onmouseover="this.style.opacity='.88'" onmouseout="this.style.opacity='1'">
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0h6"/>
+      </svg>
+      Kembali ke Menu Utama Pengguna
+    </a>
+
+    <p class="text-center text-xs text-slate-400 mt-4">
+      Butuh bantuan? <a href="../main/dashboard.html" class="text-emerald-600 font-semibold hover:underline">Hubungi support</a>
+    </p>
+  </div>
+
+  <script>
+    // Tampilkan info toko dari sessionStorage
+    var shopName = sessionStorage.getItem('bob_shop_name') || 'Toko Anda';
+    var shopType = sessionStorage.getItem('bob_shop_type') || 'personal';
+    document.getElementById('info-shop-name').textContent = shopName;
+    document.getElementById('info-shop-type').textContent = shopType === 'official' ? 'Official Store' : 'Toko Perorangan';
+
+    // ── Fix #4: Polling status verifikasi real-time ──────────
+    // Cek tiap 15 detik apakah admin sudah memproses pengajuan.
+    // Jika verified → redirect ke seller dashboard.
+    // Jika rejected → tampilkan catatan penolakan di halaman ini.
+    var pollTimer = null;
+
+    async function checkVerificationStatus() {
+      try {
+        var client = await BobAuth.getClient();
+        var auth   = await client.auth.getUser();
+        if (!auth.data || !auth.data.user) return; // sesi habis, biarkan requireAuth yang handle
+
+        var result = await client
+          .from('seller_verifications')
+          .select('status, review_note, reviewed_at')
+          .eq('user_id', auth.data.user.id)
+          .maybeSingle();
+
+        if (result.error || !result.data) return; // gagal atau belum ada data
+
+        var rec = result.data;
+
+        if (rec.status === 'verified') {
+          // Pengajuan disetujui; login berikutnya tetap menuju dashboard pengguna.
+          clearInterval(pollTimer);
+          sessionStorage.setItem('bob_shop_verified', 'true');
+          showStatusApproved();
+          setTimeout(function() {
+            window.location.href = '../main/dashboard.html';
+          }, 1500);
+
+        } else if (rec.status === 'rejected') {
+          // Pengajuan ditolak → tampilkan info penolakan
+          clearInterval(pollTimer);
+          showStatusRejected(rec.review_note, rec.reviewed_at);
+        }
+        // status 'pending' → tidak ada perubahan, polling tetap berjalan
+      } catch (e) {
+        // Gagal fetch — biarkan interval coba lagi nanti
+        console.warn('Polling verifikasi gagal:', e.message);
+      }
+    }
+
+    function showStatusApproved() {
+      // Ubah icon jadi centang hijau solid
+      var iconDiv = document.querySelector('.pulse-icon div');
+      if (iconDiv) iconDiv.style.background = 'linear-gradient(135deg,#059669,#047857)';
+      // Update status badge via id (aman dari multi-class selector)
+      var badge = document.getElementById('verif-status-badge');
+      if (badge) {
+        badge.className = 'px-2 py-0.5 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-full';
+        badge.textContent = '✓ Disetujui';
+      }
+      // Tampilkan banner hijau di dalam .card sebelum tombol utama
+      var banner = document.createElement('div');
+      banner.id = 'status-banner';
+      banner.style.cssText = 'background:#f0fdf4;border:1px solid #6ee7b7;border-radius:10px;padding:12px 16px;margin-bottom:16px;';
+      banner.innerHTML = '<p style="font-size:13px;font-weight:700;color:#065f46;">🎉 Pengajuan disetujui! Mengalihkan ke dashboard pengguna...</p>';
+      var mainBtn = document.querySelector('a[href="../main/dashboard.html"]');
+      if (mainBtn) mainBtn.parentNode.insertBefore(banner, mainBtn);
+    }
+
+    function showStatusRejected(note, reviewedAt) {
+      var dateStr = reviewedAt ? new Date(reviewedAt).toLocaleString('id-ID') : '';
+      // Update icon jadi merah
+      var iconDiv = document.querySelector('.pulse-icon div');
+      if (iconDiv) {
+        iconDiv.style.background = 'linear-gradient(135deg,#ef4444,#b91c1c)';
+        iconDiv.innerHTML = '<svg style="width:36px;height:36px;color:white;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>';
+      }
+      var pulseIcon = document.querySelector('.pulse-icon');
+      if (pulseIcon) pulseIcon.style.animation = 'none';
+      // Update judul & sub
+      var h1 = document.querySelector('h1');
+      if (h1) {
+        h1.textContent = 'Pengajuan Ditolak';
+        if (h1.nextElementSibling) {
+          h1.nextElementSibling.textContent = 'Admin telah meninjau dokumen Anda.' + (dateStr ? ' Diperiksa pada ' + dateStr + '.' : '');
+        }
+      }
+      // Update status badge via id
+      var badge = document.getElementById('verif-status-badge');
+      if (badge) {
+        badge.className = 'px-2 py-0.5 bg-red-100 text-red-800 text-xs font-bold rounded-full';
+        badge.textContent = '✕ Ditolak';
+      }
+      // Tampilkan catatan penolakan di atas tombol utama
+      var noteBox = document.createElement('div');
+      noteBox.id = 'rejection-note';
+      noteBox.style.cssText = 'background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:12px 16px;margin-bottom:16px;';
+      noteBox.innerHTML = '<p style="font-size:11px;font-weight:700;color:#b91c1c;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;">Catatan Admin</p>'
+        + '<p style="font-size:13px;color:#7f1d1d;">' + (note || 'Tidak ada catatan.') + '</p>';
+      // Sembunyikan pesan "belum bisa diakses" (warna fffbeb)
+      var warnBox = document.getElementById('warn-pending');
+      if (warnBox) warnBox.style.display = 'none';
+      // Sisipkan sebelum tombol kembali ke menu utama
+      var mainBtn = document.querySelector('a[href="../main/dashboard.html"]');
+      if (mainBtn) {
+        mainBtn.parentNode.insertBefore(noteBox, mainBtn);
+        // Tombol ajukan ulang
+        var reapplyBtn = document.createElement('a');
+        reapplyBtn.href = 'seller-register.html';
+        reapplyBtn.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px;background:#ef4444;color:#fff;font-size:14px;font-weight:700;border-radius:10px;text-decoration:none;margin-bottom:10px;';
+        reapplyBtn.textContent = '↩ Ajukan Ulang';
+        mainBtn.parentNode.insertBefore(reapplyBtn, mainBtn);
+      }
+    }
+
+    // Mulai polling setelah halaman siap
+    // Cek sekali langsung, lalu tiap 15 detik
+    checkVerificationStatus();
+    pollTimer = setInterval(checkVerificationStatus, 15000);
+  </script>
+  <script src="../../assets/js/lang.js"></script>
+  <script src="/assets/js/layout.js"></script>
+  <script src="/assets/js/public-layout.js"></script>
+</body>
+</html>

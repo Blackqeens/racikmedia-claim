@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Audit Moderasi Artikel — Admin BOB</title>
+  <script src="../../api/auth.js"></script>
+  <script>BobAuth.requireRole(['admin', 'master_admin']);</script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/assets/css/public-layout.css" />
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-900">
+  <div id="rm-navbar-root"></div>
+  <header class="border-b bg-white">
+    <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-5 py-4">
+      <div><a href="dashboard.html" class="text-sm font-semibold text-emerald-800 hover:underline">← Dasbor admin</a><h1 class="mt-2 text-2xl font-bold">Audit moderasi artikel</h1></div>
+      <button id="refresh" class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold hover:bg-slate-100">Muat ulang</button>
+    </div>
+  </header>
+  <main class="mx-auto max-w-7xl px-5 py-6">
+    <p class="mb-5 max-w-3xl text-sm leading-6 text-slate-600">Riwayat perubahan artikel tersimpan otomatis dari database. Snapshot menampilkan data sebelum dan sesudah perubahan; akses dibatasi untuk admin.</p>
+    <section class="mb-4 flex flex-wrap items-end gap-3 rounded-xl border bg-white p-4">
+      <label class="text-sm font-medium">Jenis perubahan
+        <select id="operation" class="mt-1 block rounded-lg border border-slate-300 px-3 py-2">
+          <option value="">Semua</option><option value="INSERT">Artikel dibuat</option><option value="UPDATE">Artikel diubah</option><option value="DELETE">Artikel dihapus</option>
+        </select>
+      </label>
+      <label class="min-w-56 flex-1 text-sm font-medium">Cari judul atau ID artikel
+        <input id="search" type="search" class="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2" placeholder="Cari…">
+      </label>
+      <span id="count" class="text-sm text-slate-500"></span>
+    </section>
+    <p id="message" class="mb-4 hidden rounded-lg p-3 text-sm" role="status" aria-live="polite"></p>
+    <div class="overflow-x-auto rounded-xl border bg-white">
+      <table class="min-w-full text-left text-sm">
+        <thead class="bg-slate-100 text-xs uppercase tracking-wide text-slate-600"><tr><th class="px-4 py-3">Waktu</th><th class="px-4 py-3">Perubahan</th><th class="px-4 py-3">Artikel</th><th class="px-4 py-3">Pelaku</th><th class="px-4 py-3">Snapshot</th></tr></thead>
+        <tbody id="rows" class="divide-y divide-slate-100"></tbody>
+      </table>
+    </div>
+    <div class="mt-4 flex items-center justify-between">
+      <button id="previous" class="rounded-lg border bg-white px-4 py-2 text-sm font-semibold disabled:opacity-40">Sebelumnya</button>
+      <span id="page" class="text-sm text-slate-500"></span>
+      <button id="next" class="rounded-lg border bg-white px-4 py-2 text-sm font-semibold disabled:opacity-40">Berikutnya</button>
+    </div>
+  </main>
+  <script>
+    (function () {
+      var pageSize = 50;
+      var pageIndex = 0;
+      var entries = [];
+      var total = 0;
+      var labels = { INSERT: 'Dibuat', UPDATE: 'Diubah', DELETE: 'Dihapus' };
+      function escapeHtml(value) {
+        return String(value == null ? '' : value).replace(/[&<>"']/g, function (character) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character];
+        });
+      }
+      function setMessage(text, isError) {
+        var element = document.getElementById('message');
+        element.textContent = text;
+        element.className = 'mb-4 rounded-lg p-3 text-sm ' + (isError ? 'bg-rose-50 text-rose-800' : 'bg-emerald-50 text-emerald-800');
+      }
+      function render() {
+        var query = document.getElementById('search').value.trim().toLowerCase();
+        var filtered = entries.filter(function (entry) {
+          var snapshot = entry.new_data || entry.old_data || {};
+          return !query || String(entry.article_id).toLowerCase().includes(query) || String(snapshot.title || '').toLowerCase().includes(query);
+        });
+        document.getElementById('count').textContent = filtered.length + ' dari ' + total + ' catatan pada halaman ini';
+        document.getElementById('page').textContent = total ? 'Halaman ' + (pageIndex + 1) + ' · ' + total + ' catatan' : 'Belum ada catatan audit';
+        document.getElementById('previous').disabled = pageIndex === 0;
+        document.getElementById('next').disabled = (pageIndex + 1) * pageSize >= total;
+        document.getElementById('rows').innerHTML = filtered.map(function (entry) {
+          var snapshot = entry.new_data || entry.old_data || {};
+          var title = snapshot.title || '(artikel dihapus)';
+          var before = entry.old_data ? JSON.stringify(entry.old_data, null, 2) : '—';
+          var after = entry.new_data ? JSON.stringify(entry.new_data, null, 2) : '—';
+          return '<tr class="align-top"><td class="whitespace-nowrap px-4 py-3">' + escapeHtml(new Date(entry.changed_at).toLocaleString('id-ID')) + '</td>'
+            + '<td class="px-4 py-3">' + escapeHtml(labels[entry.operation] || entry.operation) + '</td>'
+            + '<td class="max-w-xs px-4 py-3"><div class="font-semibold">' + escapeHtml(title) + '</div><div class="mt-1 break-all font-mono text-xs text-slate-500">' + escapeHtml(entry.article_id) + '</div></td>'
+            + '<td class="max-w-xs break-all px-4 py-3 font-mono text-xs">' + escapeHtml(entry.actor_id || 'system') + '</td>'
+            + '<td class="min-w-72 px-4 py-3"><details><summary class="cursor-pointer font-semibold text-emerald-800">Lihat snapshot</summary><div class="mt-2 grid gap-2"><div><span class="text-xs font-bold uppercase text-slate-500">Sebelum</span><pre class="mt-1 max-h-56 overflow-auto whitespace-pre-wrap break-all rounded bg-slate-50 p-2 text-xs">' + escapeHtml(before) + '</pre></div><div><span class="text-xs font-bold uppercase text-slate-500">Sesudah</span><pre class="mt-1 max-h-56 overflow-auto whitespace-pre-wrap break-all rounded bg-slate-50 p-2 text-xs">' + escapeHtml(after) + '</pre></div></div></details></td></tr>';
+        }).join('');
+      }
+      async function load() {
+        setMessage('Memuat log audit…', false);
+        try {
+          var client = await BobAuth.getClient();
+          var query = client.from('content_article_review_audit')
+            .select('id, article_id, actor_id, operation, changed_at, old_data, new_data', { count: 'exact' })
+            .order('changed_at', { ascending: false })
+            .range(pageIndex * pageSize, (pageIndex + 1) * pageSize - 1);
+          var operation = document.getElementById('operation').value;
+          if (operation) query = query.eq('operation', operation);
+          var result = await query;
+          if (result.error) throw result.error;
+          entries = result.data || [];
+          total = result.count || 0;
+          document.getElementById('message').classList.add('hidden');
+          render();
+        } catch (error) {
+          entries = [];
+          total = 0;
+          render();
+          setMessage(error.message || 'Log audit gagal dimuat.', true);
+        }
+      }
+      document.getElementById('refresh').addEventListener('click', load);
+      document.getElementById('operation').addEventListener('change', function () { pageIndex = 0; load(); });
+      document.getElementById('search').addEventListener('input', render);
+      document.getElementById('previous').addEventListener('click', function () { if (pageIndex > 0) { pageIndex -= 1; load(); } });
+      document.getElementById('next').addEventListener('click', function () { if ((pageIndex + 1) * pageSize < total) { pageIndex += 1; load(); } });
+      load();
+    })();
+  </script>
+  <script src="../../assets/js/lang.js"></script>
+  <script src="/assets/js/layout.js"></script>
+  <script src="/assets/js/public-layout.js"></script>
+</body>
+</html>

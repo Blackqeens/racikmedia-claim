@@ -1,0 +1,17 @@
+/assets/images/
+├── brand/                  📁 Khusus aset identitas website
+│   ├── logo-bob.svg
+│   ├── logo-favicon.ico     (Ikon kecil di tab browser)
+│   └── icons/               (Ikon member, cart, search dll)
+│       ├── icon-user.svg
+│       └── icon-cart.svg
+│
+├── articles/               📁 Khusus foto untuk konten jurnal/artikel
+│   ├── agri-cabai-01.webp   (Foto petani/cabai untuk artikel agrikultur)
+│   ├── agri-cabai-thumb.webp(Versi kecil untuk grid beranda)
+│   ├── kreatif-box-01.webp  (Foto kemasan silinder untuk artikel kreatif)
+│   └── sosial-agenda.webp   (Foto kegiatan sosial yayasan)
+│
+└── products/               📁 Khusus etalase toko / marketplace
+    ├── sambal-original.webp (Foto produk sambal botol premium)
+    └── kerajinan-bambu.webp (Foto produk kreatif)

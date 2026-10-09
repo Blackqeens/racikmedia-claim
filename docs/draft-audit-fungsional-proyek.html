@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Draft Audit Fungsional Proyek BOB</title>
+  <style>
+    :root { --ink: #17231f; --muted: #53635d; --green: #126b51; --pale: #eaf5ef; --line: #dce6e0; --amber: #fff5dc; --red: #fff0ee; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #edf2ef; color: var(--ink); font: 10.5pt/1.5 "Segoe UI", Arial, sans-serif; }
+    .page { width: 210mm; min-height: 297mm; margin: 12mm auto; padding: 18mm 20mm; background: white; box-shadow: 0 8px 32px #15291f18; }
+    .eyebrow { color: var(--green); font-size: 9pt; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; }
+    h1 { margin: 8mm 0 3mm; font: 700 28pt/1.12 Georgia, serif; letter-spacing: -.03em; }
+    h2 { margin: 8mm 0 3mm; font: 700 15pt/1.2 Georgia, serif; }
+    h3 { margin: 5mm 0 2mm; color: var(--green); font-size: 11pt; }
+    p { margin: 0 0 3mm; }
+    .subtitle { color: var(--muted); font-size: 12.5pt; }
+    .meta { color: var(--muted); font-size: 9pt; }
+    .rule { height: 1px; margin: 7mm 0; background: var(--line); }
+    .status { margin: 6mm 0; padding: 4.5mm 5mm; border-left: 4px solid #b74d3d; background: var(--red); }
+    .status strong { color: #843629; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3.5mm; margin: 4mm 0; }
+    .card { padding: 4mm; border: 1px solid var(--line); border-radius: 3mm; }
+    .card strong { display: block; color: var(--green); font-size: 11pt; }
+    .card small { color: var(--muted); font-size: 9pt; }
+    table { width: 100%; margin: 3mm 0 5mm; border-collapse: collapse; font-size: 9pt; }
+    th { background: #edf5f0; color: var(--green); text-align: left; }
+    th, td { padding: 2.4mm 2.7mm; border: 1px solid var(--line); vertical-align: top; }
+    ul, ol { margin: 2mm 0 4mm; padding-left: 6mm; }
+    li { margin: 1.3mm 0; }
+    code { padding: .3mm 1mm; border-radius: 1mm; background: #f1f4f2; font: 8.5pt Consolas, monospace; overflow-wrap: anywhere; }
+    .callout { padding: 4mm 5mm; border: 1px solid #f0dca5; border-radius: 2mm; background: var(--amber); }
+    .good { padding: 4mm 5mm; border: 1px solid #bfdccb; border-radius: 2mm; background: var(--pale); }
+    .footer { margin-top: 8mm; padding-top: 2mm; border-top: 1px solid var(--line); color: #7b8983; font-size: 8pt; display: flex; justify-content: space-between; }
+    .check { list-style: none; padding-left: 0; }
+    .check li::before { content: "□"; display: inline-block; width: 6mm; color: var(--green); font-weight: 700; }
+    @page { size: A4; margin: 12mm 14mm; }
+    @media print {
+      body { background: white; }
+      .page { width: auto; min-height: 0; margin: 0; padding: 0; box-shadow: none; font-size: 9.5pt; line-height: 1.38; break-after: page; }
+      .page-break { break-before: page; }
+      h1 { margin-top: 5mm; font-size: 25pt; }
+      h2 { margin: 5mm 0 2mm; font-size: 13pt; }
+      h3 { margin: 3mm 0 1mm; }
+      .rule { margin: 4mm 0; }
+      .status { margin: 4mm 0; padding: 3mm 4mm; }
+      .grid { gap: 2.5mm; margin: 2.5mm 0; }
+      .card { padding: 2.5mm 3mm; }
+      table { margin: 2mm 0 3mm; font-size: 8pt; }
+      th, td { padding: 1.7mm 2mm; }
+      ul, ol { margin: 1mm 0 2.5mm; }
+      li { margin: .7mm 0; }
+      .footer { margin-top: 4mm; }
+      .card, .status, .callout, .good, tr { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <section class="page">
+    <div class="eyebrow">BOB · Racik Media Nusantara</div>
+    <h1>Draft Audit<br>Fungsional Proyek</h1>
+    <p class="subtitle">Ringkasan komponen yang berfungsi, mock/prototype, temuan integrasi, dan hal-hal yang belum dapat diverifikasi.</p>
+    <div class="rule"></div>
+    <p class="meta"><strong>Status:</strong> Draft untuk ditinjau &nbsp;·&nbsp; <strong>Tanggal:</strong> 5 Oktober 2026 &nbsp;·&nbsp; <strong>Metode:</strong> Pemeriksaan baca-saja</p>
+
+    <div class="status">
+      <strong>Kesimpulan:</strong> Proyek berisi campuran halaman dan fungsi yang sudah terhubung ke Supabase, fitur prototype berbasis browser, serta layanan yang belum terpasang. Belum ada dasar untuk menyatakan seluruh situs siap beroperasi penuh di produksi. Audit ini tidak mengubah kode.
+    </div>
+
+    <h2>Cakupan dan pemeriksaan</h2>
+    <div class="grid">
+      <div class="card"><strong>104 file aplikasi</strong><small>HTML, JS, TS, CSS, SQL dan konfigurasi dihitung untuk cakupan audit.</small></div>
+      <div class="card"><strong>47 halaman HTML</strong><small>Index dan halaman di bawah direktori pages diperiksa untuk referensi lokal.</small></div>
+      <div class="card"><strong>21 file JavaScript</strong><small>Semua lolos pemeriksaan sintaks menggunakan Node.</small></div>
+      <div class="card"><strong>525 referensi lokal</strong><small>Dua referensi lokal tidak ditemukan pada halaman aplikasi.</small></div>
+    </div>
+    <p class="meta">Inventaris penuh direktori berjumlah 1.564 file bila metadata internal dan konten Git ikut dihitung; angka tersebut bukan jumlah source aplikasi.</p>
+
+    <h2>Ringkasan status</h2>
+    <table>
+      <thead><tr><th style="width:32%">Area</th><th>Status audit</th></tr></thead>
+      <tbody>
+        <tr><td>Language engine</td><td>Skrip telah dipasang pada 46 halaman di bawah <code>pages</code>; hal ini tidak membuktikan endpoint terjemahan aktif.</td></tr>
+        <tr><td>Terjemahan Gemini</td><td>Pengujian endpoint yang dikonfigurasi sebelumnya menerima HTTP 404. Fungsi belum terbukti live.</td></tr>
+        <tr><td>JavaScript</td><td>21 file diperiksa dengan <code>node --check</code>; tidak ditemukan syntax failure.</td></tr>
+        <tr><td>Database / deployment</td><td>Status migrasi, secrets, layanan Supabase dan integrasi eksternal tidak dapat dibuktikan hanya dari repository.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout"><strong>Catatan metode:</strong> Tes penerjemahan DOM sebelumnya menggunakan respons API tiruan. Itu memeriksa perilaku UI; bukan pengujian terjemahan Gemini sungguhan.</div>
+
+    <div class="footer"><span>DRAFT · Audit baca-saja · Jangan dianggap sertifikasi produksi</span><span>BOB</span></div>
+  </section>
+
+  <section class="page page-break">
+    <div class="eyebrow">01 · Temuan utama</div>
+    <h2>Bagian yang belum berfungsi penuh atau masih prototype</h2>
+    <table>
+      <thead><tr><th style="width:27%">Area / file</th><th>Temuan</th><th style="width:26%">Dampak / status</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Terjemahan otomatis<br><code>supabase/functions/translate-page</code></td>
+          <td>URL fungsi Supabase yang diuji membalas <strong>HTTP 404 — Requested function was not found</strong>.</td>
+          <td>Terjemahan Gemini live belum dapat dipakai atau diverifikasi. Pastikan fungsi dideploy ke proyek yang tepat.</td>
+        </tr>
+        <tr>
+          <td>Commerce<br><code>api/commerce.js</code></td>
+          <td>Dokumen kode menyatakan mock API dan penyimpanan localStorage; objek checkout memberi token bertanda <code>mock-token</code>.</td>
+          <td>Bukan payment gateway atau order backend produksi.</td>
+        </tr>
+        <tr>
+          <td>Checkout<br><code>pages/main/checkout.html</code></td>
+          <td>Link <code>order-history.html</code> tidak memiliki file tujuan pada direktori <code>pages/main</code>.</td>
+          <td>Link tersebut kemungkinan tidak menuju halaman riwayat pesanan yang dimaksud.</td>
+        </tr>
+        <tr>
+          <td>Kurasi headline<br><code>pages/master-admin/kurasi-headline.html</code></td>
+          <td>Stylesheet tambahan <code>../style.css</code> tidak ditemukan; file ini juga memuat <code>../../style.css</code>.</td>
+          <td>Kemungkinan link ekstra yang tidak valid; stylesheet lain tersedia. Perlu validasi tampilan visual.</td>
+        </tr>
+        <tr>
+          <td>Artikel legacy<br><code>api/articles.js</code></td>
+          <td>Implementasi mendeskripsikan dirinya sebagai mock API yang memakai localStorage dan data seed.</td>
+          <td>Alur lama ini bukan database server untuk produksi.</td>
+        </tr>
+        <tr>
+          <td>Chatbot (dihapus dari versi ringan)</td>
+          <td>Widget, skrip, dan konfigurasi chatbot sudah dilepas dari aplikasi.</td>
+          <td>Chatbot tidak lagi dimuat pada halaman aplikasi.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Catatan risiko layanan publik</h2>
+    <div class="good">
+      Endpoint terjemahan mengatur <code>verify_jwt = false</code>. Kode membatasi origin, ukuran request, dan frekuensi per instance. Namun pemeriksaan Origin bukan autentikasi, dan pembatasan dalam memori per instance adalah best-effort. Layanan publik tetap memerlukan kontrol kuota/biaya dan pembatasan penyalahgunaan pada gateway serta provider.
+    </div>
+
+    <h2>Integrasi yang statusnya belum terbukti</h2>
+    <ul>
+      <li>Apakah migrasi database pada Supabase sudah diterapkan.</li>
+      <li>Apakah secret Gemini, Astra, dan konfigurasi origin sudah tersedia di deployment.</li>
+      <li>Apakah login/email SMTP, Storage, invoice PDF, dan alur B2B berjalan live.</li>
+      <li>Apakah checkout menyimpan pesanan serta melakukan pembayaran melalui provider nyata.</li>
+      <li>Apakah domain produksi mengizinkan callback/Auth URL yang sesuai.</li>
+    </ul>
+    <p class="meta">Dokumentasi di <code>supabase/README.md</code> memuat langkah staging/deployment untuk sejumlah fitur. Dokumentasi tersebut adalah panduan, bukan bukti deployment telah dilakukan.</p>
+
+    <div class="footer"><span>DRAFT · Audit baca-saja · Temuan perlu konfirmasi pemilik layanan</span><span>Halaman 2</span></div>
+  </section>
+
+  <section class="page page-break">
+    <div class="eyebrow">02 · Validasi dan tindak lanjut</div>
+    <h2>Hasil validasi yang sudah dilakukan</h2>
+    <table>
+      <thead><tr><th style="width:44%">Pemeriksaan</th><th>Hasil</th></tr></thead>
+      <tbody>
+        <tr><td>Syntax JavaScript melalui Node</td><td>Lulus — 21 file, 0 syntax failures.</td></tr>
+        <tr><td>Referensi asset/navigasi lokal pada HTML aplikasi</td><td>525 referensi dicek pada 47 file HTML; dua path tidak ditemukan.</td></tr>
+        <tr><td>Language engine pada halaman di bawah <code>pages</code></td><td>46 halaman terverifikasi memuat skrip satu kali.</td></tr>
+        <tr><td>Endpoint terjemahan dari pemeriksaan sebelumnya</td><td>HTTP 404; deployment belum terkonfirmasi.</td></tr>
+        <tr><td>Database, Edge Functions, layanan email/pembayaran</td><td>Tidak teruji live pada audit repository ini.</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Urutan tindak lanjut yang disarankan</h2>
+    <ol>
+      <li><strong>Konfirmasi environment.</strong> Cocokkan URL proyek Supabase dengan deployment yang dituju; tentukan domain produksi dan origin lokal.</li>
+      <li><strong>Aktifkan layanan yang dituju.</strong> Deploy fungsi yang memang disetujui; siapkan secrets di server dan database migrations yang sesuai.</li>
+      <li><strong>Ganti mock hanya setelah scope disetujui.</strong> Rencanakan backend transaksi/payment nyata sebelum menerima pesanan atau uang pengguna.</li>
+      <li><strong>Verifikasi link dan layout.</strong> Uji checkout serta halaman kurasi melalui HTTP(S), bukan sekadar membaca sumber HTML.</li>
+      <li><strong>Jalankan skenario end-to-end staging.</strong> Uji akun dengan peran berbeda, RLS, artikel, B2B, invoice, pembayaran, dan email.</li>
+      <li><strong>Tetapkan kesiapan produksi.</strong> Catat hasil, error, kuota, backup, dan kontrol penyalahgunaan sebelum menyebut fitur aktif.</li>
+    </ol>
+
+    <h2>Checklist peninjauan</h2>
+    <ul class="check">
+      <li>Pastikan fungsi terjemahan tidak lagi mengembalikan 404 dan uji Gemini live.</li>
+      <li>Tentukan apakah commerce mock masih untuk demo atau harus diganti dengan transaksi nyata.</li>
+      <li>Konfirmasi tujuan/halaman riwayat pesanan checkout.</li>
+      <li>Konfirmasi stylesheet yang seharusnya digunakan di halaman kurasi headline.</li>
+      <li>Bandingkan migrasi yang tercatat dengan database Supabase aktif.</li>
+      <li>Jalankan tes role/RLS, Storage, Auth, notifikasi, invoice, dan pembayaran di staging.</li>
+    </ul>
+
+    <div class="callout"><strong>Batasan audit:</strong> Ini analisis statis repository dan hasil cek endpoint sebelumnya, bukan penetration test, audit keamanan lengkap, uji beban, pemeriksaan semua halaman secara visual, atau sertifikasi produksi.</div>
+
+    <div class="footer"><span>DRAFT · Audit baca-saja · Tidak ada file aplikasi yang diubah</span><span>Halaman 3</span></div>
+  </section>
+</body>
+</html>

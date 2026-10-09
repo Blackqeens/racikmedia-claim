@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Panduan Arsitektur Template — BOB · Racik Media Nusantara</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { overflow-x: hidden; }
+  body { font-family: -apple-system, "Segoe UI", system-ui, sans-serif; font-size: 14px; line-height: 1.65; color: #1f2328; background: #fff; }
+  .page { max-width: 760px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  /* ── Header ── */
+  .doc-header { border-bottom: 2px solid #e5e7eb; padding-bottom: 28px; margin-bottom: 36px; }
+  .doc-header h1 { font-size: 22px; font-weight: 700; color: #065f46; margin-bottom: 8px; }
+  .doc-header p { color: #57606a; font-size: 13px; }
+  .badge { display: inline-flex; align-items: center; gap: 5px; background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; border-radius: 99px; padding: 3px 12px; font-size: 11px; font-weight: 600; margin-right: 6px; }
+  .badge-blue { background: #eff6ff; color: #1d4ed8; border-color: #bfdbfe; }
+  .badge-purple { background: #f5f3ff; color: #6d28d9; border-color: #ddd6fe; }
+
+  /* ── Sections ── */
+  h2 { font-size: 15px; font-weight: 700; color: #1f2328; margin: 36px 0 12px; padding-left: 12px; border-left: 3px solid #059669; }
+  h3 { font-size: 13px; font-weight: 600; color: #374151; margin: 22px 0 8px; }
+  p  { color: #374151; margin-bottom: 10px; font-size: 13.5px; }
+  ul, ol { padding-left: 20px; margin-bottom: 12px; }
+  li { font-size: 13.5px; color: #374151; margin-bottom: 5px; line-height: 1.6; }
+
+  /* ── Code blocks ── */
+  pre { background: #0d1117; color: #e6edf3; border-radius: 10px; padding: 18px 20px; overflow-x: auto; margin: 12px 0 18px; font-size: 12.5px; line-height: 1.75; }
+  code { font-family: "SF Mono", "Fira Code", Consolas, monospace; }
+  .inline-code { background: #f0fdf4; color: #065f46; border: 1px solid #bbf7d0; border-radius: 4px; padding: 1px 6px; font-family: "SF Mono", Consolas, monospace; font-size: 12px; }
+  .hl-green  { color: #7ee787; }
+  .hl-blue   { color: #79c0ff; }
+  .hl-orange { color: #ffa657; }
+  .hl-gray   { color: #8b949e; }
+  .hl-str    { color: #a5d6ff; }
+  .hl-purple { color: #d2a8ff; }
+
+  /* ── File tree ── */
+  .file-tree { background: #f7f8fa; border: 1px solid #e5e7eb; border-radius: 10px; padding: 18px 22px; margin: 14px 0 20px; font-family: "SF Mono", Consolas, monospace; font-size: 12.5px; line-height: 1.9; }
+  .tree-dir  { color: #1d4ed8; font-weight: 600; }
+  .tree-new  { color: #059669; font-weight: 700; }
+  .tree-file { color: #374151; }
+  .tree-comment { color: #9ca3af; font-style: italic; }
+
+  /* ── Flow diagram ── */
+  .flow { background: #f7f8fa; border: 1px solid #e5e7eb; border-radius: 10px; padding: 20px 24px; margin: 14px 0; }
+  .flow-row  { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
+  .flow-row:last-child { margin-bottom: 0; }
+  .flow-num  { width: 22px; height: 22px; border-radius: 50%; background: #059669; color: #fff; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+  .flow-text { font-size: 13px; color: #374151; }
+  .flow-text strong { color: #065f46; }
+  .flow-arrow { text-align: center; color: #9ca3af; font-size: 16px; margin: -4px 0 4px 33px; }
+
+  /* ── Attribute table ── */
+  table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 13px; }
+  th { background: #f7f8fa; padding: 9px 12px; text-align: left; color: #57606a; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid #e5e7eb; }
+  td { padding: 9px 12px; border-bottom: 1px solid #f3f4f6; vertical-align: top; }
+  td:first-child { font-family: "SF Mono", Consolas, monospace; font-size: 12px; color: #8250df; }
+  tr:last-child td { border-bottom: none; }
+
+  /* ── Note / Tip boxes ── */
+  .note { background: #fff8e6; border: 1px solid #fde68a; border-radius: 8px; padding: 12px 16px; font-size: 13px; color: #78350f; margin: 14px 0; }
+  .note strong { color: #92400e; }
+  .tip  { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 12px 16px; font-size: 13px; color: #14532d; margin: 14px 0; }
+  .tip  strong { color: #065f46; }
+  .info { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 12px 16px; font-size: 13px; color: #1e40af; margin: 14px 0; }
+
+  /* ── Step boxes ── */
+  .steps { display: flex; flex-direction: column; gap: 12px; margin: 14px 0; }
+  .step  { display: flex; gap: 14px; align-items: flex-start; }
+  .step-num { width: 26px; height: 26px; border-radius: 50%; background: #1f2328; color: #fff; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+  .step-body { flex: 1; }
+  .step-title { font-size: 13.5px; font-weight: 600; color: #1f2328; margin-bottom: 3px; }
+  .step-desc  { font-size: 13px; color: #57606a; }
+
+  /* ── Pills row ── */
+  .pills { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 16px; }
+  .pill  { display: inline-flex; align-items: center; gap: 5px; background: #f7f8fa; border: 1px solid #e5e7eb; border-radius: 99px; padding: 4px 12px; font-size: 12px; font-weight: 500; color: #374151; }
+
+  /* ── Divider ── */
+  .divider { border-top: 1px solid #e5e7eb; margin: 32px 0; }
+
+  /* ── Summary table ── */
+  .summary-table td:first-child { color: #0550ae; }
+  .summary-table td:nth-child(2) { color: #374151; font-size: 12.5px; }
+  .summary-table td:last-child { font-size: 12px; color: #059669; font-weight: 600; }
+
+  /* ── Footer ── */
+  .doc-footer { margin-top: 56px; padding-top: 20px; border-top: 1px solid #e5e7eb; text-align: center; font-size: 12px; color: #9ca3af; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ── Header ── -->
+  <div class="doc-header">
+    <div style="margin-bottom:12px;">
+      <span class="badge">v2.0</span>
+      <span class="badge badge-blue">Tailwind CSS</span>
+      <span class="badge badge-purple">Vanilla JS</span>
+    </div>
+    <h1>Panduan Arsitektur Template Terpusat</h1>
+    <p>BOB · Racik Media Nusantara — Platform Artikel, Marketplace &amp; Penyedia Jasa</p>
+    <p style="margin-top:6px;color:#9ca3af;font-size:12px;">Versi ini mencakup: Base Layout, Language Switcher Global, FORL Prevention, dan Struktur Direktori Final.</p>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════
+       1. LATAR BELAKANG MASALAH
+  ══════════════════════════════════════════════ -->
+  <h2>1. Latar Belakang &amp; Solusi</h2>
+
+  <p>Platform BOB memiliki 3 pilar halaman — <strong>Artikel/Jurnal</strong>, <strong>Marketplace</strong>, dan <strong>Penyedia Jasa/Showstore</strong> — dengan ancaman bug desain yang sama:</p>
+  <ul>
+    <li>Mengulang kode Navbar &amp; Footer di setiap halaman → satu perubahan harus diedit puluhan file</li>
+    <li>Language Switcher tidak sinkron antar halaman karena disimpan terpisah-pisah</li>
+    <li>Layar goyang horizontal (<em>horizontal overflow</em>) di smartphone karena elemen melebihi viewport</li>
+    <li>Bahasa "berkedip" dari default ke pilihan user saat halaman dimuat (<em>Flash of Wrong Language</em>)</li>
+  </ul>
+
+  <p><strong>Solusi:</strong> Arsitektur terpusat berbasis <em>fetch-include</em> — Navbar dan Footer disimpan sebagai satu file snippet yang di-fetch oleh semua halaman. Perubahan pada satu file → semua halaman otomatis terupdate.</p>
+
+  <div class="tip">
+    <strong>Prinsip Kunci:</strong> "Tulis sekali, pakai di mana saja." Tidak ada framework, tidak ada build tool — murni HTML + Tailwind CDN + Vanilla JS yang bekerja langsung di browser.
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════
+       2. STRUKTUR DIREKTORI
+  ══════════════════════════════════════════════ -->
+  <h2>2. Struktur Direktori Final</h2>
+
+  <div class="file-tree">
+<code>racikmedia-bob/
+├── <span class="tree-dir">layouts/</span>                     <span class="tree-comment">← BARU: Template global terpusat</span>
+│   ├── <span class="tree-new">base.html</span>                <span class="tree-comment">← Template induk: salin untuk halaman baru</span>
+│   ├── <span class="tree-new">_public-navbar.html</span>       <span class="tree-comment">← Navbar global mengikuti format index</span>
+│   └── <span class="tree-new">_footer.html</span>             <span class="tree-comment">← Footer + Newsletter CTA (1 file)</span>
+│
+├── <span class="tree-dir">assets/</span>
+│   ├── <span class="tree-dir">css/</span>
+│   │   └── <span class="tree-file">lang.css</span>            <span class="tree-comment">← Style widget Language Switcher</span>
+│   └── <span class="tree-dir">js/</span>
+│       ├── <span class="tree-new">lang.js</span>              <span class="tree-comment">← v2.0: FORL prevention + IP geo + localStorage</span>
+│       └── <span class="tree-new">layout.js</span>            <span class="tree-comment">← BARU: Mobile menu, active nav, overflow guard</span>
+│
+├── <span class="tree-dir">pages/</span>
+│   ├── <span class="tree-dir">main/</span>
+│   │   ├── <span class="tree-file">articles.html</span>        <span class="tree-comment">← Pilar 1: Artikel/Jurnal</span>
+│   │   ├── <span class="tree-file">etalase.html</span>
+│   │   └── <span class="tree-file">homepage.html</span>
+│   ├── <span class="tree-dir">products/</span>
+│   │   └── <span class="tree-file">product-kopi-gayo.html</span>  <span class="tree-comment">← Pilar 2: Marketplace</span>
+│   └── <span class="tree-dir">seller/</span>
+│       └── <span class="tree-file">service-provider-dashboard.html</span>  <span class="tree-comment">← Pilar 3: Penyedia Jasa</span>
+│
+├── <span class="tree-file">index.html</span>
+├── <span class="tree-file">style.css</span>
+└── <span class="tree-file">script.js</span></code>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════
+       3. CARA MEMBUAT HALAMAN BARU
+  ══════════════════════════════════════════════ -->
+  <h2>3. Cara Membuat Halaman Baru (3 Langkah)</h2>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">Salin <span class="inline-code">layouts/base.html</span></div>
+        <div class="step-desc">Salin file ini ke lokasi halaman baru. Contoh: <span class="inline-code">pages/main/checkout.html</span></div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">Sesuaikan path <span class="inline-code">fetch()</span></div>
+        <div class="step-desc">Ubah path relatif di tag <span class="inline-code">&lt;script&gt;</span> fetch navbar dan footer sesuai kedalaman folder halaman baru. Lihat tabel di bawah.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">Isi konten di dalam <span class="inline-code">&lt;main id="page-content"&gt;</span></div>
+        <div class="step-desc">Tulis HTML konten spesifik halaman. Tambahkan atribut <span class="inline-code">data-id</span> / <span class="inline-code">data-en</span> untuk teks yang perlu diterjemahkan. Selesai.</div>
+      </div>
+    </div>
+  </div>
+
+  <h3>Navbar dan Footer Global</h3>
+  <table>
+    <thead><tr><th>Lokasi File</th><th>Loader global</th></tr></thead>
+    <tbody>
+      <tr><td>Semua halaman</td><td><code>assets/js/public-layout.js</code></td></tr>
+      <tr><td>Sumber navbar</td><td><code>layouts/_public-navbar.html</code></td></tr>
+      <tr><td>Sumber footer</td><td><code>layouts/_footer.html</code></td></tr>
+    </tbody>
+  </table>
+
+  <div class="note">
+    <strong>Catatan:</strong> Fetch membutuhkan server HTTP (bukan <span class="inline-code">file://</span>). Gunakan <strong>VS Code Live Server</strong>, <strong>npx serve .</strong>, atau server apapun saat development lokal.
+  </div>
+
+  <h3>Snippet layout siap pakai</h3>
+  <pre><code><span class="hl-gray">&lt;!-- Navbar Global --&gt;</span>
+<span class="hl-blue">&lt;div</span> <span class="hl-green">id</span>=<span class="hl-str">"rm-navbar-root"</span><span class="hl-blue">&gt;&lt;/div&gt;</span>
+
+<span class="hl-gray">&lt;!-- Konten halaman di sini... --&gt;</span>
+
+<span class="hl-gray">&lt;!-- Footer Global --&gt;</span>
+<span class="hl-blue">&lt;div</span> <span class="hl-green">id</span>=<span class="hl-str">"rm-footer-root"</span><span class="hl-blue">&gt;&lt;/div&gt;</span>
+
+<span class="hl-gray">&lt;!-- Scripts Global (urutan penting) --&gt;</span>
+<span class="hl-blue">&lt;script</span> <span class="hl-green">src</span>=<span class="hl-str">"../../assets/js/lang.js"</span><span class="hl-blue">&gt;&lt;/script&gt;</span>
+<span class="hl-blue">&lt;script</span> <span class="hl-green">src</span>=<span class="hl-str">"../../assets/js/layout.js"</span><span class="hl-blue">&gt;&lt;/script&gt;</span>
+<span class="hl-blue">&lt;script</span> <span class="hl-green">src</span>=<span class="hl-str">"../../assets/js/public-layout.js"</span><span class="hl-blue">&gt;&lt;/script&gt;</span></code></pre>
+
+
+  <!-- ══════════════════════════════════════════════
+       4. SISTEM TERJEMAHAN
+  ══════════════════════════════════════════════ -->
+  <h2>4. Sistem Language Switcher — Cara Pakai</h2>
+
+  <p>Sistem terjemahan bekerja sepenuhnya dengan <strong>atribut HTML data-*</strong>. Tidak perlu menyentuh file JS.</p>
+
+  <h3>Atribut yang Didukung</h3>
+  <table>
+    <thead><tr><th>Atribut</th><th>Fungsi</th><th>Contoh</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>data-id / data-en</td>
+        <td>Ganti teks node elemen</td>
+        <td><code>data-id="Beranda" data-en="Home"</code></td>
+      </tr>
+      <tr>
+        <td>data-ph-id / data-ph-en</td>
+        <td>Ganti placeholder input</td>
+        <td><code>data-ph-id="Cari..." data-ph-en="Search..."</code></td>
+      </tr>
+      <tr>
+        <td>data-aria-id / data-aria-en</td>
+        <td>Ganti aria-label (aksesibilitas)</td>
+        <td><code>data-aria-id="Tutup menu" data-aria-en="Close menu"</code></td>
+      </tr>
+      <tr>
+        <td>data-lang-show</td>
+        <td>Tampilkan blok konten hanya untuk bahasa tertentu</td>
+        <td><code>data-lang-show="id"</code> (disembunyikan saat EN)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Contoh Implementasi di HTML</h3>
+  <pre><code><span class="hl-gray">&lt;!-- Teks biasa --&gt;</span>
+<span class="hl-blue">&lt;h1</span>
+  <span class="hl-green">data-id</span>=<span class="hl-str">"Jelajah Artikel"</span>
+  <span class="hl-green">data-en</span>=<span class="hl-str">"Explore Articles"</span><span class="hl-blue">&gt;</span>
+  Jelajah Artikel
+<span class="hl-blue">&lt;/h1&gt;</span>
+
+<span class="hl-gray">&lt;!-- Placeholder form --&gt;</span>
+<span class="hl-blue">&lt;input</span> <span class="hl-green">type</span>=<span class="hl-str">"email"</span>
+  <span class="hl-green">data-ph-id</span>=<span class="hl-str">"Alamat email Anda"</span>
+  <span class="hl-green">data-ph-en</span>=<span class="hl-str">"Your email address"</span>
+  <span class="hl-green">placeholder</span>=<span class="hl-str">"Alamat email Anda"</span> <span class="hl-blue">/&gt;</span>
+
+<span class="hl-gray">&lt;!-- Blok konten penuh (hanya tampil di bahasa ID) --&gt;</span>
+<span class="hl-blue">&lt;div</span> <span class="hl-green">data-lang-show</span>=<span class="hl-str">"id"</span><span class="hl-blue">&gt;</span>
+  Konten eksklusif Bahasa Indonesia
+<span class="hl-blue">&lt;/div&gt;</span>
+
+<span class="hl-gray">&lt;!-- Blok konten penuh (hanya tampil di bahasa EN) --&gt;</span>
+<span class="hl-blue">&lt;div</span> <span class="hl-green">data-lang-show</span>=<span class="hl-str">"en"</span><span class="hl-blue">&gt;</span>
+  English-only content block
+<span class="hl-blue">&lt;/div&gt;</span></code></pre>
+
+
+  <!-- ══════════════════════════════════════════════
+       5. ALUR DETEKSI BAHASA
+  ══════════════════════════════════════════════ -->
+  <h2>5. Alur Deteksi Bahasa (lang.js v2.0)</h2>
+
+  <div class="flow">
+    <div class="flow-row">
+      <div class="flow-num">1</div>
+      <div class="flow-text"><strong>FORL Prevention</strong> — Sebelum DOMContentLoaded, sembunyikan body jika localStorage sudah punya pilihan. Mencegah "kedipan bahasa".</div>
+    </div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-row">
+      <div class="flow-num">2</div>
+      <div class="flow-text"><strong>Cek localStorage</strong> (key: <code>rm_lang</code>) — Jika ada <code>'id'</code> atau <code>'en'</code> → pakai langsung, skip langkah berikut.</div>
+    </div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-row">
+      <div class="flow-num">3</div>
+      <div class="flow-text"><strong>Deteksi Browser Language</strong> — Baca <code>navigator.language</code>. Jika <code>id-*</code> → pakai ID. Sinkron, tanpa network request.</div>
+    </div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-row">
+      <div class="flow-num">4</div>
+      <div class="flow-text"><strong>IP Geolocation</strong> — Fetch <code>ipapi.co/json</code> (timeout 4 detik). Jika <code>country_code === 'ID'</code> → ID, selain itu → EN.</div>
+    </div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-row">
+      <div class="flow-num">5</div>
+      <div class="flow-text"><strong>applyLang()</strong> — Update semua elemen DOM, <code>&lt;html lang&gt;</code>, widget dropdown, dan simpan ke localStorage.</div>
+    </div>
+  </div>
+
+  <div class="tip">
+    <strong>Sinkronisasi lintas halaman:</strong> Karena pilihan disimpan di <span class="inline-code">localStorage</span>, pengguna yang memilih EN di halaman artikel akan tetap melihat EN saat membuka halaman produk, keranjang belanja, hingga checkout — tanpa ada reset.
+  </div>
+
+  <h3>Public API (Debug via Console)</h3>
+  <pre><code><span class="hl-gray">// Dapatkan bahasa aktif saat ini</span>
+<span class="hl-purple">RMlang</span>.<span class="hl-blue">get</span>()          <span class="hl-gray">// → 'id' atau 'en'</span>
+
+<span class="hl-gray">// Paksa ganti bahasa secara programatik</span>
+<span class="hl-purple">RMlang</span>.<span class="hl-blue">set</span>(<span class="hl-str">'en'</span>)      <span class="hl-gray">// ganti ke English</span>
+<span class="hl-purple">RMlang</span>.<span class="hl-blue">set</span>(<span class="hl-str">'id'</span>)      <span class="hl-gray">// ganti ke Indonesia</span>
+
+<span class="hl-gray">// Reset preferensi dan deteksi ulang via IP</span>
+<span class="hl-purple">RMlang</span>.<span class="hl-blue">reset</span>()        <span class="hl-gray">// hapus localStorage, fetch IP ulang</span></code></pre>
+
+
+  <!-- ══════════════════════════════════════════════
+       6. ANTI-OVERFLOW MOBILE
+  ══════════════════════════════════════════════ -->
+  <h2>6. Anti "Layar Goyang" di Mobile (Horizontal Overflow)</h2>
+
+  <p>Tiga lapis perlindungan sudah diterapkan di semua template:</p>
+
+  <h3>Lapisan 1: CSS Global di <span class="inline-code">&lt;style&gt;</span> setiap halaman</h3>
+  <pre><code><span class="hl-gray">/* Wajib ada di semua halaman — ini garis pertahanan pertama */</span>
+<span class="hl-green">html</span>, <span class="hl-green">body</span> { <span class="hl-blue">overflow-x</span>: hidden; <span class="hl-blue">max-width</span>: 100%; }
+<span class="hl-green">*</span>, <span class="hl-green">*::before</span>, <span class="hl-green">*::after</span> { <span class="hl-blue">box-sizing</span>: border-box; }
+<span class="hl-green">img</span>, <span class="hl-green">video</span>, <span class="hl-green">table</span> { <span class="hl-blue">max-width</span>: 100%; }</code></pre>
+
+  <h3>Lapisan 2: Viewport meta tag yang benar</h3>
+  <pre><code><span class="hl-gray">&lt;!-- Wajib ada, terutama `viewport-fit=cover` untuk notch iPhone --&gt;</span>
+<span class="hl-blue">&lt;meta</span> <span class="hl-green">name</span>=<span class="hl-str">"viewport"</span>
+      <span class="hl-green">content</span>=<span class="hl-str">"width=device-width, initial-scale=1.0, viewport-fit=cover"</span> <span class="hl-blue">/&gt;</span></code></pre>
+
+  <h3>Lapisan 3: OverflowGuard di <span class="inline-code">layout.js</span></h3>
+  <pre><code><span class="hl-gray">// Aktif otomatis di localhost — nonaktif di production</span>
+<span class="hl-gray">// Deteksi elemen yang melebihi viewport dan tandai merah</span>
+<span class="hl-purple">function</span> <span class="hl-blue">runOverflowGuard</span>() {
+  <span class="hl-orange">var</span> isLocal = location.hostname === <span class="hl-str">'localhost'</span>
+             || location.hostname === <span class="hl-str">'127.0.0.1'</span>;
+  <span class="hl-orange">if</span> (!isLocal) <span class="hl-orange">return</span>;
+  <span class="hl-gray">// Highlight elemen offending dengan outline merah</span>
+}</code></pre>
+
+  <div class="note">
+    <strong>Penyebab umum overflow:</strong> elemen dengan lebar <code>width: 400px</code> (fixed), tabel tanpa <code>overflow-x: auto</code>, gambar tanpa <code>max-width: 100%</code>, atau text panjang tanpa <code>word-break: break-word</code>.
+  </div>
+
+  <div class="divider"></div>
+
+
+  <!-- ══════════════════════════════════════════════
+       7. RINGKASAN FILE
+  ══════════════════════════════════════════════ -->
+  <h2>7. Ringkasan File yang Dibuat / Diupdate</h2>
+
+  <table class="summary-table">
+    <thead><tr><th>File</th><th>Deskripsi</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>layouts/base.html</td>
+        <td>Template induk — salin untuk halaman baru</td>
+        <td>✅ Baru</td>
+      </tr>
+      <tr>
+        <td>layouts/_public-navbar.html</td>
+        <td>Navbar global seragam + Language Switcher widget</td>
+        <td>✅ Baru</td>
+      </tr>
+      <tr>
+        <td>layouts/_footer.html</td>
+        <td>Footer global + Newsletter CTA + Social links</td>
+        <td>✅ Baru</td>
+      </tr>
+      <tr>
+        <td>assets/js/lang.js</td>
+        <td>Language Switcher v2.0: FORL, IP geo, browser lang, public API</td>
+        <td>✅ Upgrade</td>
+      </tr>
+      <tr>
+        <td>assets/js/layout.js</td>
+        <td>Mobile menu, active nav, scroll shadow, overflow guard</td>
+        <td>✅ Baru</td>
+      </tr>
+      <tr>
+        <td>assets/css/lang.css</td>
+        <td>Style widget Language Switcher (tidak diubah)</td>
+        <td>— Existing</td>
+      </tr>
+      <tr>
+        <td>pages/main/articles.html</td>
+        <td>Contoh Pilar 1: Artikel dengan Base Layout + terjemahan</td>
+        <td>✅ Diupdate</td>
+      </tr>
+      <tr>
+        <td>pages/products/product-kopi-gayo.html</td>
+        <td>Contoh Pilar 2: Marketplace dengan Base Layout + terjemahan</td>
+        <td>✅ Diupdate</td>
+      </tr>
+      <tr>
+        <td>pages/seller/service-provider-dashboard.html</td>
+        <td>Contoh Pilar 3: Penyedia Jasa dengan Base Layout + form terjemahan</td>
+        <td>✅ Diupdate</td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <!-- ── Footer ── -->
+  <div class="doc-footer">
+    <p>Made with IBM Bob &nbsp;·&nbsp; BOB · Racik Media Nusantara &nbsp;·&nbsp; 2025</p>
+  </div>
+
+</div>
+</body>
+</html>

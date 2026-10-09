@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pratinjau Artikel — Admin BOB</title>
+  <!-- ROUTE GUARD: hanya admin yang boleh mengakses halaman ini -->
+  <script src="../../api/auth.js"></script>
+  <script>BobAuth.requireRole('admin');</script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../../assets/css/shared.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+/* ── Sidebar (sama persis dengan moderation.html) ── */
+    .sidebar {
+      position: fixed; top: 0; left: 0; bottom: 0;
+      width: 220px; background: #1f2328;
+      display: flex; flex-direction: column;
+      z-index: 40; overflow-y: auto;
+    }
+    .sidebar-logo {
+      padding: 18px 20px 16px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .sidebar-logo img { height: 26px; width: auto; filter: brightness(0) invert(1); }
+    .sidebar-logo-badge {
+      font-size: 10px; font-weight: 700; letter-spacing: .06em;
+      background: #ef4444; color: #fff;
+      padding: 2px 7px; border-radius: 4px;
+    }
+    .sidebar-section {
+      font-size: 10px; font-weight: 700; color: rgba(255,255,255,.3);
+      letter-spacing: .08em; text-transform: uppercase;
+      padding: 14px 20px 4px;
+    }
+    .sidebar-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 20px; font-size: 13px; color: rgba(255,255,255,.6);
+      text-decoration: none; border-left: 3px solid transparent;
+      transition: color .15s, background .15s, border-color .15s;
+    }
+    .sidebar-item:hover { color: #fff; background: rgba(255,255,255,.06); }
+    .sidebar-item.active { color: #fff; background: rgba(255,255,255,.08); border-left-color: #34d399; font-weight: 600; }
+    .sidebar-item svg { width: 15px; height: 15px; flex-shrink: 0; }
+
+    /* ── Top bar ── */
+    .topbar {
+      position: fixed; top: 0; left: 220px; right: 0; height: 52px;
+      background: #fff; border-bottom: 1px solid #e5e7eb;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 24px; z-index: 30;
+    }
+    .topbar-left { display: flex; align-items: center; gap: 10px; }
+
+    /* ── Main layout ── */
+    .main-wrap { margin-left: 220px; padding-top: 52px; min-height: 100vh; }
+
+    /* ── Preview banner (mimics published view) ── */
+    .preview-banner {
+      background: linear-gradient(135deg,#fef3c7,#fde68a);
+      border-bottom: 1px solid #fcd34d;
+      padding: 10px 28px;
+      display: flex; align-items: center; gap: 10px;
+      font-size: 12px; font-weight: 600; color: #92400e;
+    }
+    .preview-banner svg { width: 15px; height: 15px; flex-shrink: 0; }
+
+    /* ── Two-column layout ── */
+    .layout-grid {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 24px;
+      padding: 28px 28px 80px;
+      align-items: start;
+      max-width: 1200px;
+    }
+    @media (max-width: 900px) {
+      .layout-grid { grid-template-columns: 1fr; }
+      .main-wrap { margin-left: 0; }
+      .topbar, .sidebar { display: none; }
+    }
+
+    /* ── Article card (mimics live article page) ── */
+    .article-card {
+      background: #fff; border: 1px solid #e5e7eb; border-radius: 14px;
+      overflow: hidden;
+    }
+
+    /* Cover image */
+    .cover-img {
+      width: 100%; aspect-ratio: 16/7; object-fit: cover;
+      display: block; background: #f3f4f6;
+    }
+    .cover-placeholder {
+      width: 100%; aspect-ratio: 16/7;
+      background: linear-gradient(135deg,#e5e7eb,#f3f4f6);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 8px;
+      color: #9ca3af;
+    }
+
+    /* Article content */
+    .article-content { padding: 32px 40px 40px; }
+
+    /* Category badge */
+    .cat-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 11px; font-weight: 700; letter-spacing: .06em;
+      text-transform: uppercase; color: #047857;
+      background: #ecfdf5; border: 1px solid #a7f3d0;
+      padding: 3px 10px; border-radius: 99px;
+      margin-bottom: 14px;
+    }
+
+    /* Title */
+    .article-title {
+      font-family: 'Lora', Georgia, serif;
+      font-size: clamp(22px, 3.5vw, 32px);
+      font-weight: 700; color: #1f2328;
+      line-height: 1.25; margin: 0 0 16px;
+    }
+
+    /* Meta row */
+    .article-meta {
+      display: flex; align-items: center; gap: 14px;
+      padding: 14px 0; border-top: 1px solid #f3f4f6;
+      border-bottom: 1px solid #f3f4f6;
+      margin-bottom: 28px; flex-wrap: wrap;
+    }
+    .author-block { display: flex; align-items: center; gap: 8px; }
+    .author-av {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: linear-gradient(135deg,#34d399,#38bdf8);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700; color: #064e3b; flex-shrink: 0;
+    }
+    .meta-sep { width: 1px; height: 16px; background: #e5e7eb; }
+    .meta-text { font-size: 12px; color: #6b7280; }
+
+    /* Body prose */
+    .article-body {
+      font-family: 'Lora', Georgia, serif;
+      font-size: 17px; line-height: 1.85; color: #374151;
+    }
+    .article-body p   { margin: 0 0 1.2em; }
+    .article-body h2  { font-size: 22px; font-weight: 700; color: #1f2328; margin: 1.6em 0 .5em; }
+    .article-body h3  { font-size: 18px; font-weight: 600; color: #1f2328; margin: 1.4em 0 .4em; }
+    .article-body blockquote {
+      border-left: 3px solid #34d399; padding-left: 18px;
+      color: #6b7280; font-style: italic; margin: 1.2em 0;
+    }
+    .article-body ul  { padding-left: 22px; list-style: disc; margin-bottom: 1em; }
+    .article-body ol  { padding-left: 22px; list-style: decimal; margin-bottom: 1em; }
+    .article-body li  { margin-bottom: .4em; }
+    .article-body a   { color: #047857; text-decoration: underline; }
+
+    /* ── Sticky action panel ── */
+    .action-panel {
+      position: sticky; top: 76px;
+      background: #fff; border: 1px solid #e5e7eb; border-radius: 14px;
+      overflow: hidden;
+    }
+    .action-panel-header {
+      background: #1f2328; padding: 14px 18px;
+      font-size: 12px; font-weight: 700; color: rgba(255,255,255,.7);
+      letter-spacing: .04em; text-transform: uppercase;
+    }
+    .action-panel-body { padding: 18px; display: flex; flex-direction: column; gap: 10px; }
+
+    /* Status badge */
+    .status-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 11px; font-weight: 700;
+      padding: 4px 10px; border-radius: 99px;
+    }
+    .status-chip::before { content:''; display:block; width:7px; height:7px; border-radius:50%; background:currentColor; }
+    .status-chip.pending  { background:#fef3c7; color:#92400e; }
+    .status-chip.published{ background:#dcfce7; color:#166534; }
+    .status-chip.draft    { background:#f3f4f6; color:#6b7280; }
+
+    /* Metadata list */
+    .meta-list { display: flex; flex-direction: column; gap: 8px; }
+    .meta-row  { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+    .meta-key  { font-size: 11px; font-weight: 600; color: #9ca3af; text-transform: uppercase; letter-spacing: .04em; flex-shrink: 0; }
+    .meta-val  { font-size: 12px; color: #374151; font-weight: 500; text-align: right; }
+
+    /* Divider */
+    .panel-sep { border-top: 1px solid #f3f4f6; margin: 4px 0; }
+
+    /* ── Approve button ── */
+    .btn-approve {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      width: 100%; padding: 11px 16px;
+      background: #059669; color: #fff;
+      border: none; border-radius: 9px;
+      font-size: 13px; font-weight: 700; cursor: pointer;
+      transition: background .15s, box-shadow .15s;
+    }
+    .btn-approve:hover { background: #047857; box-shadow: 0 4px 14px rgba(5,150,105,.3); }
+    .btn-approve:disabled { opacity: .5; cursor: not-allowed; }
+    .btn-approve svg { width: 15px; height: 15px; flex-shrink: 0; }
+
+    /* ── Reject button ── */
+    .btn-reject {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      width: 100%; padding: 11px 16px;
+      background: #fff; color: #dc2626;
+      border: 1.5px solid #fca5a5; border-radius: 9px;
+      font-size: 13px; font-weight: 700; cursor: pointer;
+      transition: background .15s, border-color .15s, box-shadow .15s;
+    }
+    .btn-reject:hover { background: #fff1f2; border-color: #ef4444; box-shadow: 0 4px 14px rgba(220,38,38,.12); }
+    .btn-reject:disabled { opacity: .5; cursor: not-allowed; }
+    .btn-reject svg { width: 15px; height: 15px; flex-shrink: 0; }
+
+    /* ── Reject reason inline box ── */
+    .reject-box {
+      display: none;
+      background: #fff5f5; border: 1.5px solid #fecaca;
+      border-radius: 9px; padding: 12px 14px;
+      flex-direction: column; gap: 8px;
+      animation: slideDown .18s ease;
+    }
+    .reject-box.open { display: flex; }
+    @keyframes slideDown { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
+
+    .reject-label { font-size: 11px; font-weight: 700; color: #dc2626; }
+    .reject-textarea {
+      width: 100%; border: 1.5px solid #fecaca; border-radius: 7px;
+      padding: 8px 10px; font-size: 12px; color: #374151;
+      font-family: 'Inter', sans-serif; resize: vertical;
+      min-height: 72px; outline: none; background: #fff;
+      transition: border-color .15s;
+    }
+    .reject-textarea:focus { border-color: #ef4444; }
+    .reject-textarea::placeholder { color: #d1d5db; }
+    .reject-confirm {
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      width: 100%; padding: 8px 14px;
+      background: #dc2626; color: #fff;
+      border: none; border-radius: 7px;
+      font-size: 12px; font-weight: 700; cursor: pointer;
+      transition: background .15s;
+    }
+    .reject-confirm:hover { background: #b91c1c; }
+    .reject-cancel {
+      font-size: 11px; color: #9ca3af; background: none; border: none;
+      cursor: pointer; text-align: center; padding: 2px;
+    }
+    .reject-cancel:hover { color: #374151; }
+
+    /* ── Action result card ── */
+    .result-card {
+      display: none; border-radius: 9px; padding: 14px 16px;
+      flex-direction: column; gap: 6px;
+    }
+    .result-card.approved { background: #f0fdf4; border: 1px solid #bbf7d0; display: flex; }
+    .result-card.rejected { background: #fff5f5; border: 1px solid #fecaca; display: flex; }
+    .result-title { font-size: 13px; font-weight: 700; }
+    .result-sub   { font-size: 11px; color: #6b7280; line-height: 1.5; }
+
+    /* ── Email simulation badge ── */
+    .email-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 11px; font-weight: 600; padding: 3px 9px;
+      background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe;
+      border-radius: 99px; margin-top: 2px; width: fit-content;
+    }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+      background: #1f2328; color: #fff; font-size: 13px; font-weight: 500;
+      padding: 10px 20px; border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0,0,0,.18);
+      opacity: 0; pointer-events: none;
+      transition: opacity .25s, bottom .25s;
+      z-index: 300; white-space: nowrap;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .toast.show   { opacity: 1; bottom: 32px; }
+    .toast.green  { background: #059669; }
+    .toast.red    { background: #dc2626; }
+  </style>
+  <link rel="stylesheet" href="/assets/css/public-layout.css" />
+</head>
+
+<body>
+  <div id="rm-navbar-root"></div>
+
+<!-- ══════════════════════════════════════
+     SIDEBAR
+     ══════════════════════════════════════ -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <img src="../../assets/brand/2.png" alt="Racik Media" style="height:26px;width:auto;" />
+    <span class="sidebar-logo-badge">ADMIN</span>
+  </div>
+  <nav style="flex:1;padding-bottom:20px;">
+    <div class="sidebar-section">Dasbor</div>
+    <a href="#" class="sidebar-item">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0h6"/></svg>
+      Ringkasan
+    </a>
+    <div class="sidebar-section">Konten</div>
+    <a href="moderation.html" class="sidebar-item active">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+      Moderasi Artikel
+    </a>
+    <a href="#" class="sidebar-item">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+      Semua Artikel
+    </a>
+    <div class="sidebar-section">Pengguna</div>
+    <a href="#" class="sidebar-item">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+      Manajemen Penulis
+    </a>
+    <div class="sidebar-section">Sistem</div>
+    <a href="../main/dashboard.html" class="sidebar-item">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+      Kembali ke Situs
+    </a>
+  </nav>
+</aside>
+
+<!-- ══════════════════════════════════════
+     TOPBAR
+     ══════════════════════════════════════ -->
+<div class="topbar">
+  <div class="topbar-left">
+    <a href="moderation.html" style="display:inline-flex;align-items:center;gap:5px;font-size:13px;color:#6b7280;text-decoration:none;" class="hover:text-emerald-700 transition-colors">
+      <svg style="width:15px;height:15px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+      </svg>
+      Kembali ke Daftar
+    </a>
+    <span style="width:1px;height:16px;background:#e5e7eb;display:inline-block;"></span>
+    <svg style="width:14px;height:14px;color:#6b7280;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+    </svg>
+    <span style="font-size:13px;font-weight:600;color:#1f2328;">Pratinjau Artikel</span>
+    <span id="topbar-status-chip"></span>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <span style="font-size:12px;color:#9ca3af;" id="topbar-author"></span>
+    <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#ef4444,#f97316);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;" id="admin-avatar">A</div>
+    <span style="font-size:13px;font-weight:600;color:#1f2328;" id="admin-name">Admin</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PREVIEW BANNER
+     ══════════════════════════════════════ -->
+<div class="main-wrap">
+<div class="preview-banner">
+  <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+  </svg>
+  Mode Pratinjau — Tampilan ini persis seperti yang akan dilihat pembaca jika artikel diterbitkan.
+</div>
+
+<!-- ══════════════════════════════════════
+     TWO-COLUMN LAYOUT
+     ══════════════════════════════════════ -->
+<div class="layout-grid">
+
+  <!-- ── LEFT: Article (2/3) ── -->
+  <article class="article-card">
+
+    <!-- Cover image -->
+    <div id="cover-wrap">
+      <div class="cover-placeholder" id="cover-placeholder">
+        <svg style="width:40px;height:40px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+        </svg>
+        <span style="font-size:13px;font-weight:500;">Belum ada foto utama</span>
+      </div>
+    </div>
+
+    <!-- Article content -->
+    <div class="article-content">
+
+      <!-- Category -->
+      <div class="cat-badge" id="art-category">—</div>
+
+      <!-- Title -->
+      <h1 class="article-title" id="art-title">—</h1>
+
+      <!-- Meta -->
+      <div class="article-meta">
+        <div class="author-block">
+          <div class="author-av" id="art-author-av">—</div>
+          <div>
+            <p style="font-size:13px;font-weight:600;color:#1f2328;line-height:1.2;" id="art-author-name">—</p>
+            <p style="font-size:11px;color:#9ca3af;" id="art-author-email">—</p>
+          </div>
+        </div>
+        <div class="meta-sep"></div>
+        <span class="meta-text" id="art-date">—</span>
+        <div class="meta-sep"></div>
+        <span class="meta-text" id="art-read-time">—</span>
+        <div class="meta-sep"></div>
+        <span class="meta-text" id="art-word-count">—</span>
+      </div>
+
+      <!-- Body -->
+      <div class="article-body" id="art-body">
+        <p style="color:#d1d5db;font-style:italic;">Isi artikel tidak tersedia.</p>
+      </div>
+
+    </div>
+  </article>
+
+  <!-- ── RIGHT: Action panel (1/3, sticky) ── -->
+  <aside>
+    <div class="action-panel">
+      <div class="action-panel-header">Panel Keputusan Admin</div>
+      <div class="action-panel-body" id="action-body">
+
+        <!-- Status & Meta -->
+        <div>
+          <span class="status-chip pending" id="panel-status-chip">Menunggu Review</span>
+        </div>
+
+        <div class="meta-list" style="margin-top:4px;">
+          <div class="meta-row">
+            <span class="meta-key">Penulis</span>
+            <span class="meta-val" id="panel-author">—</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-key">Email</span>
+            <span class="meta-val" id="panel-email" style="word-break:break-all;">—</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-key">Kategori</span>
+            <span class="meta-val" id="panel-category">—</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-key">Diajukan</span>
+            <span class="meta-val" id="panel-submitted">—</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-key">Panjang</span>
+            <span class="meta-val" id="panel-wordcount">—</span>
+          </div>
+        </div>
+
+        <div class="panel-sep"></div>
+
+        <!-- Result card (muncul setelah aksi) -->
+        <div class="result-card" id="result-card">
+          <div class="result-title" id="result-title">—</div>
+          <div class="result-sub"  id="result-sub">—</div>
+          <span class="email-badge" id="result-email-badge">
+            <svg style="width:11px;height:11px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+            </svg>
+            Email terkirim ke penulis
+          </span>
+        </div>
+
+        <!-- ════════════════════
+             TOMBOL 1: APPROVE
+             ════════════════════ -->
+        <button class="btn-approve" id="btn-approve" onclick="handleApprove()">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          Setujui &amp; Terbitkan
+        </button>
+
+        <!-- ════════════════════
+             TOMBOL 2: REJECT
+             ════════════════════ -->
+        <button class="btn-reject" id="btn-reject" onclick="toggleRejectBox()">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/>
+          </svg>
+          Kembalikan ke Draf
+        </button>
+
+        <!-- ── Reject reason box (muncul saat tombol tolak diklik) ── -->
+        <div class="reject-box" id="reject-box">
+          <span class="reject-label">
+            <svg style="width:12px;height:12px;display:inline;margin-right:4px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.07 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+            </svg>
+            Alasan Pengembalian <span style="font-weight:400;color:#9ca3af;">(Opsional)</span>
+          </span>
+          <textarea
+            class="reject-textarea"
+            id="reject-reason"
+            placeholder="Contoh: Pendahuluan perlu diperkuat, sumber data belum dicantumkan, atau judul kurang spesifik…"
+          ></textarea>
+          <button class="reject-confirm" onclick="handleReject()">
+            <svg style="width:13px;height:13px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/>
+            </svg>
+            Konfirmasi Kembalikan ke Draf
+          </button>
+          <button class="reject-cancel" onclick="toggleRejectBox()">Batalkan</button>
+        </div>
+
+        <div class="panel-sep"></div>
+
+        <!-- Admin note (read-only record) -->
+        <p style="font-size:11px;color:#9ca3af;line-height:1.5;">
+          Keputusan akan dicatat beserta nama admin dan timestamp untuk keperluan audit.
+        </p>
+
+      </div><!-- /action-panel-body -->
+    </div><!-- /action-panel -->
+  </aside>
+
+</div><!-- /layout-grid -->
+</div><!-- /main-wrap -->
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ══════════════════════════════════════════
+   MOCK DATA — satu artikel pending_review
+   [DYNAMIC] Ganti dengan:
+   const id = new URLSearchParams(location.search).get('id');
+   fetch('/api/admin/articles/' + id).then(r=>r.json()).then(populate);
+   ══════════════════════════════════════════ */
+var ARTICLE = {
+  id:         'art-001',
+  author:     'Sinta Maharani',
+  email:      'sinta@email.com',
+  title:      'Kopi Gayo dan Warisan Rasa yang Tak Tergantikan',
+  category:   'kuliner',
+  submitted:  '2025-09-21T08:14:00Z',
+  status:     'pending_review',
+  word_count: 842,
+  cover_url:  'https://images.unsplash.com/photo-1610889556528-9a770e32642f?w=1200&q=80',
+  body_html:  `
+    <p>Di balik setiap cangkir kopi Gayo tersimpan cerita panjang tentang perjuangan petani
+    di dataran tinggi Aceh yang mempertahankan cara pengolahan tradisional mereka selama
+    berabad-abad. Aromanya yang khas — sedikit floral, sedikit earthy — bukan sekadar
+    kebetulan alam, melainkan hasil dari proses <em>wet-hulling</em> yang unik dan hanya
+    ditemukan di Aceh.</p>
+
+    <h2>Sejarah yang Tersimpan di Tiap Biji</h2>
+    <p>Kopi pertama kali masuk ke dataran tinggi Gayo pada abad ke-17, dibawa oleh pedagang
+    dari Yaman melalui jalur rempah-rempah Nusantara. Dalam waktu singkat, tanah vulkanik
+    Gayo terbukti menjadi habitat ideal bagi varietas <em>Arabika</em> yang menghasilkan
+    biji-biji berukuran besar dengan kadar asam yang rendah.</p>
+
+    <blockquote>
+      "Kami tidak hanya menanam kopi. Kami merawat warisan leluhur yang tidak bisa digantikan
+      oleh mesin atau teknologi mana pun." — Pak Mahmud, petani kopi generasi ketiga di Bebesen
+    </blockquote>
+
+    <h2>Wet-Hulling: Teknik yang Membentuk Karakter</h2>
+    <p>Berbeda dengan metode pengolahan kopi di Ethiopia atau Kolombia, petani Gayo menggunakan
+    metode <em>giling basah</em> (wet-hulling atau <em>Giling Basah</em>) yang menghasilkan
+    biji kopi dengan kadar kelembaban lebih tinggi saat digiling. Proses inilah yang menciptakan
+    cita rasa bold, earthy, dan full-body yang menjadi ciri khas Kopi Gayo.</p>
+
+    <h3>Langkah-langkah Proses Giling Basah</h3>
+    <ul>
+      <li>Pemetikan buah kopi matang (cherry) secara selektif dengan tangan</li>
+      <li>Fermentasi basah selama 12–24 jam untuk melepas lapisan lendir</li>
+      <li>Pengeringan parsial hingga kadar air 30–35%</li>
+      <li>Penggilingan kulit tanduk saat biji masih basah (<em>wet-hulling</em>)</li>
+      <li>Pengeringan akhir di bawah sinar matahari hingga kadar air 12%</li>
+    </ul>
+
+    <h2>Tantangan di Era Modern</h2>
+    <p>Meski telah mendapat sertifikasi <strong>Geographical Indication (GI)</strong> dari
+    pemerintah Indonesia sejak 2010, Kopi Gayo masih menghadapi tantangan besar: harga
+    yang tidak stabil di pasar internasional, persaingan dari kopi robusta impor yang lebih
+    murah, dan minimnya regenerasi petani muda yang mau meneruskan tradisi ini.</p>
+
+    <p>Namun di balik semua tantangan itu, secangkir kopi Gayo tetap menjadi bukti nyata
+    bahwa kekayaan rasa sebuah bangsa bisa bertahan — selama ada yang mau menjaganya.</p>
+  `,
+};
+
+var CAT_LABELS = {
+  'agrikultur':'🌾 Agrikultur','kuliner':'☕ Kuliner','kerajinan':'🧶 Kerajinan',
+  'budaya':'🎭 Budaya','sosial':'🤝 Sosial','lingkungan':'🌿 Lingkungan',
+  'wisata':'🗺️ Wisata','catatan-buku':'📖 Catatan Buku','jurnal':'🗒️ Jurnal',
+  'ulasan':'⭐ Ulasan','ekonomi-lokal':'💡 Ekonomi Lokal',
+};
+
+/* ─────────────────────────────────────
+   Populate article view
+───────────────────────────────────── */
+function populate(a) {
+  // Cover
+  if (a.cover_url) {
+    var img = document.createElement('img');
+    img.src = a.cover_url; img.alt = a.title; img.className = 'cover-img';
+    document.getElementById('cover-wrap').innerHTML = '';
+    document.getElementById('cover-wrap').appendChild(img);
+  }
+
+  // Category
+  var catLabel = CAT_LABELS[a.category] || a.category;
+  document.getElementById('art-category').textContent = catLabel;
+
+  // Title
+  document.getElementById('art-title').textContent = a.title;
+
+  // Author
+  var initials = a.author.split(' ').map(function(w){ return w[0]; }).join('').slice(0,2).toUpperCase();
+  document.getElementById('art-author-av').textContent    = initials;
+  document.getElementById('art-author-name').textContent  = a.author;
+  document.getElementById('art-author-email').textContent = a.email;
+
+  // Date & stats
+  var d = new Date(a.submitted);
+  document.getElementById('art-date').textContent       = d.toLocaleDateString('id-ID', {day:'numeric',month:'long',year:'numeric'});
+  document.getElementById('art-read-time').textContent  = '≈ ' + Math.max(1,Math.round((a.word_count||0)/200)) + ' menit baca';
+  document.getElementById('art-word-count').textContent = (a.word_count||0) + ' kata';
+
+  // Body
+  if (a.body_html) document.getElementById('art-body').innerHTML = a.body_html;
+
+  // Panel meta
+  document.getElementById('panel-author').textContent    = a.author;
+  document.getElementById('panel-email').textContent     = a.email;
+  document.getElementById('panel-category').textContent  = catLabel;
+  document.getElementById('panel-wordcount').textContent = (a.word_count||0) + ' kata';
+  document.getElementById('panel-submitted').textContent =
+    d.toLocaleDateString('id-ID', {day:'numeric',month:'short',year:'numeric'}) + ' · ' +
+    d.toLocaleTimeString('id-ID', {hour:'2-digit',minute:'2-digit'});
+
+  // Topbar
+  document.getElementById('topbar-author').textContent = 'Penulis: ' + a.author;
+  document.getElementById('topbar-status-chip').innerHTML =
+    '<span style="font-size:11px;font-weight:700;background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:99px;margin-left:8px;">Menunggu Review</span>';
+}
+
+/* ─────────────────────────────────────
+   Tombol 1 — Setujui & Terbitkan
+   Status DB: published
+   Memicu: email sukses ke penulis
+───────────────────────────────────── */
+function handleApprove() {
+  var btn    = document.getElementById('btn-approve');
+  var btnRej = document.getElementById('btn-reject');
+  btn.disabled = true; btn.textContent = 'Memproses…';
+  btnRej.disabled = true;
+
+  // Simulate async API call
+  setTimeout(function() {
+    ARTICLE.status = 'published';
+
+    // [DYNAMIC] fetch('/api/admin/articles/' + ARTICLE.id + '/review', {
+    //   method: 'POST',
+    //   headers: {'Content-Type':'application/json'},
+    //   body: JSON.stringify({ status: 'published', admin: adminName })
+    // })
+    // Server-side: kirim email ke ARTICLE.email dengan template "Artikel Disetujui"
+
+    // Update status chip
+    var chip = document.getElementById('panel-status-chip');
+    chip.textContent = 'Diterbitkan';
+    chip.className   = 'status-chip published';
+
+    // Show result card
+    var card = document.getElementById('result-card');
+    card.className = 'result-card approved';
+    document.getElementById('result-title').style.color = '#166534';
+    document.getElementById('result-title').textContent = '✓ Artikel berhasil diterbitkan';
+    document.getElementById('result-sub').textContent   =
+      'Artikel sudah aktif di halaman utama BOB dan dapat ditemukan oleh pembaca.';
+
+    // Update topbar chip
+    document.getElementById('topbar-status-chip').innerHTML =
+      '<span style="font-size:11px;font-weight:700;background:#dcfce7;color:#166534;padding:2px 8px;border-radius:99px;margin-left:8px;">Diterbitkan</span>';
+
+    // Hide reject box if open
+    document.getElementById('reject-box').classList.remove('open');
+
+    // Keep buttons disabled (action already done)
+    btn.innerHTML = '<svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;">'
+      + '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>'
+      + ' Sudah Diterbitkan';
+
+    showToast('✓  Artikel diterbitkan & email terkirim ke ' + ARTICLE.email, 'green');
+  }, 900);
+}
+
+/* ─────────────────────────────────────
+   Tombol 2 — Kembalikan ke Draf
+   Tampilkan kotak alasan dulu
+───────────────────────────────────── */
+function toggleRejectBox() {
+  var box = document.getElementById('reject-box');
+  var isOpen = box.classList.contains('open');
+  box.classList.toggle('open', !isOpen);
+  if (!isOpen) {
+    setTimeout(function() { document.getElementById('reject-reason').focus(); }, 60);
+  }
+}
+
+function handleReject() {
+  var reason = document.getElementById('reject-reason').value.trim();
+  var btn    = document.getElementById('btn-reject');
+  var btnApp = document.getElementById('btn-approve');
+
+  document.getElementById('reject-confirm-btn') && null;
+  btn.disabled = true; btnApp.disabled = true;
+
+  // Simulate async API call
+  setTimeout(function() {
+    ARTICLE.status = 'draft';
+
+    // [DYNAMIC] fetch('/api/admin/articles/' + ARTICLE.id + '/review', {
+    //   method: 'POST',
+    //   headers: {'Content-Type':'application/json'},
+    //   body: JSON.stringify({ status: 'draft', reason: reason, admin: adminName })
+    // })
+    // Server-side:
+    //   1. Ubah status → draft (kembali ke catatan pribadi penulis)
+    //   2. Simpan catatan alasan ke tabel article_reviews
+    //   3. Kirim email notifikasi ke ARTICLE.email dengan isi reason
+
+    // Update status chip
+    var chip = document.getElementById('panel-status-chip');
+    chip.textContent = 'Dikembalikan ke Draf';
+    chip.className   = 'status-chip draft';
+
+    // Show result card
+    var card = document.getElementById('result-card');
+    card.className = 'result-card rejected';
+    document.getElementById('result-title').style.color = '#991b1b';
+    document.getElementById('result-title').textContent = '↩ Artikel dikembalikan ke draf';
+    document.getElementById('result-sub').textContent   = reason
+      ? 'Catatan untuk penulis: "' + reason + '"'
+      : 'Penulis dapat membuka kembali tulisannya di Catatan Buku dan memperbaikinya.';
+
+    // Update topbar chip
+    document.getElementById('topbar-status-chip').innerHTML =
+      '<span style="font-size:11px;font-weight:700;background:#f3f4f6;color:#6b7280;padding:2px 8px;border-radius:99px;margin-left:8px;">Draft</span>';
+
+    // Close reject box
+    document.getElementById('reject-box').classList.remove('open');
+
+    // Update reject button
+    btn.innerHTML = '<svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px;">'
+      + '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>'
+      + ' Sudah Dikembalikan';
+    btn.disabled = true;
+
+    showToast('↩  Artikel dikembalikan ke draf & email terkirim ke ' + ARTICLE.email, 'red');
+  }, 800);
+}
+
+/* ─────────────────────────────────────
+   Toast
+───────────────────────────────────── */
+var _tt;
+function showToast(msg, color) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className   = 'toast show ' + (color || '');
+  clearTimeout(_tt);
+  _tt = setTimeout(function(){ t.className = 'toast'; }, 4000);
+}
+
+/* ─────────────────────────────────────
+   Admin name from sessionStorage
+───────────────────────────────────── */
+var adminName = 'Admin';
+(function() {
+  var name = sessionStorage.getItem('bob_user_name') || 'Admin';
+  adminName = name;
+  var el = document.getElementById('admin-name');
+  var av = document.getElementById('admin-avatar');
+  if (el) el.textContent = name;
+  if (av) av.textContent = name.charAt(0).toUpperCase();
+})();
+
+/* ─────────────────────────────────────
+   [DYNAMIC] Read article ID from URL:
+   const id = new URLSearchParams(location.search).get('id');
+   fetch('/api/admin/articles/' + id).then(r=>r.json()).then(populate);
+───────────────────────────────────── */
+populate(ARTICLE);
+</script>
+
+  <script src="../../assets/js/lang.js"></script>
+  <script src="/assets/js/layout.js"></script>
+  <script src="/assets/js/public-layout.js"></script>
+</body>
+</html>

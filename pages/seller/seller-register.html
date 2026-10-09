@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Buka Toko — BOB</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../../assets/js/supabase-config.js"></script>
+  <script src="../../api/auth.js"></script>
+  <script>BobAuth.requireAuth();</script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../../assets/css/shared.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+.option-card {
+      border: 1.5px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 18px 20px;
+      display: flex; align-items: center; gap-16px;
+      cursor: pointer;
+      transition: border-color .2s, box-shadow .2s, background .15s;
+      background: #fff;
+    }
+    .option-card:hover {
+      border-color: #34d399;
+      box-shadow: 0 2px 12px rgba(52,211,153,.18);
+      background: #f0fdf4;
+    }
+    .option-card.selected {
+      border-color: #059669;
+      box-shadow: 0 0 0 3px rgba(52,211,153,.2);
+      background: #f0fdf4;
+    }
+    .option-icon {
+      width: 48px; height: 48px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; font-size: 22px;
+    }
+
+    .step-dot {
+      width: 28px; height: 28px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700;
+    }
+    .step-dot.done { background: #34d399; color: #064e3b; }
+    .step-dot.active { background: #059669; color: #fff; }
+    .step-dot.inactive { background: #e5e7eb; color: #9ca3af; }
+
+    /* ── Input field ── */
+    .input-field {
+      width: 100%; border: 1.5px solid #e5e7eb; border-radius: 8px;
+      padding: 10px 14px; font-size: 14px; font-family: 'Inter', sans-serif;
+      outline: none; transition: border-color .2s;
+    }
+    .input-field:focus { border-color: #34d399; box-shadow: 0 0 0 3px rgba(52,211,153,.12); }
+
+    /* ── Primary button ── */
+    .btn-primary {
+      padding: 11px 28px; border-radius: 8px;
+      background: linear-gradient(135deg, #34d399 0%, #059669 100%);
+      color: #fff; font-size: 14px; font-weight: 700; border: none; cursor: pointer;
+      transition: opacity .15s;
+    }
+    .btn-primary:hover { opacity: .88; }
+    .btn-primary:disabled { opacity: .5; cursor: not-allowed; }
+
+    /* ── Verification card ── */
+    .verify-card {
+      border: 1.5px solid #e5e7eb; border-radius: 10px; padding: 20px;
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .verify-step {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px; border-radius: 8px; background: #f9fafb;
+    }
+    .verify-step .num {
+      width: 28px; height: 28px; border-radius: 50%; background: #e5e7eb;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; color: #6b7280; flex-shrink: 0;
+    }
+    .verify-step.active .num { background: #34d399; color: #064e3b; }
+    .verify-step.done .num { background: #059669; color: #fff; }
+  </style>
+  <link rel="stylesheet" href="/assets/css/public-layout.css" />
+</head>
+<body>
+  <div id="rm-navbar-root"></div>
+
+<!-- ── Top back bar ── -->
+<div style="border-bottom:1px solid #e5e7eb;padding:12px 24px;display:flex;align-items:center;gap-12px;">
+  <button onclick="goBack()" style="background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:6px;color:#374151;font-size:14px;font-weight:500;" class="hover:text-emerald-700 transition-colors">
+    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+  </button>
+  <a href="../main/dashboard.html">
+    <img src="../../assets/brand/1.png" alt="Racik Media" style="height:32px;width:auto;margin-left:8px;" />
+  </a>
+</div>
+
+<!-- ── Step indicator ── -->
+<div style="border-bottom:1px solid #f3f4f6;padding:14px 24px;">
+  <div style="display:flex;align-items:center;gap:8px;max-width:700px;margin:0 auto;" id="step-indicator">
+    <div class="step-dot active" id="dot-1">1</div>
+    <span style="font-size:12px;font-weight:600;color:#059669;" id="label-1">Pilih Jenis Toko</span>
+    <div style="flex:1;height:1px;background:#e5e7eb;"></div>
+    <div class="step-dot inactive" id="dot-2">2</div>
+    <span style="font-size:12px;color:#9ca3af;" id="label-2">Info Toko</span>
+    <div style="flex:1;height:1px;background:#e5e7eb;"></div>
+    <div class="step-dot inactive" id="dot-3">3</div>
+    <span style="font-size:12px;color:#9ca3af;" id="label-3">Verifikasi</span>
+  </div>
+</div>
+
+<!-- ── PAGE CONTAINER ── -->
+<div style="max-width:700px;margin:40px auto;padding:0 24px;">
+
+  <!-- ═══════════════════════
+       STEP 1 — Pilih Jenis Toko
+       ═══════════════════════ -->
+  <div id="page-1">
+    <h1 style="font-size:20px;font-weight:700;color:#1f2328;margin-bottom:6px;">Mulai berjualan di BOB!</h1>
+    <p style="font-size:14px;color:#059669;font-weight:500;margin-bottom:24px;">Jenis toko apa yang ingin kamu buat?</p>
+
+    <div style="display:flex;flex-direction:column;gap:12px;">
+
+      <!-- Opsi 1: Toko Perorangan -->
+      <div class="option-card" id="opt-personal" onclick="selectType('personal')">
+        <div style="display:flex;align-items:center;gap:14px;width:100%;">
+          <div class="option-icon" style="background:#dcfce7;">
+            <svg class="w-6 h-6 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+          </div>
+          <div class="flex-1">
+            <p style="font-size:14px;font-weight:600;color:#047857;">Toko perorangan</p>
+            <p style="font-size:12px;color:#059669;margin-top:2px;">Buka toko, prosesnya mudah dan cepat, hanya dengan verifikasi e-KTP.</p>
+          </div>
+          <svg class="w-5 h-5 text-gray-300 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </div>
+      </div>
+
+      <!-- Opsi 2: Official Store -->
+      <div class="option-card" id="opt-official" onclick="selectType('official')">
+        <div style="display:flex;align-items:center;gap:14px;width:100%;">
+          <div class="option-icon" style="background:#ede9fe;">
+            <svg class="w-6 h-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+          </div>
+          <div class="flex-1">
+            <p style="font-size:14px;font-weight:600;color:#7c3aed;">Official Store</p>
+            <p style="font-size:12px;color:#8b5cf6;margin-top:2px;">Toko dengan layanan eksklusif yang memiliki dokumen SIUP/NIB, KTP &amp; NPWP.</p>
+          </div>
+          <svg class="w-5 h-5 text-gray-300 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════
+       STEP 2 — Info Toko
+       ═══════════════════════ -->
+  <div id="page-2" style="display:none;">
+    <h1 style="font-size:20px;font-weight:700;color:#1f2328;margin-bottom:6px;">Lengkapi Info Toko</h1>
+    <p style="font-size:13px;color:#6b7280;margin-bottom:24px;">Informasi ini akan ditampilkan ke pembeli.</p>
+
+    <div style="display:flex;flex-direction:column;gap:16px;">
+      <div>
+        <label style="font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:6px;">Nama Toko <span style="color:#ef4444;">*</span></label>
+        <input type="text" id="shop-name-input" class="input-field" placeholder="contoh: Toko Berkah Nusantara" />
+        <p style="font-size:11px;color:#9ca3af;margin-top:4px;">Minimal 3 karakter, tidak bisa diubah setelah 30 hari.</p>
+      </div>
+      <div>
+        <label style="font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:6px;">Nomor HP <span style="color:#ef4444;">*</span></label>
+        <input type="tel" id="shop-phone-input" class="input-field" placeholder="contoh: 0812-xxxx-xxxx" />
+      </div>
+      <div>
+        <label style="font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:6px;">Alamat Toko <span style="color:#ef4444;">*</span></label>
+        <input type="text" id="shop-city-input" class="input-field" placeholder="Kota / Kabupaten" />
+      </div>
+      <div>
+        <label style="font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:6px;">Deskripsi Toko</label>
+        <textarea id="shop-desc-input" class="input-field" rows="3" placeholder="Ceritakan tentang toko Anda..."></textarea>
+      </div>
+    </div>
+
+    <div style="display:flex;justify-content:space-between;margin-top:28px;">
+      <button onclick="goToStep(1)" style="padding:10px 20px;border:1.5px solid #e5e7eb;border-radius:8px;background:#fff;font-size:14px;font-weight:600;color:#374151;cursor:pointer;" class="hover:bg-gray-50">← Kembali</button>
+      <button onclick="goToStep3()" class="btn-primary" id="btn-next-step2">Lanjut →</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════
+       STEP 3 — Verifikasi
+       ═══════════════════════ -->
+  <div id="page-3" style="display:none;">
+    <h1 style="font-size:20px;font-weight:700;color:#1f2328;margin-bottom:6px;" id="verify-title">Verifikasi Identitas</h1>
+    <p style="font-size:13px;color:#6b7280;margin-bottom:24px;" id="verify-subtitle">Verifikasi diperlukan untuk mengaktifkan toko Anda.</p>
+
+    <div class="verify-card">
+
+      <!-- [Official Store saja] Step 0: Upload dokumen NIB/SIUP -->
+      <div class="verify-step" id="vstep-0" style="display:none;">
+        <div class="num">0</div>
+        <div class="flex-1">
+          <p style="font-size:13px;font-weight:600;color:#1f2328;">Dokumen Usaha (NIB / SIUP)</p>
+          <p style="font-size:11px;color:#6b7280;margin-top:2px;">PDF, JPG, atau PNG — maksimal 10 MB</p>
+        </div>
+        <label style="cursor:pointer;" id="nib-upload-label">
+          <input type="file" accept="application/pdf,image/jpeg,image/png" id="nib-file" style="display:none;" onchange="handleNIBUpload()" />
+          <span id="nib-btn" style="display:inline-block;padding:7px 16px;border:1.5px solid #7c3aed;border-radius:6px;font-size:12px;font-weight:600;color:#7c3aed;cursor:pointer;" class="hover:bg-violet-50">Pilih File</span>
+        </label>
+      </div>
+
+      <!-- Step 1: Upload e-KTP -->
+      <div class="verify-step active" id="vstep-1">
+        <div class="num">1</div>
+        <div class="flex-1">
+          <p style="font-size:13px;font-weight:600;color:#1f2328;">Upload Foto e-KTP</p>
+          <p style="font-size:11px;color:#6b7280;margin-top:2px;">Pastikan foto jelas dan tidak blur</p>
+        </div>
+        <label style="cursor:pointer;" id="ktp-upload-label">
+          <input type="file" accept="image/*" id="ktp-file" style="display:none;" onchange="handleKTPUpload()" />
+          <span id="ktp-btn" style="display:inline-block;padding:7px 16px;border:1.5px solid #34d399;border-radius:6px;font-size:12px;font-weight:600;color:#047857;cursor:pointer;" class="hover:bg-emerald-50">Pilih File</span>
+        </label>
+      </div>
+
+      <!-- Step 2: Selfie KTP -->
+      <div class="verify-step" id="vstep-2">
+        <div class="num">2</div>
+        <div class="flex-1">
+          <p style="font-size:13px;font-weight:600;color:#1f2328;">Foto Selfie dengan e-KTP</p>
+          <p style="font-size:11px;color:#6b7280;margin-top:2px;">Wajah harus terlihat jelas bersama KTP</p>
+        </div>
+        <label style="cursor:pointer;" id="selfie-upload-label">
+          <input type="file" accept="image/*" id="selfie-file" style="display:none;" onchange="handleSelfieUpload()" />
+          <span id="selfie-btn" style="display:inline-block;padding:7px 16px;border:1.5px solid #e5e7eb;border-radius:6px;font-size:12px;font-weight:600;color:#9ca3af;cursor:not-allowed;" class="opacity-50">Pilih File</span>
+        </label>
+      </div>
+
+      <!-- Step 3: Review -->
+      <div class="verify-step" id="vstep-3">
+        <div class="num">3</div>
+        <div class="flex-1">
+          <p style="font-size:13px;font-weight:600;color:#1f2328;">Proses Verifikasi</p>
+          <p style="font-size:11px;color:#6b7280;margin-top:2px;">Dokumen akan dicek dalam 1×24 jam</p>
+        </div>
+        <span style="font-size:11px;color:#9ca3af;">Menunggu...</span>
+      </div>
+
+    </div>
+
+    <!-- Status message -->
+    <div id="verify-status" style="display:none;margin-top:16px;padding:12px 16px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;">
+      <p class="text-sm font-semibold text-emerald-700" id="verify-msg">Dokumen berhasil diunggah!</p>
+    </div>
+
+    <div style="display:flex;justify-content:space-between;margin-top:28px;align-items:center;">
+      <button onclick="goToStep(2)" style="padding:10px 20px;border:1.5px solid #e5e7eb;border-radius:8px;background:#fff;font-size:14px;font-weight:600;color:#374151;cursor:pointer;" class="hover:bg-gray-50">← Kembali</button>
+      <button onclick="finishRegistration()" class="btn-primary" id="btn-finish" disabled>
+        Ajukan Toko →
+      </button>
+    </div>
+
+    <p style="font-size:11px;color:#9ca3af;text-align:center;margin-top:12px;">
+      Dengan mendaftar, Anda menyetujui
+      <a href="#" style="color:#047857;font-weight:600;">Syarat &amp; Ketentuan Penjual</a> BOB.
+    </p>
+  </div>
+
+</div>
+
+<script>
+  let selectedType = null;
+  let nibDone      = false;  // hanya untuk Official Store
+  let ktpDone      = false;
+  let selfieDone   = false;
+
+  function selectType(type) {
+    selectedType = type;
+    document.getElementById('opt-personal').classList.toggle('selected', type === 'personal');
+    document.getElementById('opt-official').classList.toggle('selected', type === 'official');
+    setTimeout(function() { goToStep(2); }, 180);
+  }
+
+  function goToStep(n) {
+    [1, 2, 3].forEach(function(i) {
+      document.getElementById('page-' + i).style.display = (i === n) ? 'block' : 'none';
+      var dot = document.getElementById('dot-' + i);
+      var lbl = document.getElementById('label-' + i);
+      dot.className = 'step-dot ' + (i < n ? 'done' : i === n ? 'active' : 'inactive');
+      lbl.style.color = i <= n ? '#059669' : '#9ca3af';
+      lbl.style.fontWeight = i === n ? '600' : '400';
+    });
+
+    // Saat masuk step 3, sesuaikan tampilan berdasarkan tipe toko
+    if (n === 3) {
+      var isOfficial = selectedType === 'official';
+      var vstep0 = document.getElementById('vstep-0');
+      vstep0.style.display = isOfficial ? 'flex' : 'none';
+      // Nomor urut vstep-1 menyesuaikan
+      document.getElementById('vstep-1').querySelector('.num').textContent = isOfficial ? '2' : '1';
+      document.getElementById('vstep-2').querySelector('.num').textContent = isOfficial ? '3' : '2';
+      document.getElementById('vstep-3').querySelector('.num').textContent = isOfficial ? '4' : '3';
+      // Label judul & subjudul step 3
+      document.getElementById('verify-title').textContent = isOfficial
+        ? 'Verifikasi Identitas & Dokumen Usaha'
+        : 'Verifikasi Identitas';
+      document.getElementById('verify-subtitle').textContent = isOfficial
+        ? 'Official Store memerlukan dokumen NIB/SIUP, e-KTP, dan selfie pemilik.'
+        : 'Verifikasi diperlukan untuk mengaktifkan toko Anda.';
+      // Reset state upload jika kembali ke step 3
+      nibDone = ktpDone = selfieDone = false;
+    }
+  }
+
+  // ── Fix #6: Handler upload dokumen NIB (Official Store saja) ──
+  function handleNIBUpload() {
+    var file = document.getElementById('nib-file').files[0];
+    if (!file) return;
+    if (file.size > 10 * 1024 * 1024) {
+      showVerifyError('Dokumen NIB/SIUP maksimal 10 MB.'); return;
+    }
+    nibDone = true;
+    var btn = document.getElementById('nib-btn');
+    btn.textContent = '✓ ' + file.name.substring(0, 16) + (file.name.length > 16 ? '…' : '');
+    btn.style.background = '#ede9fe'; btn.style.borderColor = '#7c3aed';
+    btn.style.color = '#5b21b6'; btn.style.cursor = 'default';
+    checkReady();
+  }
+
+  function handleKTPUpload() {
+    var file = document.getElementById('ktp-file').files[0];
+    if (!file) return;
+    if (file.size > 10 * 1024 * 1024) {
+      showVerifyError('Foto e-KTP maksimal 10 MB.'); return;
+    }
+    ktpDone = true;
+    var btn = document.getElementById('ktp-btn');
+    btn.textContent = '✓ ' + file.name.substring(0, 16) + (file.name.length > 16 ? '…' : '');
+    btn.style.background = '#dcfce7'; btn.style.borderColor = '#059669';
+    btn.style.color = '#047857'; btn.style.cursor = 'default';
+    document.getElementById('vstep-2').classList.add('active');
+    var selfieBtn = document.getElementById('selfie-btn');
+    selfieBtn.style.borderColor = '#34d399'; selfieBtn.style.color = '#047857';
+    selfieBtn.style.cursor = 'pointer'; selfieBtn.classList.remove('opacity-50');
+    document.getElementById('selfie-file').removeAttribute('disabled');
+    checkReady();
+  }
+
+  function handleSelfieUpload() {
+    var file = document.getElementById('selfie-file').files[0];
+    if (!file) return;
+    if (file.size > 10 * 1024 * 1024) {
+      showVerifyError('Foto selfie maksimal 10 MB.'); return;
+    }
+    selfieDone = true;
+    var btn = document.getElementById('selfie-btn');
+    btn.textContent = '✓ ' + file.name.substring(0, 16) + (file.name.length > 16 ? '…' : '');
+    btn.style.background = '#dcfce7'; btn.style.borderColor = '#059669'; btn.style.color = '#047857';
+    var vstep3 = document.getElementById('vstep-3');
+    vstep3.classList.add('active');
+    vstep3.querySelector('.num').style.background = '#34d399';
+    vstep3.querySelector('.num').style.color = '#064e3b';
+    vstep3.querySelector('span:last-child').textContent = 'Sedang diproses...';
+    vstep3.querySelector('span:last-child').style.color = '#059669';
+    checkReady();
+  }
+
+  function checkReady() {
+    // Official Store: wajib NIB + KTP + selfie
+    // Perorangan    : wajib KTP + selfie saja
+    var isOfficial = selectedType === 'official';
+    var ready = ktpDone && selfieDone && (!isOfficial || nibDone);
+    if (ready) {
+      document.getElementById('btn-finish').removeAttribute('disabled');
+      var status = document.getElementById('verify-status');
+      status.style.display = 'block';
+      status.style.background = '#f0fdf4';
+      status.style.borderColor = '#bbf7d0';
+      document.getElementById('verify-msg').style.color = '#065f46';
+      document.getElementById('verify-msg').textContent = 'Dokumen dipilih. Klik "Ajukan Toko" untuk mengirim pengajuan.';
+    }
+  }
+
+  function showVerifyError(msg) {
+    var status = document.getElementById('verify-status');
+    status.style.display = 'block';
+    status.style.background = '#fef2f2';
+    status.style.borderColor = '#fecaca';
+    document.getElementById('verify-msg').style.color = '#dc2626';
+    document.getElementById('verify-msg').textContent = '⚠ ' + msg;
+  }
+
+  // ── Fix #11: Validasi Step 2 sebelum lanjut ke Step 3 ──
+  function goToStep3() {
+    var shopName  = document.getElementById('shop-name-input').value.trim();
+    var shopPhone = document.getElementById('shop-phone-input').value.trim();
+    var shopCity  = document.getElementById('shop-city-input').value.trim();
+    if (!shopName || shopName.length < 3) {
+      document.getElementById('shop-name-input').focus();
+      document.getElementById('shop-name-input').style.borderColor = '#ef4444';
+      return;
+    }
+    if (!shopPhone) {
+      document.getElementById('shop-phone-input').focus();
+      document.getElementById('shop-phone-input').style.borderColor = '#ef4444';
+      return;
+    }
+    if (!shopCity) {
+      document.getElementById('shop-city-input').focus();
+      document.getElementById('shop-city-input').style.borderColor = '#ef4444';
+      return;
+    }
+    // Reset border merah jika valid
+    ['shop-name-input','shop-phone-input','shop-city-input'].forEach(function(id) {
+      document.getElementById(id).style.borderColor = '';
+    });
+    goToStep(3);
+  }
+
+  async function finishRegistration() {
+    var btnFinish = document.getElementById('btn-finish');
+    var shopName  = document.getElementById('shop-name-input').value.trim();
+    var shopPhone = document.getElementById('shop-phone-input').value.trim();
+    var shopCity  = document.getElementById('shop-city-input').value.trim();
+    var shopDesc  = document.getElementById('shop-desc-input').value.trim();
+    var type      = selectedType || 'personal';
+
+    btnFinish.disabled = true;
+    btnFinish.textContent = 'Mengirim pengajuan...';
+
+    var statusBox = document.getElementById('verify-status');
+    var msgEl     = document.getElementById('verify-msg');
+    statusBox.style.display = 'block';
+
+    var uploadedPaths = [];
+    var client;
+
+    try {
+      client = await BobAuth.getClient();
+      var auth   = await client.auth.getUser();
+      if (!auth.data.user) throw new Error('Sesi tidak valid. Silakan login ulang.');
+      var userId = auth.data.user.id;
+
+      var ktpFile    = document.getElementById('ktp-file').files[0];
+      var selfieFile = document.getElementById('selfie-file').files[0];
+      var nibFile    = type === 'official' ? document.getElementById('nib-file').files[0] : null;
+
+      async function uploadFile(file, label) {
+        var safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+        var path = userId + '/' + crypto.randomUUID() + '-' + label + '-' + safeName;
+        var res  = await client.storage.from('seller-verification').upload(path, file, { contentType: file.type, upsert: false });
+        if (res.error) throw res.error;
+        uploadedPaths.push(path);
+        return path;
+      }
+
+      // ── Fix #1: upload dokumen sesuai peran masing-masing field ──
+      var documentPath = null;
+      if (nibFile) {
+        msgEl.textContent = 'Mengunggah dokumen NIB/SIUP...';
+        documentPath = await uploadFile(nibFile, 'nib');
+      }
+      msgEl.textContent = 'Mengunggah foto e-KTP...';
+      var ktpPath    = await uploadFile(ktpFile,    'ktp');
+      msgEl.textContent = 'Mengunggah selfie KTP...';
+      var selfiePath = await uploadFile(selfieFile, 'selfie');
+
+      // Simpan ke seller_verifications
+      msgEl.textContent = 'Menyimpan pengajuan...';
+      var payload = {
+        user_id:                userId,
+        business_name:          shopName,
+        registration_number:    shopPhone,
+        // document_path = NIB/SIUP untuk official, null untuk perorangan
+        document_path:          documentPath,
+        // identity_document_path = foto e-KTP (selalu ada)
+        identity_document_path: ktpPath,
+        selfie_document_path:   selfiePath,
+        status:                 'pending',
+        review_note:            null,
+        reviewed_by:            null,
+        reviewed_at:            null,
+      };
+
+      // Upsert: jika sudah ada pengajuan sebelumnya, update
+      var saved = await client.from('seller_verifications').upsert(payload, { onConflict: 'user_id' });
+      if (saved.error) throw saved.error;
+
+      // Simpan ke sessionStorage untuk halaman berikutnya
+      sessionStorage.setItem('bob_shop_name',     shopName);
+      sessionStorage.setItem('bob_shop_type',     type);
+      sessionStorage.setItem('bob_shop_phone',    shopPhone);
+      sessionStorage.setItem('bob_shop_city',     shopCity);
+      sessionStorage.setItem('bob_shop_desc',     shopDesc);
+      sessionStorage.setItem('bob_shop_verified', 'false');
+
+      // Tampilkan sukses lalu redirect
+      statusBox.style.background  = '#f0fdf4';
+      statusBox.style.borderColor = '#bbf7d0';
+      msgEl.style.color    = '#065f46';
+      msgEl.textContent    = '✓ Pengajuan berhasil dikirim! Admin akan mereview dalam 1×24 jam.';
+      btnFinish.textContent = '✓ Terkirim';
+
+      setTimeout(function() {
+        window.location.href = 'pending-verification.html';
+      }, 1800);
+
+    } catch (err) {
+      // Cleanup file yang sudah terupload jika gagal
+      if (client && uploadedPaths.length) {
+        client.storage.from('seller-verification').remove(uploadedPaths).catch(function(){});
+      }
+      statusBox.style.background  = '#fef2f2';
+      statusBox.style.borderColor = '#fecaca';
+      msgEl.style.color   = '#dc2626';
+      msgEl.textContent   = '⚠ Gagal mengirim: ' + (err.message || 'Coba beberapa saat lagi.');
+      btnFinish.disabled  = false;
+      btnFinish.textContent = 'Ajukan Toko →';
+    }
+  }
+
+  function goBack() {
+    var currentPage = [1, 2, 3].find(function(i) {
+      return document.getElementById('page-' + i).style.display !== 'none';
+    }) || 1;
+    if (currentPage > 1) {
+      goToStep(currentPage - 1);
+    } else {
+      window.location.href = '../main/dashboard.html';
+    }
+  }
+</script>
+
+  <script src="../../assets/js/lang.js"></script>
+  <script src="/assets/js/layout.js"></script>
+  <script src="/assets/js/public-layout.js"></script>
+</body>
+</html>

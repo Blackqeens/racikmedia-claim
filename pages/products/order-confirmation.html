@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Konfirmasi Pesanan — Racik Media</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../../assets/css/shared.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    
+    <link rel="stylesheet" href="/assets/css/public-layout.css" />
+</head>
+  <body class="min-h-screen bg-slate-50 text-slate-800 antialiased">
+  <div id="rm-navbar-root"></div>
+    <header class="border-b border-slate-200 bg-white">
+      <div class="mx-auto flex h-16 max-w-5xl items-center px-4 sm:px-6">
+        <a href="../main/dashboard.html" aria-label="Racik Media beranda">
+          <img src="../../assets/brand/1.png" alt="Racik Media" class="h-9 w-auto" />
+        </a>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-3xl px-4 py-12 sm:px-6">
+      <section id="confirmation" class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-9">
+        <div class="mb-6 flex h-12 w-12 items-center justify-center rounded-full bg-amber-100 text-2xl text-amber-800" aria-hidden="true">✓</div>
+        <p class="text-xs font-bold uppercase tracking-wide text-amber-800">Pesanan simulasi</p>
+        <h1 class="mt-2 text-2xl font-bold text-slate-900 sm:text-3xl">Pesanan berhasil dibuat</h1>
+        <p class="mt-2 text-sm leading-6 text-slate-600">Ini hanya konfirmasi untuk prototipe. Belum ada pembayaran yang diproses dan belum ada pesanan yang dikirim ke server.</p>
+
+        <div class="mt-6 grid gap-4 border-y border-slate-200 py-5 sm:grid-cols-2">
+          <div>
+            <p class="text-xs text-slate-500">Nomor pesanan</p>
+            <p id="orderNumber" class="mt-1 font-semibold text-slate-900">-</p>
+          </div>
+          <div>
+            <p class="text-xs text-slate-500">Penerima</p>
+            <p id="recipient" class="mt-1 font-semibold text-slate-900">-</p>
+          </div>
+          <div>
+            <p class="text-xs text-slate-500">Metode pembayaran</p>
+            <p id="paymentMethod" class="mt-1 font-semibold text-slate-900">-</p>
+          </div>
+          <div>
+            <p class="text-xs text-slate-500">Total simulasi</p>
+            <p id="orderTotal" class="mt-1 font-semibold text-emerald-800">-</p>
+          </div>
+        </div>
+
+        <h2 class="mt-6 text-lg font-bold text-slate-900">Item pesanan</h2>
+        <ul id="orderItems" class="mt-3 divide-y divide-slate-100"></ul>
+
+        <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+          <a href="../main/etalase.html" class="rounded-xl bg-emerald-800 px-5 py-3 text-center text-sm font-bold text-white hover:bg-emerald-900">Lanjut Belanja</a>
+          <a href="buyer-orders.html" class="rounded-xl border border-emerald-800 px-5 py-3 text-center text-sm font-semibold text-emerald-900 hover:bg-emerald-50">Lihat Riwayat Pesanan</a>
+          <a href="cart.html" class="rounded-xl border border-slate-300 px-5 py-3 text-center text-sm font-semibold text-slate-700 hover:bg-slate-50">Kembali ke Keranjang</a>
+        </div>
+      </section>
+
+      <section id="missingOrder" class="hidden rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-9">
+        <h1 class="text-2xl font-bold text-slate-900">Data pesanan tidak ditemukan</h1>
+        <p class="mt-2 text-sm text-slate-600">Buat pesanan melalui keranjang untuk melihat halaman konfirmasi.</p>
+        <a href="cart.html" class="mt-6 inline-flex rounded-xl bg-emerald-800 px-5 py-3 text-sm font-bold text-white hover:bg-emerald-900">Buka Keranjang</a>
+      </section>
+    </main>
+
+    <script>
+      const order = JSON.parse(sessionStorage.getItem('racikmedia-last-order') || 'null');
+      const confirmation = document.getElementById('confirmation');
+      const missingOrder = document.getElementById('missingOrder');
+
+      if (!order) {
+        confirmation.classList.add('hidden');
+        missingOrder.classList.remove('hidden');
+      } else {
+        const formatRupiah = value => 'Rp ' + value.toLocaleString('id-ID');
+        document.getElementById('orderNumber').textContent = order.orderNumber;
+        document.getElementById('recipient').textContent = order.recipient;
+        document.getElementById('paymentMethod').textContent = order.paymentMethod;
+        document.getElementById('orderTotal').textContent = formatRupiah(order.total);
+
+        const itemsList = document.getElementById('orderItems');
+        order.items.forEach(item => {
+          const listItem = document.createElement('li');
+          listItem.className = 'flex items-start justify-between gap-4 py-3 text-sm';
+          const itemName = document.createElement('span');
+          itemName.className = 'text-slate-700';
+          itemName.textContent = item.name + ' × ' + item.quantity;
+          const itemPrice = document.createElement('span');
+          itemPrice.className = 'shrink-0 font-semibold text-slate-900';
+          itemPrice.textContent = formatRupiah(item.unitPrice * item.quantity);
+          listItem.append(itemName, itemPrice);
+          itemsList.appendChild(listItem);
+        });
+      }
+    </script>
+    <script src="../../assets/js/lang.js"></script>
+  <script src="/assets/js/layout.js"></script>
+  <script src="/assets/js/public-layout.js"></script>
+</body>
+</html>

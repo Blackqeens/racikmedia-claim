@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Artikel Tersimpan — Racik Media</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../../assets/css/shared.css">
+  <script src="../../api/auth.js"></script>
+  <script src="../../assets/js/public-articles.js"></script>
+  <link rel="stylesheet" href="/assets/css/public-layout.css" />
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-800">
+  <div id="rm-navbar-root"></div>
+  <header class="border-b bg-white">
+    <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
+      <a href="articles.html" class="font-bold text-emerald-900">Racik Media · Jurnal</a>
+      <a href="articles.html" class="text-sm font-semibold text-emerald-800 hover:underline">Jelajah artikel</a>
+    </div>
+  </header>
+  <main class="mx-auto max-w-6xl px-4 py-10">
+    <h1 class="font-serif text-3xl font-bold">Artikel Tersimpan</h1>
+    <p class="mt-2 text-sm text-slate-600">Daftar artikel yang Anda simpan untuk dibaca nanti.</p>
+    <p id="bookmarkMessage" class="mt-5 text-sm text-slate-600" role="status" aria-live="polite">Memuat artikel tersimpan...</p>
+    <section id="bookmarkGrid" class="mt-6 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3"></section>
+  </main>
+  <script>
+    (async function () {
+      var message = document.getElementById('bookmarkMessage');
+      var grid = document.getElementById('bookmarkGrid');
+      try {
+        var client = await BobAuth.getClient();
+        var auth = await client.auth.getUser();
+        if (auth.error) throw auth.error;
+        if (!auth.data.user) {
+          message.innerHTML = 'Masuk untuk melihat artikel tersimpan. <a class="font-semibold text-emerald-800 underline" href="../auth/login.html?next=' + encodeURIComponent(window.location.href) + '">Masuk</a>';
+          return;
+        }
+        var articles = await PublicArticles.getBookmarks();
+        if (!articles.length) {
+          message.textContent = 'Belum ada artikel tersimpan. Simpan artikel dari halaman detail untuk menambahkannya di sini.';
+          return;
+        }
+        message.textContent = articles.length + ' artikel tersimpan.';
+        grid.innerHTML = articles.map(function (article) {
+          var escape = PublicArticles.escapeHtml;
+          var imageUrl = PublicArticles.safeImageUrl(article.cover_url);
+          var image = imageUrl
+            ? '<img src="' + escape(imageUrl) + '" alt="' + escape(article.title) + '" class="h-full w-full object-cover" loading="lazy">'
+            : '<div class="flex h-full items-center justify-center bg-emerald-50 text-4xl text-emerald-800">✦</div>';
+          return '<article class="flex flex-col gap-3 rounded-xl border border-slate-200 bg-white p-4"><a href="article-detail.html?id=' + encodeURIComponent(article.id) + '" class="aspect-[3/2] overflow-hidden rounded-lg bg-slate-100">' + image + '</a><p class="text-xs font-semibold uppercase tracking-wide text-emerald-800">' + escape(article.category) + '</p><h2 class="font-serif text-xl font-bold"><a class="hover:text-emerald-800" href="article-detail.html?id=' + encodeURIComponent(article.id) + '">' + escape(article.title) + '</a></h2><p class="line-clamp-3 text-sm leading-6 text-slate-600">' + escape(article.excerpt) + '</p><div class="mt-auto flex items-center justify-between gap-3 pt-2"><time class="text-xs text-slate-400">' + escape(PublicArticles.dateLabel(article.published_at)) + '</time><button type="button" data-remove-bookmark="' + escape(article.id) + '" class="text-xs font-semibold text-rose-700 hover:underline">Hapus</button></div></article>';
+        }).join('');
+      } catch (error) {
+        message.textContent = error.message || 'Artikel tersimpan gagal dimuat.';
+        message.classList.add('text-rose-700');
+      }
+      grid.addEventListener('click', async function (event) {
+        var button = event.target.closest('[data-remove-bookmark]');
+        if (!button) return;
+        button.disabled = true;
+        try {
+          await PublicArticles.toggleReaction(button.dataset.removeBookmark, 'bookmark');
+          button.closest('article').remove();
+          message.textContent = 'Artikel dihapus dari daftar simpan.';
+          if (!grid.children.length) message.textContent = 'Belum ada artikel tersimpan.';
+        } catch (error) {
+          button.disabled = false;
+          message.textContent = error.message || 'Artikel gagal dihapus dari daftar simpan.';
+          message.classList.add('text-rose-700');
+        }
+      });
+    })();
+  </script>
+  <script src="../../assets/js/lang.js"></script>
+  <script src="/assets/js/layout.js"></script>
+  <script src="/assets/js/public-layout.js"></script>
+</body>
+</html>
