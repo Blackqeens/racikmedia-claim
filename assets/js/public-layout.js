@@ -47,14 +47,6 @@
           window.RMlang.set(window.RMlang.get(), false);
         }
         if (containerId === 'rm-navbar-root') {
-          var currentPath = decodeURIComponent(window.location.pathname).replace(/\/+$/, '') || '/';
-          var isHomePage = currentPath === '/'
-            || /(?:^|\/)index\.html$/i.test(currentPath)
-            || /\/pages\/main\/homepage\.html$/i.test(currentPath);
-          if (isHomePage) {
-            var backButton = container.querySelector('#back-button');
-            if (backButton) backButton.remove();
-          }
           syncPublicMotion();
         }
       })

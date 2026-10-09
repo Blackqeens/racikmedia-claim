@@ -4,6 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Dashboard — BOB Racik Media Nusantara</title>
+  <link rel="icon" href="../../assets/brand/logo.png" type="image/png" />
+
+  <!-- Supabase SDK & Konfigurasi (Wajib sebelum auth.js) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../../assets/js/supabase-config.js"></script>
+
   <!-- ROUTE GUARD: Admin & Master Admin -->
   <script src="../../api/auth.js"></script>
   <script>BobAuth.requireRole(['admin', 'master_admin']);</script>
@@ -14,12 +20,19 @@
   <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 
   <style>
-/* ── Sidebar ── */
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: #f8fafc;
+      color: #0f172a;
+    }
+
+    /* ── Sidebar ── */
     .sidebar {
       position: fixed; top: 0; left: 0; bottom: 0;
       width: 240px; background: #0f172a;
       display: flex; flex-direction: column;
-      z-index: 40; overflow-y: auto;
+      z-index: 50; overflow-y: auto;
+      transition: transform .25s ease-in-out;
     }
     .sidebar-logo {
       padding: 20px 20px 18px;
@@ -57,10 +70,11 @@
       background: #ffffff; border-bottom: 1px solid #e2e8f0;
       display: flex; align-items: center; justify-content: space-between;
       padding: 0 28px; z-index: 30;
+      transition: left .25s ease-in-out;
     }
 
     /* ── Main content layout ── */
-    .main-wrap { margin-left: 240px; padding-top: 56px; min-height: 100vh; }
+    .main-wrap { margin-left: 240px; padding-top: 56px; min-height: 100vh; transition: margin-left .25s ease-in-out; }
     .content   { padding: 28px 32px 60px; }
 
     /* ── Cards & Tables ── */
@@ -70,6 +84,25 @@
       border-bottom: 2px solid transparent; transition: all .15s ease; cursor: pointer;
     }
     .tab-btn.active { color: #047857; border-bottom-color: #047857; }
+
+    /* ── Mobile Sidebar Backdrop ── */
+    .sidebar-backdrop {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      z-index: 45;
+      backdrop-filter: blur(2px);
+    }
+    .sidebar-backdrop.active { display: block; }
+
+    /* ── Responsive Breakpoints ── */
+    @media (max-width: 768px) {
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.open { transform: translateX(0); }
+      .topbar { left: 0; padding: 0 16px; }
+      .main-wrap { margin-left: 0; }
+      .content { padding: 16px 16px 40px; }
+    }
   </style>
   <link rel="stylesheet" href="/assets/css/public-layout.css" />
 </head>
@@ -140,13 +173,17 @@
     </button>
   </div>
 </aside>
+<div id="sidebar-backdrop" class="sidebar-backdrop"></div>
 
 <!-- ══════════════════════════════════════
      TOPBAR
      ══════════════════════════════════════ -->
 <header class="topbar">
   <div class="flex items-center gap-3">
-    <span class="text-xs font-medium text-slate-500">Mode Kerja:</span>
+    <button id="sidebar-toggle-btn" class="md:hidden p-1.5 text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-100 focus:outline-none" aria-label="Buka Menu Sidebar">
+      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+    <span class="text-xs font-medium text-slate-500 hidden sm:inline">Mode Kerja:</span>
     <span class="px-2.5 py-1 text-xs font-bold bg-emerald-100 text-emerald-800 rounded-full">Moderator Harian Aktif</span>
   </div>
 
@@ -415,6 +452,21 @@
         statCard.textContent = count + ' ';
       }
     }).catch(function() { /* silent fail */ });
+
+    // ── Mobile Sidebar Toggle Logic ──
+    const sidebarToggle = document.getElementById('sidebar-toggle-btn');
+    const sidebarEl = document.querySelector('.sidebar');
+    const backdropEl = document.getElementById('sidebar-backdrop');
+    if (sidebarToggle && sidebarEl && backdropEl) {
+      sidebarToggle.addEventListener('click', () => {
+        sidebarEl.classList.toggle('open');
+        backdropEl.classList.toggle('active');
+      });
+      backdropEl.addEventListener('click', () => {
+        sidebarEl.classList.remove('open');
+        backdropEl.classList.remove('active');
+      });
+    }
   });
 </script>
 

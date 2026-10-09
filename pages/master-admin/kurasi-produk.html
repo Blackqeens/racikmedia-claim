@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kurasi Produk Unggulan Beranda — Master Admin BOB Racik Media</title>
+
+  <!-- ROUTE GUARD: Hanya Master Admin yang berhak mengakses -->
+  <script src="../../api/auth.js"></script>
+  <script>BobAuth.requireRole('master_admin');</script>
+
+  <!-- External Stylesheets -->
+  <link rel="stylesheet" href="../../style.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../../assets/css/shared.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── Master Sidebar ── */
+    .master-sidebar {
+      position: fixed; top: 0; left: 0; bottom: 0;
+      width: 250px; background: #0b0f19;
+      border-right: 1px solid rgba(255,255,255,.07);
+      display: flex; flex-direction: column;
+      z-index: 40; overflow-y: auto;
+    }
+    .master-logo {
+      padding: 22px 20px 20px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .master-badge {
+      font-size: 10px; font-weight: 800; letter-spacing: .08em;
+      background: linear-gradient(135deg, #a855f7, #6366f1);
+      color: #fff; padding: 3px 9px; border-radius: 99px;
+      box-shadow: 0 0 12px rgba(168,85,247,.35);
+    }
+    .m-section {
+      font-size: 10px; font-weight: 800; color: rgba(255,255,255,.3);
+      letter-spacing: .09em; text-transform: uppercase;
+      padding: 18px 20px 6px;
+    }
+    .m-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 20px; font-size: 13px; color: rgba(255,255,255,.65);
+      text-decoration: none; border-left: 3px solid transparent;
+      transition: all .15s ease; cursor: pointer;
+    }
+    .m-item:hover { color: #fff; background: rgba(255,255,255,.05); }
+    .m-item.active { color: #fff; background: rgba(168,85,247,.12); border-left-color: #a855f7; font-weight: 600; }
+    .m-item svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+    /* ── Master Topbar ── */
+    .master-topbar {
+      position: fixed; top: 0; left: 250px; right: 0; height: 60px;
+      background: #0b0f19; border-bottom: 1px solid rgba(255,255,255,.07);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 32px; z-index: 30;
+    }
+
+    /* ── Content Layout ── */
+    .main-wrap { margin-left: 250px; padding-top: 60px; min-height: 100vh; background: #0f172a; color: #f8fafc; }
+    .content   { padding: 32px 36px 60px; }
+
+    .m-card {
+      background: #1e293b; border: 1px solid rgba(255,255,255,.08);
+      border-radius: 14px; box-shadow: 0 4px 20px rgba(0,0,0,.25);
+    }
+
+    /* Glow buttons */
+    .btn-featured-active {
+      background: linear-gradient(135deg, #059669, #10b981);
+      box-shadow: 0 0 14px rgba(16, 185, 129, 0.4);
+    }
+    .btn-featured-inactive {
+      background: linear-gradient(135deg, #7c3aed, #6366f1);
+      box-shadow: 0 0 10px rgba(124, 58, 237, 0.25);
+    }
+    .btn-featured-inactive:hover {
+      background: linear-gradient(135deg, #6d28d9, #4f46e5);
+      box-shadow: 0 0 16px rgba(124, 58, 237, 0.45);
+    }
+
+    .modal-backdrop {
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(6px);
+    }
+  </style>
+  <link rel="stylesheet" href="/assets/css/public-layout.css" />
+</head>
+<body data-chat-context="master_admin_product_curation">
+  <div id="rm-navbar-root"></div>
+
+<!-- ══════════════════════════════════════
+     SIDEBAR MASTER ADMIN
+     ══════════════════════════════════════ -->
+<aside class="master-sidebar">
+  <div class="master-logo">
+    <div class="flex items-center gap-3">
+      <img src="../../assets/brand/1.png" alt="Racik Media" class="h-8 w-auto" />
+      <div>
+        <span class="font-serif text-lg font-bold text-white tracking-tight">BOB</span>
+        <p class="text-[9px] text-purple-400 font-semibold uppercase tracking-widest">Racik Media</p>
+      </div>
+    </div>
+    <span class="master-badge">MASTER</span>
+  </div>
+
+  <div class="m-section">Kontrol Platform</div>
+  <a href="dashboard.html" class="m-item">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+    Overview Sistem
+  </a>
+  <a href="dashboard.html#tab-admin-mgmt" class="m-item">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+    Kelola Akun Admin
+  </a>
+  <a href="kurasi-headline.html" class="m-item">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
+    Kurasi Headline Beranda
+  </a>
+  <a href="kurasi-produk.html" class="m-item active">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+    Kurasi Produk Unggulan
+    <span class="ml-auto text-[10px] bg-emerald-600 px-2 py-0.5 rounded-full font-bold text-white" id="badge-featured-count">0 Aktif</span>
+  </a>
+
+  <div class="m-section">Akses Khusus</div>
+  <a href="../admin/dashboard.html" class="m-item">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+    Buka Meja Admin Biasa
+  </a>
+  <a href="../main/etalase.html" class="m-item">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0h6"/></svg>
+    Lihat Halaman Etalase
+  </a>
+  <a href="../../index.html#marketplace" class="m-item">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+    Lihat Beranda Utama
+  </a>
+
+  <div class="mt-auto p-4 border-t border-slate-800/80">
+    <button onclick="BobAuth.logout()" class="w-full flex items-center justify-center gap-2 py-2 px-3 text-xs font-semibold text-rose-400 hover:text-white hover:bg-rose-900/40 rounded-lg transition-colors">
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+      Keluar Sesi Master
+    </button>
+  </div>
+</aside>
+
+<!-- ══════════════════════════════════════
+     TOPBAR MASTER ADMIN
+     ══════════════════════════════════════ -->
+<header class="master-topbar">
+  <div class="flex items-center gap-3">
+    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+    <span class="text-xs font-semibold text-slate-300">Otoritas Master Admin:</span>
+    <span class="text-xs font-bold text-emerald-400 bg-emerald-950/80 border border-emerald-800/60 px-2.5 py-0.5 rounded-full">Kurasi Etalase &amp; Produk Pilihan</span>
+  </div>
+
+  <div class="flex items-center gap-4">
+    <div class="text-right">
+      <p class="text-xs font-bold text-white" id="master-user-name">Master Admin BOB</p>
+      <p class="text-[11px] text-purple-300" id="master-user-email">master@bob.id</p>
+    </div>
+    <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-purple-600 to-indigo-500 text-white flex items-center justify-center font-bold text-xs shadow-lg shadow-purple-500/20 border border-purple-400/30">
+      MA
+    </div>
+  </div>
+</header>
+
+<!-- ══════════════════════════════════════
+     MAIN CONTENT
+     ══════════════════════════════════════ -->
+<main class="main-wrap">
+  <div class="content">
+
+    <!-- Header Section -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-7">
+      <div>
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-950/80 border border-purple-700/60 text-purple-300 text-xs font-bold uppercase tracking-wider mb-2">
+          <span>🛍️</span> Etalase Marketplace Terpadu
+        </div>
+        <h1 class="text-2xl font-serif font-bold text-white">Kurasi Produk Unggulan Beranda</h1>
+        <p class="text-xs text-slate-400 mt-1 max-w-2xl leading-relaxed">
+          Pilih produk atau layanan dari etalase untuk ditayangkan pada slider <strong>"Produk Pilihan"</strong> di halaman beranda. Kapanpun Anda mengubah status di sini, beranda akan otomatis diperbarui.
+        </p>
+      </div>
+
+      <div class="flex items-center gap-2.5">
+        <button onclick="openAddModal()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-lg transition shadow-lg shadow-emerald-900/30 flex items-center gap-2">
+          <span>+</span> Tambah Produk ke Etalase
+        </button>
+        <a href="../../index.html#marketplace" target="_blank" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 text-xs font-semibold rounded-lg transition flex items-center gap-1.5">
+          <span>↗</span> Cek Live Beranda
+        </a>
+      </div>
+    </div>
+
+    <!-- ── STATS STRIP ── -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div class="m-card p-5 border-l-4 border-l-purple-500">
+        <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Katalog Etalase</p>
+        <p class="text-2xl font-bold text-white mt-1" id="stat-total-count">0</p>
+        <p class="text-xs text-purple-300 font-medium mt-1">Produk &amp; Jasa Terdaftar</p>
+      </div>
+      <div class="m-card p-5 border-l-4 border-l-emerald-500">
+        <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Produk Unggulan Beranda</p>
+        <p class="text-2xl font-bold text-emerald-400 mt-1" id="stat-featured-count">0</p>
+        <p class="text-xs text-emerald-300 font-medium mt-1">Aktif Tayang di Slider Depan</p>
+      </div>
+      <div class="m-card p-5 border-l-4 border-l-blue-500">
+        <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Katalog Reguler</p>
+        <p class="text-2xl font-bold text-blue-400 mt-1" id="stat-regular-count">0</p>
+        <p class="text-xs text-blue-300 font-medium mt-1">Tersedia di Halaman Etalase</p>
+      </div>
+      <div class="m-card p-5 border-l-4 border-l-amber-500">
+        <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Status Sinkronisasi</p>
+        <p class="text-base font-bold text-amber-300 mt-2 flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-emerald-400"></span> Live Terhubung
+        </p>
+        <p class="text-xs text-slate-400 mt-1">Otomatis sinkron ke Homepage</p>
+      </div>
+    </div>
+
+    <!-- ── FILTER & SEARCH TOOLBAR ── -->
+    <div class="m-card p-4 mb-6 flex flex-col md:flex-row items-center justify-between gap-4">
+      
+      <!-- Filter Tabs -->
+      <div class="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-1 md:pb-0" id="filter-buttons">
+        <button onclick="setFilter('all', this)" class="filter-btn active px-3.5 py-1.5 rounded-lg text-xs font-bold bg-purple-600 text-white transition whitespace-nowrap">
+          Semua Katalog
+        </button>
+        <button onclick="setFilter('featured', this)" class="filter-btn px-3.5 py-1.5 rounded-lg text-xs font-medium text-slate-400 bg-slate-800/80 hover:bg-slate-700 hover:text-white transition whitespace-nowrap">
+          ⭐ Sedang Tayang di Beranda
+        </button>
+        <button onclick="setFilter('kopi', this)" class="filter-btn px-3.5 py-1.5 rounded-lg text-xs font-medium text-slate-400 bg-slate-800/80 hover:bg-slate-700 hover:text-white transition whitespace-nowrap">
+          ☕ Kopi
+        </button>
+        <button onclick="setFilter('pangan', this)" class="filter-btn px-3.5 py-1.5 rounded-lg text-xs font-medium text-slate-400 bg-slate-800/80 hover:bg-slate-700 hover:text-white transition whitespace-nowrap">
+          🌾 Pangan &amp; Herbal
+        </button>
+        <button onclick="setFilter('kerajinan', this)" class="filter-btn px-3.5 py-1.5 rounded-lg text-xs font-medium text-slate-400 bg-slate-800/80 hover:bg-slate-700 hover:text-white transition whitespace-nowrap">
+          🧺 Kerajinan &amp; Tenun
+        </button>
+        <button onclick="setFilter('jasa', this)" class="filter-btn px-3.5 py-1.5 rounded-lg text-xs font-medium text-slate-400 bg-slate-800/80 hover:bg-slate-700 hover:text-white transition whitespace-nowrap">
+          🛠 Jasa Layanan
+        </button>
+      </div>
+
+      <!-- Search Input -->
+      <div class="relative w-full md:w-72">
+        <input type="text" id="search-input" oninput="handleSearch()" placeholder="Cari produk, kota, kategori..." class="w-full bg-slate-900 border border-slate-700 rounded-lg pl-8 pr-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-purple-500 transition" />
+        <svg class="w-4 h-4 text-slate-500 absolute left-2.5 top-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+      </div>
+
+    </div>
+
+    <!-- ── PRODUCTS GRID ── -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5" id="products-grid">
+      <!-- Diisi otomatis oleh JavaScript -->
+    </div>
+
+  </div>
+</main>
+
+<!-- ══════════════════════════════════════
+     MODAL TAMBAH / EDIT PRODUK
+     ══════════════════════════════════════ -->
+<div id="product-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 modal-backdrop">
+  <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto shadow-2xl flex flex-col">
+    
+    <div class="p-6 border-b border-slate-800 flex items-center justify-between">
+      <div>
+        <h2 id="modal-title" class="text-base font-bold text-white">Tambah Produk ke Etalase</h2>
+        <p class="text-xs text-slate-400 mt-0.5">Produk ini otomatis masuk ke katalog etalase dan dapat dipublikasikan sebagai icon unggulan beranda.</p>
+      </div>
+      <button onclick="closeProductModal()" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center text-sm font-bold transition">✕</button>
+    </div>
+
+    <form onsubmit="handleProductSubmit(event)" class="p-6 space-y-4">
+      <input type="hidden" id="form-product-id" />
+
+      <div>
+        <label class="block text-xs font-semibold text-slate-300 mb-1">Nama Produk / Layanan *</label>
+        <input type="text" id="form-name" required placeholder="Contoh: Kopi Gayo Honey Process 200g" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-500" />
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Kategori Utama *</label>
+          <select id="form-category" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-500">
+            <option value="produk">Produk Fisik</option>
+            <option value="jasa">Layanan Jasa</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Subkategori *</label>
+          <input type="text" id="form-subcat" required placeholder="kopi / pangan / kerajinan / herbal" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-500" />
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Harga (Angka) *</label>
+          <input type="number" id="form-price" required placeholder="25000" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-500" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Satuan / Unit *</label>
+          <input type="text" id="form-unit" required placeholder="kemasan 250g / pcs / per sesi" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-500" />
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs font-semibold text-slate-300 mb-1">Asal Daerah / Lokasi *</label>
+        <input type="text" id="form-origin" required placeholder="Takengon, Aceh Tengah" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-500" />
+      </div>
+
+      <div>
+        <label class="block text-xs font-semibold text-slate-300 mb-1">URL Gambar Produk (Unsplash / Hosting) *</label>
+        <input type="url" id="form-img" required placeholder="https://images.unsplash.com/..." class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-500" />
+      </div>
+
+      <div>
+        <label class="block text-xs font-semibold text-slate-300 mb-1">Deskripsi Ringkas</label>
+        <textarea id="form-desc" rows="3" placeholder="Ceritakan keistimewaan dan asal-usul produk ini..." class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-500"></textarea>
+      </div>
+
+      <div class="p-3 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-between">
+        <div>
+          <span class="text-xs font-bold text-white block">★ Tayangkan Langsung di Beranda?</span>
+          <span class="text-[11px] text-slate-400">Jadikan barang ini icon unggulan pada slider Beranda Utama.</span>
+        </div>
+        <input type="checkbox" id="form-featured" class="w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500" />
+      </div>
+
+      <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-800">
+        <button type="button" onclick="closeProductModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-lg transition">Batal</button>
+        <button type="submit" class="px-5 py-2 bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold rounded-lg transition shadow-lg shadow-purple-900/30">
+          Simpan Produk
+        </button>
+      </div>
+    </form>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     TOAST NOTIFIKASI
+     ══════════════════════════════════════ -->
+<div id="master-toast" class="fixed bottom-6 right-6 z-50 bg-slate-900 border border-emerald-500/60 text-white px-4 py-3 rounded-xl shadow-2xl text-xs font-medium hidden flex items-center gap-3 transition-all duration-300">
+  <span id="toast-icon" class="text-base text-emerald-400">★</span>
+  <span id="toast-msg">Perubahan tersimpan.</span>
+</div>
+
+<!-- Scripts -->
+<script src="../../assets/js/products-store.js"></script>
+<script>
+  let currentFilter = 'all';
+  let searchQuery = '';
+
+  function renderGrid() {
+    const products = BobProductsStore.getAll();
+    const featured = BobProductsStore.getFeatured();
+
+    // Update stat counters
+    document.getElementById('stat-total-count').textContent = products.length;
+    document.getElementById('stat-featured-count').textContent = featured.length;
+    document.getElementById('stat-regular-count').textContent = products.length - featured.length;
+    document.getElementById('badge-featured-count').textContent = featured.length + ' Aktif';
+
+    const container = document.getElementById('products-grid');
+    if (!container) return;
+
+    let filtered = products.filter(item => {
+      // Filter kategori / featured
+      if (currentFilter === 'featured' && !item.is_featured) return false;
+      if (currentFilter === 'kopi' && !item.name.toLowerCase().includes('kopi') && item.subcat !== 'kopi') return false;
+      if (currentFilter === 'pangan' && !['pangan', 'herbal', 'organik'].includes(item.subcat)) return false;
+      if (currentFilter === 'kerajinan' && !['kerajinan', 'fashion'].includes(item.subcat)) return false;
+      if (currentFilter === 'jasa' && item.category !== 'jasa') return false;
+
+      // Filter search
+      if (searchQuery) {
+        const q = searchQuery.toLowerCase();
+        const matchName = (item.name || '').toLowerCase().includes(q);
+        const matchOrigin = (item.origin || '').toLowerCase().includes(q);
+        const matchCat = (item.subcat || '').toLowerCase().includes(q);
+        if (!matchName && !matchOrigin && !matchCat) return false;
+      }
+      return true;
+    });
+
+    if (filtered.length === 0) {
+      container.innerHTML = `
+        <div class="col-span-full py-16 text-center text-slate-500">
+          <p class="text-2xl mb-2">🔍</p>
+          <p class="text-sm font-semibold text-slate-400">Tidak ada produk yang cocok dengan pencarian / filter.</p>
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = filtered.map(item => {
+      const isFeatured = Boolean(item.is_featured);
+      return `
+        <div class="m-card overflow-hidden flex flex-col group ${isFeatured ? 'ring-2 ring-emerald-500/70' : ''}">
+          <!-- Gambar & Status Tag -->
+          <div class="relative aspect-square overflow-hidden bg-slate-900">
+            <img src="${item.img}" alt="${item.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-black/30"></div>
+            
+            <!-- Badge Kategori -->
+            <span class="absolute top-2.5 left-2.5 text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-900/80 backdrop-blur-sm text-slate-200 border border-slate-700">
+              ${item.badge || item.subcat || 'Produk'}
+            </span>
+
+            <!-- Status Featured -->
+            ${isFeatured ? `
+              <span class="absolute bottom-2.5 left-2.5 right-2.5 text-[10px] font-bold px-2.5 py-1 rounded-lg bg-emerald-500 text-slate-950 text-center shadow-lg flex items-center justify-center gap-1">
+                <span>★</span> ICON BERANDA (Slot #${item.featured_order || '1'})
+              </span>
+            ` : ''}
+          </div>
+
+          <!-- Informasi Produk -->
+          <div class="p-4 flex flex-col flex-1 gap-2">
+            <span class="text-[10px] text-slate-400 font-medium">📍 ${item.origin}</span>
+            <h3 class="font-serif text-sm font-bold text-white line-clamp-2 leading-snug group-hover:text-purple-300 transition-colors">
+              ${item.name}
+            </h3>
+            <p class="text-xs font-bold text-emerald-400">
+              ${item.priceStr || 'Rp ' + Number(item.price).toLocaleString('id-ID')}
+              <span class="text-[10px] text-slate-400 font-normal">/ ${item.unit}</span>
+            </p>
+            <p class="text-[11px] text-slate-400 line-clamp-2 mt-0.5 leading-relaxed">
+              ${item.desc || '-'}
+            </p>
+
+            <!-- Aksi Tombol -->
+            <div class="mt-auto pt-3 border-t border-slate-800 flex items-center gap-2">
+              <button onclick="toggleFeatured('${item.id}')" class="flex-1 py-1.5 px-2.5 rounded-lg text-xs font-bold text-white transition flex items-center justify-center gap-1 ${isFeatured ? 'bg-rose-600 hover:bg-rose-700' : 'btn-featured-inactive'}">
+                ${isFeatured ? '✕ Lepas dari Beranda' : '★ Jadikan Unggulan'}
+              </button>
+              <button onclick="openEditModal('${item.id}')" class="p-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-lg transition" title="Ubah Data">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function toggleFeatured(id) {
+    const item = BobProductsStore.getById(id);
+    if (!item) return;
+
+    const willBeFeatured = !item.is_featured;
+    BobProductsStore.setFeatured(id, willBeFeatured);
+    renderGrid();
+
+    if (willBeFeatured) {
+      showToast(`" ${item.name} " berhasil dipajang di Beranda Utama!`, '★');
+    } else {
+      showToast(`" ${item.name} " dilepas dari slider Beranda.`, 'ℹ️');
+    }
+  }
+
+  function setFilter(cat, btn) {
+    currentFilter = cat;
+    document.querySelectorAll('.filter-btn').forEach(b => {
+      b.className = "filter-btn px-3.5 py-1.5 rounded-lg text-xs font-medium text-slate-400 bg-slate-800/80 hover:bg-slate-700 hover:text-white transition whitespace-nowrap";
+    });
+    btn.className = "filter-btn px-3.5 py-1.5 rounded-lg text-xs font-bold bg-purple-600 text-white transition whitespace-nowrap";
+    renderGrid();
+  }
+
+  function handleSearch() {
+    searchQuery = document.getElementById('search-input').value.trim();
+    renderGrid();
+  }
+
+  function openAddModal() {
+    document.getElementById('modal-title').textContent = 'Tambah Produk Baru ke Etalase';
+    document.getElementById('form-product-id').value = '';
+    document.getElementById('form-name').value = '';
+    document.getElementById('form-category').value = 'produk';
+    document.getElementById('form-subcat').value = '';
+    document.getElementById('form-price').value = '';
+    document.getElementById('form-unit').value = '';
+    document.getElementById('form-origin').value = '';
+    document.getElementById('form-img').value = '';
+    document.getElementById('form-desc').value = '';
+    document.getElementById('form-featured').checked = false;
+
+    document.getElementById('product-modal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function openEditModal(id) {
+    const item = BobProductsStore.getById(id);
+    if (!item) return;
+
+    document.getElementById('modal-title').textContent = 'Ubah Data Produk';
+    document.getElementById('form-product-id').value = item.id;
+    document.getElementById('form-name').value = item.name;
+    document.getElementById('form-category').value = item.category || 'produk';
+    document.getElementById('form-subcat').value = item.subcat || '';
+    document.getElementById('form-price').value = item.price || '';
+    document.getElementById('form-unit').value = item.unit || '';
+    document.getElementById('form-origin').value = item.origin || '';
+    document.getElementById('form-img').value = item.img || '';
+    document.getElementById('form-desc').value = item.desc || '';
+    document.getElementById('form-featured').checked = Boolean(item.is_featured);
+
+    document.getElementById('product-modal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeProductModal() {
+    document.getElementById('product-modal').classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+
+  function handleProductSubmit(e) {
+    e.preventDefault();
+    const id = document.getElementById('form-product-id').value;
+    const name = document.getElementById('form-name').value.trim();
+    const category = document.getElementById('form-category').value;
+    const subcat = document.getElementById('form-subcat').value.trim();
+    const price = Number(document.getElementById('form-price').value);
+    const unit = document.getElementById('form-unit').value.trim();
+    const origin = document.getElementById('form-origin').value.trim();
+    const img = document.getElementById('form-img').value.trim();
+    const desc = document.getElementById('form-desc').value.trim();
+    const isFeatured = document.getElementById('form-featured').checked;
+
+    if (id) {
+      BobProductsStore.update(id, {
+        name, category, subcat, price, unit, origin, img, desc
+      });
+      BobProductsStore.setFeatured(id, isFeatured);
+      showToast(`Produk "${name}" berhasil diperbarui.`, '✓');
+    } else {
+      const created = BobProductsStore.add({
+        name, category, subcat, price, unit, origin, img, desc,
+        is_featured: isFeatured
+      });
+      showToast(`Produk "${name}" berhasil ditambahkan ke etalase!`, '✓');
+    }
+
+    closeProductModal();
+    renderGrid();
+  }
+
+  function showToast(msg, icon = '★') {
+    const toast = document.getElementById('master-toast');
+    document.getElementById('toast-msg').textContent = msg;
+    document.getElementById('toast-icon').textContent = icon;
+    toast.classList.remove('hidden');
+    setTimeout(() => {
+      toast.classList.add('hidden');
+    }, 3500);
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const session = BobAuth.getSession();
+    if (session) {
+      if (document.getElementById('master-user-name')) document.getElementById('master-user-name').textContent = (session.name || 'Deni Pratama') + ' (Master)';
+      if (document.getElementById('master-user-email')) document.getElementById('master-user-email').textContent = session.email || 'master@bob.id';
+    }
+
+    renderGrid();
+  });
+</script>
+
+  <script src="../../assets/js/lang.js"></script>
+  <script src="/assets/js/layout.js"></script>
+  <script src="/assets/js/public-layout.js"></script>
+</body>
+</html>

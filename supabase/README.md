@@ -43,7 +43,7 @@ supabase secrets unset GEMINI_API_KEY GEMINI_TRANSLATION_MODEL
 ```
 
 After deployment, test the function from the actual site origin. Browser `file://` pages are not supported. OpenRouter credentials must be kept as server-side Supabase secrets and never placed in HTML or browser JavaScript.
-The function uses only the OpenRouter Chat Completions API and the server-side `OPENROUTER_API_KEY`. It defaults to the `openrouter/free` router; override `OPENROUTER_MODEL` only when needed. Free models can have usage limits and availability constraints, so the service is not guaranteed to be continuously available. Transient OpenRouter HTTP 502/503/504 responses are retried with bounded backoff, and the browser sends smaller batches to limit provider response failures. Valid `Retry-After` headers are forwarded when supplied by OpenRouter. Set `APP_SITE_URL` to the actual public site origin if OpenRouter attribution should include an `HTTP-Referer` header. The `GEMINI_API_KEY` and `GEMINI_TRANSLATION_MODEL` secrets are not used and can be removed with the `secrets unset` command above.
+The function uses only the OpenRouter Chat Completions API and the server-side `OPENROUTER_API_KEY`. It defaults to the `openrouter/free` router; override `OPENROUTER_MODEL` only when needed. Free models can have usage limits and availability constraints, so the service is not guaranteed to be continuously available. Transient OpenRouter HTTP 502/503/504 responses are retried with bounded backoff. The browser translates only rendered text within the current viewport and requests more as the reader scrolls; it does not crawl or translate other pages. It groups up to 20 strings (or 8,000 characters) per request and caches translations in browser storage to reduce repeated provider usage. Automatic retries pause after a failure until the reader explicitly retries or changes language. Valid `Retry-After` headers are forwarded when supplied by OpenRouter. Set `APP_SITE_URL` to the actual public site origin if OpenRouter attribution should include an `HTTP-Referer` header. The `GEMINI_API_KEY` and `GEMINI_TRANSLATION_MODEL` secrets are not used and can be removed with the `secrets unset` command above.
 It translates only text supplied in the POST body; it does not fetch the website URL. The browser sends `{ "lang": "en", "texts": ["..."] }`. For direct callers, a single text string or `{ "text": "..." }` is also accepted and defaults to English.
 
 The Astra document mapping is:
@@ -110,6 +110,17 @@ supabase functions deploy b2b-invoice-pdf
 The invoice function uses the Supabase URL, anon key, and service-role key supplied to Edge Functions. Keep JWT verification enabled and never expose the service-role key in browser code. Seller documents and invoice PDFs are stored in private buckets; access is granted through short-lived signed URLs.
 
 The admin B2B page reviews corporate clients and seller verification documents, issues invoices, and creates agreements linked to those invoices. Buyers and sellers record their agreement decision from their respective portals. This is a basic digital-approval record, not a certified electronic signature.
+
+## Deploy seller service management
+
+Seller service listings in `pages/seller/seller-dashboard.html` are stored in `public.catalog_services`; incoming booking details are read through the seller-scoped `get_seller_service_bookings()` RPC. Apply the core schema first if `catalog_services` or `service_bookings` does not exist, then apply the new migration:
+
+```sh
+supabase link --project-ref <project-ref>
+supabase db push
+```
+
+Deploy the updated static site after the migration. Service create/edit/delete and activation changes use the signed-in seller's Supabase session and row-level security. Booking status is shown separately from payment status because `service_bookings` does not currently contain payment data. The existing public service listings and customer booking page are still demo/local flows; they must be integrated with the catalog and a trusted booking API before these listings are visible in the public catalog and new customer bookings appear in this dashboard.
 
 ## Verify B2B in staging
 

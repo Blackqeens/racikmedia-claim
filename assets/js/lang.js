@@ -44,10 +44,14 @@
   var translationCache  = {};
   var CACHE_KEY         = 'rm_translation_cache_v1';
   var CACHE_LIMIT       = 1000;
+  var CACHE_STORAGE_LIMIT = 2 * 1024 * 1024;
   var observer          = null;
+  var translationPaused = false;
+  var translationInFlight = false;
+  var translationQueued = false;
 
   try {
-    translationCache = JSON.parse(sessionStorage.getItem(CACHE_KEY) || '{}');
+    translationCache = JSON.parse(localStorage.getItem(CACHE_KEY) || sessionStorage.getItem(CACHE_KEY) || '{}');
     if (!translationCache || typeof translationCache !== 'object' || Array.isArray(translationCache)) {
       translationCache = {};
     }
@@ -94,7 +98,10 @@
     if (VALID_LANGS.indexOf(lang) === -1) lang = DEFAULT_LANG;
     var changed = lang !== currentLang;
     var run = changed ? ++translationRun : translationRun;
-    if (changed) _restoreAutoTranslations();
+    if (changed) {
+      _restoreAutoTranslations();
+      translationPaused = false;
+    }
     currentLang = lang;
 
     /* ── Update atribut <html lang="…"> ── */
@@ -228,26 +235,33 @@
     )) return false;
     var explicitTranslation = parent.closest('[data-id], [data-en], [data-zh]');
     if (explicitTranslation && explicitTranslation.childElementCount === 0) return false;
-    return true;
+    return _isVisibleInViewport(parent);
+  }
+
+  function _isVisibleInViewport(element) {
+    if (!element || !document.body.contains(element)) return false;
+
+    for (var ancestor = element; ancestor && ancestor !== document.documentElement; ancestor = ancestor.parentElement) {
+      if (ancestor.hidden || ancestor.getAttribute('aria-hidden') === 'true') return false;
+      var style = window.getComputedStyle(ancestor);
+      if (style.display === 'none' || style.visibility === 'hidden' || style.visibility === 'collapse'
+          || style.contentVisibility === 'hidden' || Number(style.opacity) === 0) return false;
+    }
+
+    var rects = element.getClientRects();
+    for (var index = 0; index < rects.length; index += 1) {
+      var rect = rects[index];
+      if (rect.width > 0 && rect.height > 0
+          && rect.bottom > 0 && rect.right > 0
+          && rect.top < window.innerHeight && rect.left < window.innerWidth) return true;
+    }
+    return false;
   }
 
   function _translationUnits(lang) {
     var units = [];
     var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
     var node;
-    var titleNode = document.querySelector('head title');
-    if (titleNode && titleNode.firstChild && titleNode.firstChild.nodeType === Node.TEXT_NODE) {
-      var titleText = titleNode.firstChild;
-      if (/[A-Za-z\u00C0-\u024F\u4E00-\u9FFF]/.test(titleText.data)) {
-        var titleState = translationStates.get(titleText);
-        if (!(titleState && titleState.status === 'pending' && titleState.lang === lang) &&
-            !(titleState && titleText.data === titleState.translated && titleState.lang === lang)) {
-          var sourceTitle = titleState && titleText.data === titleState.translated ? titleState.source : titleText.data;
-          units.push({ kind: 'text', node: titleText, source: sourceTitle, value: sourceTitle.trim(),
-            prefix: (sourceTitle.match(/^\s*/) || [''])[0], suffix: (sourceTitle.match(/\s*$/) || [''])[0] });
-        }
-      }
-    }
     while ((node = walker.nextNode())) {
       if (!_isTranslatableText(node)) continue;
       var state = translationStates.get(node);
@@ -267,11 +281,12 @@
       });
     }
 
-    document.querySelectorAll('[placeholder], [title], [aria-label], [alt], meta[name="description"], meta[property="og:title"]').forEach(function (el) {
+    document.querySelectorAll('[placeholder], [title], [aria-label], [alt]').forEach(function (el) {
       if (el.closest && el.closest('#lang-switcher, #rm-lang-status, .notranslate, [translate="no"], [data-proper-noun="true"]')) return;
+      if (!_isVisibleInViewport(el)) return;
       ['placeholder', 'title', 'aria-label', 'alt', 'content'].forEach(function (name) {
         if (!el.hasAttribute(name)) return;
-        if (name === 'content' && !el.matches('meta[name="description"], meta[property="og:title"]')) return;
+        if (name === 'content') return;
         var explicitPrefix = name === 'placeholder' ? 'data-ph-' : name === 'aria-label' ? 'data-aria-' : 'data-' + name + '-';
         if (name !== 'content' && el.hasAttribute(explicitPrefix + lang)) return;
         var states = attributeStates.get(el) || {};
@@ -319,8 +334,22 @@
   }
 
   function _persistTranslationCache() {
-    try { sessionStorage.setItem(CACHE_KEY, JSON.stringify(translationCache)); }
-    catch (e) { console.warn('[RMlang] Cache terjemahan tidak dapat disimpan.', e); }
+    var keys = Object.keys(translationCache);
+    var size = keys.reduce(function (total, key) {
+      return total + key.length + translationCache[key].length;
+    }, 0);
+    while (keys.length && size > CACHE_STORAGE_LIMIT) {
+      var oldestKey = keys.shift();
+      size -= oldestKey.length + translationCache[oldestKey].length;
+      delete translationCache[oldestKey];
+    }
+    try { localStorage.setItem(CACHE_KEY, JSON.stringify(translationCache)); }
+    catch (error) {
+      try { sessionStorage.setItem(CACHE_KEY, JSON.stringify(translationCache)); }
+      catch (fallbackError) {
+        console.warn('[RMlang] Cache terjemahan tidak dapat disimpan.', fallbackError);
+      }
+    }
   }
 
   function _translateBatch(config, lang, units, run) {
@@ -395,7 +424,22 @@
   }
 
   function _translatePage(lang, run) {
-    if (lang === DEFAULT_LANG || !document.body) return;
+    if (lang === DEFAULT_LANG || !document.body || translationPaused) return;
+    if (translationInFlight) {
+      translationQueued = true;
+      return;
+    }
+    translationInFlight = true;
+
+    function finishTranslation() {
+      translationInFlight = false;
+      if (!translationQueued) return;
+      translationQueued = false;
+      if (!translationPaused && currentLang !== DEFAULT_LANG) {
+        _translatePage(currentLang, translationRun);
+      }
+    }
+
     var units = _translationUnits(lang);
     var uncachedUnits = [];
     units.forEach(function (unit) {
@@ -406,13 +450,16 @@
         uncachedUnits.push(unit);
       }
     });
-    if (!uncachedUnits.length || run !== translationRun || lang !== currentLang) return;
+    if (!uncachedUnits.length || run !== translationRun || lang !== currentLang) {
+      finishTranslation();
+      return;
+    }
 
     var batches = [];
     var batch = [];
     var characters = 0;
     uncachedUnits.forEach(function (unit) {
-      if (batch.length >= 8 || characters + unit.value.length > 3000) {
+      if (batch.length >= 20 || characters + unit.value.length > 8000) {
         if (batch.length) batches.push(batch);
         batch = [];
         characters = 0;
@@ -421,7 +468,10 @@
       characters += unit.value.length;
     });
     if (batch.length) batches.push(batch);
-    if (!batches.length) return;
+    if (!batches.length) {
+      finishTranslation();
+      return;
+    }
 
     _setTranslationStatus('Menerjemahkan halaman…');
     _loadSupabaseConfig().then(function (config) {
@@ -436,9 +486,10 @@
     }).catch(function (error) {
       if (run !== translationRun || lang !== currentLang) return;
       _clearPendingTranslations(lang);
+      translationPaused = true;
       console.error('[RMlang] Terjemahan halaman gagal:', error);
       _setTranslationStatus('Sebagian teks belum diterjemahkan: ' + error.message, true);
-    });
+    }).finally(finishTranslation);
   }
 
   function _clearPendingTranslations(lang) {
@@ -478,6 +529,7 @@
       retry.textContent = 'Coba lagi';
       retry.addEventListener('click', function () {
         status.remove();
+        translationPaused = false;
         applyLang(currentLang, false);
       });
       status.appendChild(retry);
@@ -562,6 +614,20 @@
     observer.observe(document.body, { childList: true, subtree: true, characterData: true });
   }
 
+  function _observeViewport() {
+    var timer = null;
+    function scheduleVisibleTranslation() {
+      if (currentLang === DEFAULT_LANG || translationPaused) return;
+      clearTimeout(timer);
+      timer = setTimeout(function () {
+        _translatePage(currentLang, translationRun);
+      }, 250);
+    }
+
+    window.addEventListener('scroll', scheduleVisibleTranslation, { passive: true, capture: true });
+    window.addEventListener('resize', scheduleVisibleTranslation, { passive: true });
+  }
+
   /* ── Perbarui tampilan tombol aktif di dropdown ── */
   function _updateWidgetUI(lang) {
     var trigger = document.getElementById('lang-trigger-label');
@@ -607,6 +673,7 @@
     _ensureLanguageAssets();
     _ensureLanguageSwitcher();
     _observeDynamicContent();
+    _observeViewport();
     var saved = null;
     try { saved = localStorage.getItem(STORAGE_KEY); } catch (e) { /* */ }
 
