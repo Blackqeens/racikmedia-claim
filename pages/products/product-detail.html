@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<!--
+  RACIK MEDIA NUSANTARA — PILAR 2: MARKETPLACE
+  Template Dinamis Detail Produk berbasis Database Supabase & JSONB Attributes
+-->
+<html lang="id" class="scroll-smooth">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Detail Produk — BOB · Racik Media Nusantara</title>
+  <meta name="description" content="Detail produk komoditas dan kriya kurasi Nusantara dari produsen lokal langsung." />
+
+  <!-- Supabase Client & Config -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../../assets/js/supabase-config.js"></script>
+
+  <!-- Tailwind CSS & Design System -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../../assets/css/shared.css" />
+  <script src="../../assets/js/tailwind-config.js"></script>
+
+  <!-- Google Fonts: Lora (Serif) + Inter (Sans) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
+
+  <link rel="stylesheet" href="../../style.css" />
+  <link rel="stylesheet" href="../../assets/css/lang.css" />
+  <link rel="stylesheet" href="../../assets/css/public-layout.css" />
+
+  <style>
+    .font-serif {
+      font-family: 'Lora', Georgia, serif;
+    }
+
+    .font-sans {
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* Option Pill Selection States */
+    .option-pill {
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .option-pill.active {
+      border-color: #047857;
+      background-color: #ecfdf5;
+      color: #065f46;
+      box-shadow: 0 0 0 1px #047857;
+      font-weight: 600;
+    }
+
+    .color-swatch.active {
+      box-shadow: 0 0 0 2px #fff, 0 0 0 4px #047857;
+      transform: scale(1.08);
+    }
+  </style>
+</head>
+
+<body class="bg-white text-gray-900 antialiased min-h-screen flex flex-col">
+
+  <!-- NAVBAR GLOBAL -->
+  <div id="rm-navbar-root"></div>
+
+  <!-- LOADING SKELETON STATE -->
+  <div id="product-loading" class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-12 flex-1">
+    <div class="animate-pulse space-y-8">
+      <div class="h-4 bg-slate-200 rounded w-1/4"></div>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <div class="bg-slate-200 rounded-2xl aspect-square w-full"></div>
+        <div class="space-y-4">
+          <div class="h-6 bg-slate-200 rounded w-1/3"></div>
+          <div class="h-10 bg-slate-200 rounded w-3/4"></div>
+          <div class="h-8 bg-slate-200 rounded w-1/2"></div>
+          <div class="h-24 bg-slate-200 rounded w-full"></div>
+          <div class="h-12 bg-slate-200 rounded w-2/3"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NOT FOUND STATE -->
+  <div id="product-not-found" class="hidden w-full max-w-xl mx-auto px-4 py-24 text-center flex-1">
+    <div class="w-16 h-16 bg-amber-50 text-amber-700 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">
+      ?
+    </div>
+    <h1 class="font-serif text-2xl font-bold text-slate-900 mb-2">Produk Tidak Ditemukan</h1>
+    <p class="text-sm text-slate-600 mb-6 leading-relaxed">
+      Produk yang Anda cari mungkin telah dinonaktifkan, diubah tautannya, atau ID produk tidak terdaftar di sistem.
+    </p>
+    <div class="flex justify-center gap-3">
+      <a href="/etalase"
+        class="inline-flex items-center px-5 py-2.5 rounded-xl bg-emerald-800 text-white text-sm font-semibold hover:bg-emerald-900 transition">
+        ← Buka Etalase Produk
+      </a>
+      <a href="/"
+        class="inline-flex items-center px-5 py-2.5 rounded-xl border border-slate-300 text-slate-700 text-sm font-semibold hover:bg-slate-50 transition">
+        Beranda
+      </a>
+    </div>
+  </div>
+
+  <!-- MAIN PRODUCT CONTENT -->
+  <main id="product-content" class="hidden w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 pb-20 flex-1">
+
+    <!-- Breadcrumb -->
+    <nav class="py-5" aria-label="Breadcrumb">
+      <ol class="flex items-center gap-2 text-xs font-sans text-gray-500 flex-wrap">
+        <li><a href="/" class="hover:text-emerald-700 transition">Beranda</a></li>
+        <li aria-hidden="true">/</li>
+        <li><a href="/etalase" class="hover:text-emerald-700 transition">Etalase Marketplace</a></li>
+        <li aria-hidden="true">/</li>
+        <li><span id="breadcrumb-category" class="capitalize text-gray-500">Produk</span></li>
+        <li aria-hidden="true">/</li>
+        <li id="breadcrumb-title" class="text-gray-900 font-semibold truncate max-w-xs sm:max-w-md">Detail Produk</li>
+      </ol>
+    </nav>
+
+    <!-- Product Layout Grid -->
+    <section class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
+
+      <!-- Kolom Kiri: Galeri Foto -->
+      <div class="flex flex-col gap-4">
+        <!-- Foto Utama -->
+        <div class="rounded-2xl overflow-hidden bg-slate-100 aspect-square shadow-sm border border-slate-100 relative group">
+          <img id="main-product-img" src="" alt="Foto Produk" class="w-full h-full object-cover transition duration-300 group-hover:scale-105" />
+          <span id="badge-pill" class="absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-bold font-sans bg-emerald-800 text-white shadow-sm">
+            Produk Unggulan
+          </span>
+        </div>
+
+        <!-- Thumbnail Strip -->
+        <div id="thumbnail-strip" class="flex gap-2.5 overflow-x-auto pb-1" style="scrollbar-width: thin;">
+          <!-- Dynamically populated if multiple images exist -->
+        </div>
+      </div>
+
+      <!-- Kolom Kanan: Detail & Dynamic Option Layout -->
+      <div class="flex flex-col gap-6 lg:pt-1">
+
+        <!-- Kategori & Rating -->
+        <div class="flex items-center gap-2.5 flex-wrap">
+          <span id="category-tag" class="text-xs font-sans font-bold tracking-wider uppercase text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-200">
+            Kopi
+          </span>
+          <div class="flex items-center gap-1.5 text-xs text-slate-600 font-medium ml-1">
+            <span class="text-amber-400 text-sm">★</span>
+            <span id="product-rating" class="font-bold text-slate-800">4.9</span>
+            <span class="text-slate-300">·</span>
+            <span id="product-sold" class="text-slate-500">500+ terjual</span>
+          </div>
+          <span id="stock-badge" class="ml-auto text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+            Stok Tersedia
+          </span>
+        </div>
+
+        <!-- Judul Produk -->
+        <div>
+          <h1 id="product-title" class="font-serif text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 leading-snug">
+            Nama Produk
+          </h1>
+          <p id="product-origin-line" class="text-xs text-slate-500 font-sans mt-1.5 flex items-center gap-1 hidden">
+            <span>📍</span>
+            <span id="origin-location-text">Asal Wilayah</span>
+          </p>
+        </div>
+
+        <!-- Harga -->
+        <div class="flex items-baseline gap-3">
+          <span id="product-price" class="font-sans text-2xl sm:text-3xl font-extrabold text-slate-900">
+            Rp 0
+          </span>
+          <span id="product-original-price" class="font-sans text-sm text-slate-400 line-through hidden">
+            Rp 0
+          </span>
+          <span id="product-discount-badge" class="font-sans text-xs font-bold text-red-600 bg-red-50 border border-red-200 px-2 py-0.5 rounded-full hidden">
+            -0%
+          </span>
+        </div>
+
+        <div class="h-px bg-slate-200"></div>
+
+        <!-- Deskripsi Produk -->
+        <div>
+          <h2 class="text-xs font-sans font-bold uppercase tracking-wider text-slate-400 mb-2">
+            Deskripsi Komoditas
+          </h2>
+          <p id="product-desc" class="text-sm font-sans text-slate-700 leading-relaxed">
+            Deskripsi lengkap produk...
+          </p>
+        </div>
+
+        <!-- ═════════════════════════════════════════════════════════════ -->
+        <!--  DYNAMIC LAYOUT BERBASIS ATRIBUT JSONB SUPABASE (CONDITIONAL) -->
+        <!-- ═════════════════════════════════════════════════════════════ -->
+        <div id="dynamic-attributes-container" class="space-y-5">
+
+          <!-- 1. Layout Khusus Pakaian: Pilihan Warna (Kolor) -->
+          <div id="attr-color-section" class="hidden">
+            <div class="flex items-center justify-between mb-2">
+              <label class="text-xs font-sans font-bold text-slate-800 uppercase tracking-wide">
+                Pilih Warna / Corak:
+              </label>
+              <span id="selected-color-label" class="text-xs font-semibold text-emerald-800"></span>
+            </div>
+            <div id="color-options-wrap" class="flex gap-2.5 flex-wrap items-center">
+              <!-- Dynamically populated from attributes.colors -->
+            </div>
+          </div>
+
+          <!-- 2. Layout Khusus Pakaian: Pilihan Ukuran (Size) -->
+          <div id="attr-size-section" class="hidden">
+            <div class="flex items-center justify-between mb-2">
+              <label class="text-xs font-sans font-bold text-slate-800 uppercase tracking-wide">
+                Pilih Ukuran Pakaian:
+              </label>
+              <span id="size-guide-text" class="text-xs text-slate-500 font-sans"></span>
+            </div>
+            <div id="size-options-wrap" class="flex gap-2 flex-wrap">
+              <!-- Dynamically populated from attributes.sizes -->
+            </div>
+          </div>
+
+          <!-- 3. Layout Khusus Kopi: Pilihan Gramasi Berat -->
+          <div id="attr-weight-section" class="hidden">
+            <div class="flex items-center justify-between mb-2">
+              <label class="text-xs font-sans font-bold text-slate-800 uppercase tracking-wide">
+                Pilih Gramasi Berat:
+              </label>
+              <span id="selected-weight-label" class="text-xs font-semibold text-emerald-800"></span>
+            </div>
+            <div id="weight-options-wrap" class="flex gap-2 flex-wrap">
+              <!-- Dynamically populated from attributes.weights -->
+            </div>
+          </div>
+
+          <!-- 4. Layout Khusus Kopi: Pilihan Jenis Gilingan (Grind Size) -->
+          <div id="attr-grind-section" class="hidden">
+            <label class="text-xs font-sans font-bold text-slate-800 uppercase tracking-wide block mb-2">
+              Pilih Jenis Gilingan (Grind Size):
+            </label>
+            <div id="grind-options-wrap" class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <!-- Dynamically populated from attributes.grind_sizes -->
+            </div>
+          </div>
+
+          <!-- 5. Info Tambahan Khusus (Material / Roast Level) -->
+          <div id="attr-extra-badge-wrap" class="flex flex-wrap gap-2 hidden">
+            <!-- Badges for material, roast_level, cert, etc. -->
+          </div>
+
+        </div><!-- /dynamic-attributes-container -->
+
+        <!-- Qty & CTA Buttons -->
+        <div class="pt-2 flex flex-col sm:flex-row gap-3 items-stretch">
+          <!-- Counter Qty -->
+          <div class="flex items-center border border-slate-300 rounded-xl overflow-hidden w-fit bg-white">
+            <button id="btn-qty-minus" class="w-11 h-12 flex items-center justify-center text-slate-600 hover:bg-slate-50 text-base font-bold transition">
+              −
+            </button>
+            <span id="qty-display" class="w-12 h-12 flex items-center justify-center text-sm font-bold text-slate-900 border-x border-slate-200">
+              1
+            </span>
+            <button id="btn-qty-plus" class="w-11 h-12 flex items-center justify-center text-slate-600 hover:bg-slate-50 text-base font-bold transition">
+              +
+            </button>
+          </div>
+
+          <!-- Tombol Tambah ke Keranjang -->
+          <button id="btn-add-to-cart"
+            class="flex-1 py-3.5 px-6 bg-emerald-800 text-white text-sm font-sans font-bold rounded-xl hover:bg-emerald-700 active:scale-[0.99] transition shadow-md shadow-emerald-900/10 flex items-center justify-center gap-2">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+            </svg>
+            <span>Tambah ke Keranjang</span>
+          </button>
+        </div>
+
+        <div class="h-px bg-slate-200"></div>
+
+        <!-- Jaminan & Pengiriman -->
+        <div class="space-y-2.5 text-xs text-slate-600 font-sans">
+          <div class="flex items-center gap-2.5">
+            <span class="text-emerald-700 font-bold">✓</span>
+            <span>Pengiriman aman langsung dari produsen lokal ke seluruh Nusantara</span>
+          </div>
+          <div class="flex items-center gap-2.5">
+            <span class="text-emerald-700 font-bold">✓</span>
+            <span>Garansi keaslian asal komoditas (Tabayyun Verified Community)</span>
+          </div>
+        </div>
+
+      </div><!-- /Kolom Kanan -->
+
+    </section>
+
+  </main>
+
+  <!-- FOOTER GLOBAL -->
+  <div id="rm-footer-root"></div>
+
+  <!-- SCRIPTS GLOBAL -->
+  <script>
+    fetch('../../layouts/_footer.html')
+      .then(r => r.text())
+      .then(html => { document.getElementById('rm-footer-root').innerHTML = html; })
+      .catch(() => {});
+  </script>
+
+  <script src="../../assets/js/lang.js"></script>
+  <script src="../../assets/js/layout.js"></script>
+  <script src="../../assets/js/public-layout.js"></script>
+  <script src="../../assets/js/products-store.js"></script>
+
+  <!-- SCRIPT LOGIKA PRODUK DINAMIS DENGAN SUPABASE & JSONB -->
+  <script>
+    (function () {
+      'use strict';
+
+      // Fallback Data Komoditas jika Supabase offline/kosong
+      const FALLBACK_PRODUCTS = {
+        'prd-kopi-gayo': {
+          id: 'prd-kopi-gayo',
+          name: 'Kopi Gayo Premium 100g',
+          category: 'kopi',
+          price: 22000,
+          original_price: 28000,
+          stock: 120,
+          rating: 4.9,
+          sold_count: '520+ terjual',
+          badge: 'Specialty Grade',
+          image_url: 'https://images.unsplash.com/photo-1610889556528-9a770e32642f?w=900&q=80',
+          image_paths: [
+            'https://images.unsplash.com/photo-1610889556528-9a770e32642f?w=900&q=80',
+            'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=900&q=80',
+            'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=900&q=80'
+          ],
+          description: 'Kopi Gayo Premium dipetik dari perkebunan dataran tinggi Bener Meriah, Aceh (1.400–1.600 mdpl). Proses wet-hulled (giling basah) khas Aceh menghasilkan body tebal dengan keasaman lembut dan aroma karamel yang pekat.',
+          attributes: {
+            weights: ['100g', '200g', '500g', '1kg'],
+            grind_sizes: ['Biji Utuh (Whole Bean)', 'Giling Kasar (Coarse)', 'Giling Sedang (Medium)', 'Giling Halus (Fine)'],
+            roast_level: 'Medium Dark',
+            origin: 'Takengon, Aceh Tengah'
+          }
+        },
+        'prd-baju-tenun': {
+          id: 'prd-baju-tenun',
+          name: 'Kemeja Tenun Ikat Wastra Nusantara',
+          category: 'baju',
+          price: 285000,
+          original_price: 350000,
+          stock: 45,
+          rating: 5.0,
+          sold_count: '85+ terjual',
+          badge: 'Handmade Artisan',
+          image_url: 'https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?w=900&q=80',
+          image_paths: [
+            'https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?w=900&q=80',
+            'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=900&q=80'
+          ],
+          description: 'Ditenun tangan oleh penenun lansia Flores menggunakan serat kapas lokal dan pewarna akar alami warisan leluhur. Pola geometris etnik dengan potongan modern dan furing halus.',
+          attributes: {
+            colors: ['Indigo Blue', 'Terracotta Red', 'Natural Black', 'Forest Green'],
+            sizes: ['S', 'M', 'L', 'XL', 'XXL'],
+            material: 'Katun Tenun Tradisional Tangan Asli',
+            size_guide: 'Ukuran Regular Fit Pria Standar'
+          }
+        },
+        'prd-madu-hutan': {
+          id: 'prd-madu-hutan',
+          name: 'Madu Hutan Asli Kalimantan 250ml',
+          category: 'herbal',
+          price: 65000,
+          original_price: 78000,
+          stock: 80,
+          rating: 4.9,
+          sold_count: '310+ terjual',
+          badge: 'Organik Alami',
+          image_url: 'https://images.unsplash.com/photo-1571115177098-24ec42ed204d?w=900&q=80',
+          image_paths: ['https://images.unsplash.com/photo-1571115177098-24ec42ed204d?w=900&q=80'],
+          description: 'Madu murni hasil panen lebah liar Apis dorsata pada pohon sialang hutan tropis Kapuas Hulu tanpa pemanasan buatan atau pemanis sintetis.',
+          attributes: {
+            volume: '250ml',
+            origin: 'Kapuas Hulu, Kalimantan Barat'
+          }
+        },
+        'prd-tas-rotan': {
+          id: 'prd-tas-rotan',
+          name: 'Tas Anyam Rotan Natural Bali',
+          category: 'kerajinan',
+          price: 135000,
+          original_price: 160000,
+          stock: 30,
+          rating: 4.8,
+          sold_count: '190+ terjual',
+          badge: 'Artisan Handcrafted',
+          image_url: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=900&q=80',
+          image_paths: ['https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=900&q=80'],
+          description: 'Anyaman rotan alami dengan lapisan vernis ramah lingkungan dan furing kain katun blacu premium buatan pengrajin lokal Bali.',
+          attributes: {
+            origin: 'Tegalwangi, Cirebon & Bali'
+          }
+        },
+        'prd-beras-organik': {
+          id: 'prd-beras-organik',
+          name: 'Beras Organik Merah 1kg',
+          category: 'pangan',
+          price: 32000,
+          original_price: 38000,
+          stock: 200,
+          rating: 4.9,
+          sold_count: '530+ terjual',
+          badge: 'Sertifikasi Organik',
+          image_url: 'https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=900&q=80',
+          image_paths: ['https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=900&q=80'],
+          description: 'Beras merah kaya serat ditanam dengan pupuk kompos alami dan mikroba lokal tanpa pestisida kimia sintetis dari persawahan Cianjur.',
+          attributes: {
+            pack_size: '1kg',
+            origin: 'Cianjur, Jawa Barat'
+          }
+        }
+      };
+
+      // Aliasing untuk backward compatibility URL lama
+      const ID_ALIAS_MAP = {
+        'product-kopi-gayo': 'prd-kopi-gayo',
+        'kopi-gayo': 'prd-kopi-gayo',
+        'prd-01': 'prd-kopi-gayo',
+        'prd-09': 'prd-kopi-gayo',
+        'product-madu-hutan': 'prd-madu-hutan',
+        'madu-hutan': 'prd-madu-hutan',
+        'prd-02': 'prd-madu-hutan',
+        'product-tas-rotan': 'prd-tas-rotan',
+        'tas-rotan': 'prd-tas-rotan',
+        'prd-03': 'prd-tas-rotan',
+        'product-beras-organik': 'prd-beras-organik',
+        'beras-organik': 'prd-beras-organik',
+        'prd-04': 'prd-beras-organik',
+        'baju-tenun': 'prd-baju-tenun',
+        'baju': 'prd-baju-tenun',
+        'prd-06': 'prd-baju-tenun'
+      };
+
+      let currentProduct = null;
+      let currentQuantity = 1;
+      let selectedVariant = {
+        color: null,
+        size: null,
+        weight: null,
+        grind_size: null
+      };
+
+      // Inisialisasi Supabase Client jika tersedia
+      let sbClient = null;
+      try {
+        if (typeof supabase !== 'undefined' && window.SUPABASE_CONFIG) {
+          sbClient = supabase.createClient(window.SUPABASE_CONFIG.url, window.SUPABASE_CONFIG.publishableKey);
+        }
+      } catch (err) {
+        console.warn('Inisialisasi Supabase client:', err);
+      }
+
+      async function fetchProduct(id) {
+        const canonicalId = ID_ALIAS_MAP[id] || id;
+
+        // 1. Coba ambil dari Supabase tabel products
+        if (sbClient) {
+          try {
+            const { data, error } = await sbClient
+              .from('products')
+              .select('*')
+              .or(`id.eq.${canonicalId},slug.eq.${id}`)
+              .maybeSingle();
+
+            if (!error && data) {
+              return normalizeProductData(data);
+            }
+          } catch (e) {
+            console.warn('Gagal memuat dari Supabase products:', e);
+          }
+
+          // Coba dari tabel seller_products jika belum ada di products
+          try {
+            const { data: spData, error: spError } = await sbClient
+              .from('seller_products')
+              .select('*')
+              .or(`id.eq.${canonicalId},product_id.eq.${canonicalId}`)
+              .maybeSingle();
+
+            if (!spError && spData) {
+              return normalizeProductData(spData);
+            }
+          } catch (e) {
+            console.warn('Gagal memuat dari Supabase seller_products:', e);
+          }
+        }
+
+        // 2. Coba ambil dari BobProductsStore localStorage jika ada
+        if (typeof BobProductsStore !== 'undefined') {
+          const storeItem = BobProductsStore.getById(id) || BobProductsStore.getById(canonicalId);
+          if (storeItem) {
+            return normalizeProductData(storeItem);
+          }
+        }
+
+        // 3. Fallback ke predefined mock data
+        if (FALLBACK_PRODUCTS[canonicalId]) {
+          return FALLBACK_PRODUCTS[canonicalId];
+        }
+
+        // Jika ID tidak cocok, berikan kopi gayo sebagai default contoh agar tidak blank
+        if (!id) {
+          return FALLBACK_PRODUCTS['prd-kopi-gayo'];
+        }
+
+        return null;
+      }
+
+      function normalizeProductData(raw) {
+        // Normalisasi format kolom snake_case/camelCase dan atribut JSONB
+        let attrs = {};
+        if (typeof raw.attributes === 'object' && raw.attributes !== null) {
+          attrs = raw.attributes;
+        } else if (typeof raw.attributes === 'string') {
+          try { attrs = JSON.parse(raw.attributes); } catch (e) {}
+        }
+
+        return {
+          id: raw.id || raw.product_id,
+          name: raw.name || raw.title,
+          category: (raw.category || 'kopi').toLowerCase(),
+          price: Number(raw.price) || 0,
+          original_price: Number(raw.original_price) || 0,
+          stock: Number(raw.stock) || 10,
+          rating: Number(raw.rating) || 4.9,
+          sold_count: raw.sold_count || raw.sold || 'Terjual',
+          badge: raw.badge || 'Produk Pilihan',
+          image_url: raw.image_url || raw.img || 'https://images.unsplash.com/photo-1610889556528-9a770e32642f?w=900&q=80',
+          image_paths: Array.isArray(raw.image_paths) && raw.image_paths.length ? raw.image_paths : [raw.image_url || raw.img],
+          description: raw.description || raw.desc || 'Komoditas asli Nusantara bermutu tinggi.',
+          attributes: attrs
+        };
+      }
+
+      function renderProduct(product) {
+        currentProduct = product;
+        document.title = `${product.name} — Racik Media Nusantara`;
+
+        // Update Breadcrumbs
+        document.getElementById('breadcrumb-title').textContent = product.name;
+        document.getElementById('breadcrumb-category').textContent = product.category;
+
+        // Update Info Dasar
+        document.getElementById('product-title').textContent = product.name;
+        document.getElementById('product-desc').textContent = product.description;
+        document.getElementById('category-tag').textContent = product.category;
+        document.getElementById('product-rating').textContent = product.rating.toFixed(1);
+        document.getElementById('product-sold').textContent = product.sold_count;
+        document.getElementById('badge-pill').textContent = product.badge;
+
+        // Harga
+        document.getElementById('product-price').textContent = 'Rp ' + product.price.toLocaleString('id-ID');
+        if (product.original_price && product.original_price > product.price) {
+          const discountPct = Math.round(((product.original_price - product.price) / product.original_price) * 100);
+          const origEl = document.getElementById('product-original-price');
+          origEl.textContent = 'Rp ' + product.original_price.toLocaleString('id-ID');
+          origEl.classList.remove('hidden');
+
+          const discEl = document.getElementById('product-discount-badge');
+          discEl.textContent = `-${discountPct}%`;
+          discEl.classList.remove('hidden');
+        }
+
+        // Galeri Gambar
+        const mainImg = document.getElementById('main-product-img');
+        mainImg.src = product.image_url;
+        mainImg.alt = product.name;
+
+        const thumbStrip = document.getElementById('thumbnail-strip');
+        thumbStrip.innerHTML = '';
+        const allImages = product.image_paths && product.image_paths.length ? product.image_paths : [product.image_url];
+        if (allImages.length > 1) {
+          allImages.forEach((src, idx) => {
+            const btn = document.createElement('button');
+            btn.className = `w-16 h-16 rounded-xl overflow-hidden bg-slate-100 shrink-0 border-2 transition ${idx === 0 ? 'border-emerald-700' : 'border-transparent hover:border-slate-300'}`;
+            btn.innerHTML = `<img src="${src}" class="w-full h-full object-cover" />`;
+            btn.onclick = () => {
+              mainImg.src = src;
+              thumbStrip.querySelectorAll('button').forEach(b => b.className = b.className.replace('border-emerald-700', 'border-transparent'));
+              btn.className = btn.className.replace('border-transparent', 'border-emerald-700');
+            };
+            thumbStrip.appendChild(btn);
+          });
+          thumbStrip.classList.remove('hidden');
+        } else {
+          thumbStrip.classList.add('hidden');
+        }
+
+        // ════════════════════════════════════════════════════════════════
+        // DYNAMIC RENDERING BERBASIS ATRIBUT JSONB (CONDITIONAL)
+        // HANYA RENDER KOMPONEN YANG MEMILIKI DATA DI ATRIBUT JSONB
+        // ════════════════════════════════════════════════════════════════
+        const attrs = product.attributes || {};
+
+        // 1. Kondisional: Varian Warna Baju (attributes.colors)
+        const colorSection = document.getElementById('attr-color-section');
+        const colorWrap = document.getElementById('color-options-wrap');
+        const colorLabel = document.getElementById('selected-color-label');
+        if (Array.isArray(attrs.colors) && attrs.colors.length > 0) {
+          colorSection.classList.remove('hidden');
+          colorWrap.innerHTML = '';
+          selectedVariant.color = attrs.colors[0];
+          colorLabel.textContent = selectedVariant.color;
+
+          attrs.colors.forEach((color, idx) => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = `option-pill px-3.5 py-1.5 rounded-lg text-xs font-sans border border-slate-200 bg-white hover:border-emerald-600 ${idx === 0 ? 'active' : ''}`;
+            btn.textContent = color;
+            btn.onclick = () => {
+              selectedVariant.color = color;
+              colorLabel.textContent = color;
+              colorWrap.querySelectorAll('.option-pill').forEach(b => b.classList.remove('active'));
+              btn.classList.add('active');
+            };
+            colorWrap.appendChild(btn);
+          });
+        } else {
+          colorSection.classList.add('hidden');
+          selectedVariant.color = null;
+        }
+
+        // 2. Kondisional: Ukuran Pakaian (attributes.sizes)
+        const sizeSection = document.getElementById('attr-size-section');
+        const sizeWrap = document.getElementById('size-options-wrap');
+        const sizeGuide = document.getElementById('size-guide-text');
+        if (Array.isArray(attrs.sizes) && attrs.sizes.length > 0) {
+          sizeSection.classList.remove('hidden');
+          sizeWrap.innerHTML = '';
+          selectedVariant.size = attrs.sizes[0];
+          if (attrs.size_guide) sizeGuide.textContent = `Fit: ${attrs.size_guide}`;
+
+          attrs.sizes.forEach((sz, idx) => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = `option-pill min-w-[42px] px-3 py-1.5 rounded-lg text-xs font-sans border border-slate-200 bg-white hover:border-emerald-600 text-center ${idx === 0 ? 'active' : ''}`;
+            btn.textContent = sz;
+            btn.onclick = () => {
+              selectedVariant.size = sz;
+              sizeWrap.querySelectorAll('.option-pill').forEach(b => b.classList.remove('active'));
+              btn.classList.add('active');
+            };
+            sizeWrap.appendChild(btn);
+          });
+        } else {
+          sizeSection.classList.add('hidden');
+          selectedVariant.size = null;
+        }
+
+        // 3. Kondisional: Gramasi Berat Kopi (attributes.weights)
+        const weightSection = document.getElementById('attr-weight-section');
+        const weightWrap = document.getElementById('weight-options-wrap');
+        const weightLabel = document.getElementById('selected-weight-label');
+        if (Array.isArray(attrs.weights) && attrs.weights.length > 0) {
+          weightSection.classList.remove('hidden');
+          weightWrap.innerHTML = '';
+          selectedVariant.weight = attrs.weights[0];
+          weightLabel.textContent = selectedVariant.weight;
+
+          attrs.weights.forEach((w, idx) => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = `option-pill px-4 py-2 rounded-xl text-xs font-sans border border-slate-200 bg-white hover:border-emerald-600 ${idx === 0 ? 'active' : ''}`;
+            btn.textContent = w;
+            btn.onclick = () => {
+              selectedVariant.weight = w;
+              weightLabel.textContent = w;
+              weightWrap.querySelectorAll('.option-pill').forEach(b => b.classList.remove('active'));
+              btn.classList.add('active');
+            };
+            weightWrap.appendChild(btn);
+          });
+        } else {
+          weightSection.classList.add('hidden');
+          selectedVariant.weight = null;
+        }
+
+        // 4. Kondisional: Jenis Gilingan Kopi (attributes.grind_sizes)
+        const grindSection = document.getElementById('attr-grind-section');
+        const grindWrap = document.getElementById('grind-options-wrap');
+        if (Array.isArray(attrs.grind_sizes) && attrs.grind_sizes.length > 0) {
+          grindSection.classList.remove('hidden');
+          grindWrap.innerHTML = '';
+          selectedVariant.grind_size = attrs.grind_sizes[0];
+
+          attrs.grind_sizes.forEach((gs, idx) => {
+            const label = document.createElement('label');
+            label.className = `option-pill flex items-center gap-2.5 p-3 rounded-xl border border-slate-200 bg-white cursor-pointer hover:border-emerald-500 text-xs font-sans select-none ${idx === 0 ? 'active' : ''}`;
+            label.innerHTML = `
+              <input type="radio" name="grind_choice" value="${gs}" ${idx === 0 ? 'checked' : ''} class="accent-emerald-700 w-3.5 h-3.5" />
+              <span class="font-medium text-slate-800">${gs}</span>
+            `;
+            label.querySelector('input').onchange = () => {
+              selectedVariant.grind_size = gs;
+              grindWrap.querySelectorAll('label').forEach(l => l.classList.remove('active'));
+              label.classList.add('active');
+            };
+            grindWrap.appendChild(label);
+          });
+        } else {
+          grindSection.classList.add('hidden');
+          selectedVariant.grind_size = null;
+        }
+
+        // 5. Kondisional: Asal Wilayah / Material / Roast Level Badges
+        const originLine = document.getElementById('product-origin-line');
+        const originText = document.getElementById('origin-location-text');
+        if (attrs.origin) {
+          originText.textContent = attrs.origin;
+          originLine.classList.remove('hidden');
+        } else {
+          originLine.classList.add('hidden');
+        }
+
+        const extraBadgeWrap = document.getElementById('attr-extra-badge-wrap');
+        extraBadgeWrap.innerHTML = '';
+        if (attrs.material) {
+          extraBadgeWrap.innerHTML += `<span class="inline-flex items-center gap-1 px-3 py-1 bg-amber-50 text-amber-900 border border-amber-200 rounded-full text-xs font-sans font-medium">🧶 Bahan: ${attrs.material}</span>`;
+        }
+        if (attrs.roast_level) {
+          extraBadgeWrap.innerHTML += `<span class="inline-flex items-center gap-1 px-3 py-1 bg-amber-50 text-amber-900 border border-amber-200 rounded-full text-xs font-sans font-medium">🔥 Sangrai: ${attrs.roast_level}</span>`;
+        }
+        if (attrs.volume) {
+          extraBadgeWrap.innerHTML += `<span class="inline-flex items-center gap-1 px-3 py-1 bg-blue-50 text-blue-900 border border-blue-200 rounded-full text-xs font-sans font-medium">💧 Volume: ${attrs.volume}</span>`;
+        }
+        if (extraBadgeWrap.children.length > 0) {
+          extraBadgeWrap.classList.remove('hidden');
+        } else {
+          extraBadgeWrap.classList.add('hidden');
+        }
+
+        // Tampilkan konten dan sembunyikan loading
+        document.getElementById('product-loading').classList.add('hidden');
+        document.getElementById('product-not-found').classList.add('hidden');
+        document.getElementById('product-content').classList.remove('hidden');
+      }
+
+      function initEventListeners() {
+        // Quantity counter
+        const qtyDisplay = document.getElementById('qty-display');
+        document.getElementById('btn-qty-minus').addEventListener('click', () => {
+          if (currentQuantity > 1) {
+            currentQuantity--;
+            qtyDisplay.textContent = currentQuantity;
+          }
+        });
+        document.getElementById('btn-qty-plus').addEventListener('click', () => {
+          currentQuantity++;
+          qtyDisplay.textContent = currentQuantity;
+        });
+
+        // Add to Cart Action
+        document.getElementById('btn-add-to-cart').addEventListener('click', () => {
+          if (!currentProduct) return;
+
+          try {
+            const CART_KEY = 'racikmedia-cart';
+            const cart = JSON.parse(localStorage.getItem(CART_KEY) || '[]');
+
+            // Keterangan varian yang dipilih
+            const variantDescriptions = [];
+            if (selectedVariant.color) variantDescriptions.push(`Warna: ${selectedVariant.color}`);
+            if (selectedVariant.size) variantDescriptions.push(`Ukuran: ${selectedVariant.size}`);
+            if (selectedVariant.weight) variantDescriptions.push(`Berat: ${selectedVariant.weight}`);
+            if (selectedVariant.grind_size) variantDescriptions.push(`Gilingan: ${selectedVariant.grind_size}`);
+
+            const variantKey = variantDescriptions.join(' | ');
+            const cartItemId = `${currentProduct.id}-${variantKey || 'standard'}`;
+
+            const existingIndex = cart.findIndex(item => item.cartItemId === cartItemId || item.id === cartItemId);
+            if (existingIndex > -1) {
+              cart[existingIndex].quantity += currentQuantity;
+            } else {
+              cart.push({
+                cartItemId: cartItemId,
+                id: currentProduct.id,
+                name: currentProduct.name,
+                image: currentProduct.image_url,
+                unitPrice: currentProduct.price,
+                price: currentProduct.price,
+                quantity: currentQuantity,
+                variant: variantKey || null
+              });
+            }
+
+            localStorage.setItem(CART_KEY, JSON.stringify(cart));
+
+            // Tampilkan feedback visual
+            const btn = document.getElementById('btn-add-to-cart');
+            const originalText = btn.innerHTML;
+            btn.classList.remove('bg-emerald-800');
+            btn.classList.add('bg-emerald-600');
+            btn.innerHTML = `<span>✓ Berhasil Ditambahkan (${currentQuantity}x)!</span>`;
+
+            setTimeout(() => {
+              btn.classList.remove('bg-emerald-600');
+              btn.classList.add('bg-emerald-800');
+              btn.innerHTML = originalText;
+              // Navigasi ke keranjang
+              window.location.href = 'cart.html';
+            }, 600);
+
+          } catch (err) {
+            console.error('Gagal memasukkan produk ke keranjang:', err);
+            alert('Produk berhasil disiapkan. Menuju keranjang belanja...');
+            window.location.href = 'cart.html';
+          }
+        });
+      }
+
+      // Entrypoint utama
+      async function main() {
+        initEventListeners();
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('id');
+
+        const product = await fetchProduct(productId);
+        if (product) {
+          renderProduct(product);
+        } else {
+          document.getElementById('product-loading').classList.add('hidden');
+          document.getElementById('product-not-found').classList.remove('hidden');
+        }
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', main);
+      } else {
+        main();
+      }
+    })();
+  </script>
+
+</body>
+
+</html>

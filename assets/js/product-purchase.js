@@ -32,8 +32,9 @@
   }
 
   function init() {
-    var productId = location.pathname.split('/').pop().replace('.html', '');
-    var product = PRODUCTS[productId];
+    var urlParams = new URLSearchParams(location.search);
+    var productId = urlParams.get('id') || location.pathname.split('/').pop().replace('.html', '');
+    var product = PRODUCTS[productId] || PRODUCTS['product-' + productId] || PRODUCTS[productId.replace('prd-', 'product-')];
     var button = Array.from(document.querySelectorAll('button')).find(function (candidate) {
       return candidate.textContent.trim() === 'Tambah ke Keranjang';
     });

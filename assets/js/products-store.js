@@ -24,7 +24,7 @@
       img: 'https://images.unsplash.com/photo-1610889556528-9a770e32642f?w=600&q=80',
       badge: 'Produk Unggulan',
       desc: 'Biji kopi arabika dipetik merah dari dataran tinggi Gayo dengan cita rasa asam lembut dan aroma karamel yang pekat.',
-      detailUrl: 'pages/products/product-kopi-gayo.html',
+      detailUrl: 'pages/products/product-detail.html?id=prd-kopi-gayo',
       is_featured: true,
       featured_order: 1
     },
@@ -43,7 +43,7 @@
       img: 'https://images.unsplash.com/photo-1571115177098-24ec42ed204d?w=600&q=80',
       badge: 'Organik Alami',
       desc: 'Madu murni hasil panen lebah liar Apis dorsata pada pohon sialang hutan tropis tanpa pemanasan buatan.',
-      detailUrl: 'pages/products/product-madu-hutan.html',
+      detailUrl: 'pages/products/product-detail.html?id=prd-madu-hutan',
       is_featured: true,
       featured_order: 2
     },
@@ -62,7 +62,7 @@
       img: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80',
       badge: 'Artisan Handcrafted',
       desc: 'Anyaman rotan alami dengan lapisan vernis ramah lingkungan dan furing kain blacu katun premium buatan pengrajin lokal.',
-      detailUrl: 'pages/products/product-tas-rotan.html',
+      detailUrl: 'pages/products/product-detail.html?id=prd-tas-rotan',
       is_featured: true,
       featured_order: 3
     },
@@ -81,7 +81,7 @@
       img: 'https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=600&q=80',
       badge: 'Sertifikasi Organik',
       desc: 'Beras merah kaya serat ditanam dengan pupuk kompos alami dan mikroba lokal tanpa bahan kimia sintetis.',
-      detailUrl: 'pages/products/product-beras-organik.html',
+      detailUrl: 'pages/products/product-detail.html?id=prd-beras-organik',
       is_featured: true,
       featured_order: 4
     },
@@ -100,7 +100,7 @@
       img: 'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=600&q=80',
       badge: 'Cold Pressed',
       desc: 'Virgin Coconut Oil diproses melalui metode fermentasi dingin higienis untuk menjaga kemurnian asam laurat.',
-      detailUrl: 'pages/main/etalase.html',
+      detailUrl: '/etalase',
       is_featured: true,
       featured_order: 5
     },
@@ -119,7 +119,7 @@
       img: 'https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?w=600&q=80',
       badge: 'Pewarna Alam',
       desc: 'Ditenun tangan oleh penenun lansia Flores menggunakan serat kapas lokal dan pewarna akar alami warisan leluhur.',
-      detailUrl: 'pages/main/etalase.html',
+      detailUrl: 'pages/products/product-detail.html?id=prd-baju-tenun',
       is_featured: true,
       featured_order: 6
     },
@@ -138,7 +138,7 @@
       img: 'https://images.unsplash.com/photo-1518843875459-f738682238a6?w=600&q=80',
       badge: 'Garam Artisan',
       desc: 'Diproduksi secara tradisional di atas bilah pohon kelapa dengan air laut pesisir Kusamba murni kaya mineral.',
-      detailUrl: 'pages/main/etalase.html',
+      detailUrl: '/etalase',
       is_featured: true,
       featured_order: 7
     },
@@ -157,7 +157,7 @@
       img: 'https://images.unsplash.com/photo-1549007994-cb92caebd54b?w=600&q=80',
       badge: 'Kaya Antioksidan',
       desc: 'Cokelat artisan 70% kakao dari perkebunan rakyat Ransiki dengan profil rasa buah berry dan nutty alami.',
-      detailUrl: 'pages/main/etalase.html',
+      detailUrl: '/etalase',
       is_featured: true,
       featured_order: 8
     },
@@ -176,7 +176,7 @@
       img: 'https://images.unsplash.com/photo-1559525839-b184a4d698c7?w=600&q=80',
       badge: 'Grosir B2B',
       desc: 'Pasokan khusus untuk roastery, kedai kopi, dan hotel dengan profil sangrai konsisten.',
-      detailUrl: 'pages/products/product-kopi-gayo.html',
+      detailUrl: 'pages/products/product-detail.html?id=prd-kopi-gayo',
       is_featured: false,
       featured_order: null
     },
@@ -195,7 +195,7 @@
       img: 'https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=600&q=80',
       badge: 'Grosir B2B',
       desc: 'Pasokan bahan baku murni untuk industri jamu herbal, kosmetik alami, dan produsen makanan sehat.',
-      detailUrl: 'pages/main/etalase.html',
+      detailUrl: '/etalase',
       is_featured: false,
       featured_order: null
     },
@@ -214,7 +214,7 @@
       img: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600&q=80',
       badge: 'Grosir B2B',
       desc: 'Pasokan teratur beras putih pandan wangi organik bersertifikat dengan kontrak pasok berkala.',
-      detailUrl: 'pages/main/etalase.html',
+      detailUrl: '/etalase',
       is_featured: false,
       featured_order: null
     },
@@ -233,7 +233,7 @@
       img: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=600&q=80',
       badge: 'Essential Oil',
       desc: 'Penyulingan uap daun sereh wangi segar, aroma relaksasi alami dan pengusir serangga ramah lingkungan.',
-      detailUrl: 'pages/main/etalase.html',
+      detailUrl: '/etalase',
       is_featured: false,
       featured_order: null
     },
@@ -347,15 +347,22 @@
             if (!found) {
               parsed.push(def);
               needsSave = true;
-            } else if (def.category === 'jasa') {
-              if (def.is_featured && !found.is_featured && found.featured_order === null) {
-                found.is_featured = true;
-                found.featured_order = def.featured_order;
-                needsSave = true;
-              }
-              if (def.detailUrl && (!found.detailUrl || found.detailUrl.indexOf('etalase.html') !== -1)) {
+            } else {
+              // Migrasikan link produk lama ke template dinamis product-detail.html
+              if (def.detailUrl && def.detailUrl.indexOf('product-detail.html') !== -1 && (!found.detailUrl || found.detailUrl.indexOf('product-') !== -1)) {
                 found.detailUrl = def.detailUrl;
                 needsSave = true;
+              }
+              if (def.category === 'jasa') {
+                if (def.is_featured && !found.is_featured && found.featured_order === null) {
+                  found.is_featured = true;
+                  found.featured_order = def.featured_order;
+                  needsSave = true;
+                }
+                if (def.detailUrl && (!found.detailUrl || found.detailUrl.indexOf('etalase.html') !== -1)) {
+                  found.detailUrl = def.detailUrl;
+                  needsSave = true;
+                }
               }
             }
           });
@@ -453,7 +460,7 @@
         badge: 'Produk Mitra',
         is_featured: false,
         featured_order: null,
-        detailUrl: 'pages/main/etalase.html'
+        detailUrl: '/etalase'
       }, productData);
 
       if (!newProduct.priceStr && typeof newProduct.price === 'number') {
@@ -496,6 +503,28 @@
     resolveUrl: function (url, context) {
       if (!url || url === '#' || url.indexOf('javascript:') === 0) return url;
       if (url.indexOf('http://') === 0 || url.indexOf('https://') === 0) return url;
+
+      // Handle clean absolute URLs directly
+      if (url.indexOf('/') === 0) return url;
+
+      // Normalize clean URLs without leading slash
+      if (url === 'etalase' || url === 'articles' || url.indexOf('etalase?') === 0 || url.indexOf('articles?') === 0) {
+        return '/' + url;
+      }
+
+      // Convert legacy paths to clean URLs
+      if (url.indexOf('pages/main/etalase.html') === 0) {
+        return url.replace('pages/main/etalase.html', '/etalase');
+      }
+      if (url.indexOf('pages/main/etalase') === 0) {
+        return url.replace('pages/main/etalase', '/etalase');
+      }
+      if (url.indexOf('pages/main/articles.html') === 0) {
+        return url.replace('pages/main/articles.html', '/articles');
+      }
+      if (url.indexOf('pages/main/articles') === 0) {
+        return url.replace('pages/main/articles', '/articles');
+      }
 
       var clean = url.replace(/^(\.\.\/)+/, '').replace(/^\.\//, '');
       if (clean.indexOf('pages/') !== 0) {

@@ -14,7 +14,7 @@
   <div id="rm-navbar-root"></div>
   <header class="border-b border-slate-200">
     <div class="mx-auto flex max-w-4xl items-center justify-between px-4 py-4">
-      <a href="articles.html" class="font-bold text-emerald-900">Racik Media · Jurnal</a>
+      <a href="/articles" class="font-bold text-emerald-900">Racik Media · Jurnal</a>
       <a href="bookmarks.html" class="text-sm font-semibold text-emerald-800 hover:underline">Artikel tersimpan</a>
     </div>
   </header>
@@ -112,7 +112,7 @@
         document.title = article.title + ' — Racik Media';
         document.getElementById('articleTitle').textContent = article.title;
         document.getElementById('articleExcerpt').textContent = article.excerpt || '';
-        document.getElementById('articleMeta').innerHTML = '<a class="hover:underline" href="articles.html?category=' + encodeURIComponent(article.category) + '">' + escape(article.category) + '</a>';
+        document.getElementById('articleMeta').innerHTML = '<a class="hover:underline" href="/articles?category=' + encodeURIComponent(article.category) + '">' + escape(article.category) + '</a>';
         var authorLink = document.getElementById('authorLink');
         authorLink.textContent = article.author_name || 'Penulis Racik Media';
         authorLink.href = 'author-profile.html?id=' + encodeURIComponent(article.author_id);
@@ -128,7 +128,7 @@
         }
         document.getElementById('articleContent').innerHTML = PublicArticles.sanitizeContent(article.content);
         document.getElementById('articleTags').innerHTML = (article.tags || []).map(function (tag) {
-          return '<a class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700 hover:bg-emerald-50 hover:text-emerald-800" href="articles.html?tag=' + encodeURIComponent(tag) + '">#' + escape(tag) + '</a>';
+          return '<a class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700 hover:bg-emerald-50 hover:text-emerald-800" href="/articles?tag=' + encodeURIComponent(tag) + '">#' + escape(tag) + '</a>';
         }).join('');
         articleNode.classList.remove('hidden');
         pageMessage.textContent = '';

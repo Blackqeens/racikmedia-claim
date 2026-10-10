@@ -8,6 +8,7 @@
   <!-- Route guard: dashboard pengelolaan penjualan hanya untuk seller -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../../assets/js/supabase-config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
   <script src="../../api/auth.js"></script>
   <script>window.sellerRoleReady = BobAuth.requireRole(['seller', 'penjual', 'penyedia_jasa']);</script>
   <script src="https://cdn.tailwindcss.com"></script>
@@ -722,6 +723,13 @@
         </svg>
         Daftar Produk
       </a>
+      <a href="#layout-toko" class="sidebar-item" data-view="layout-toko"
+        onclick="switchSellerView('layout-toko', event)">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
+        </svg>
+        Pengaturan Layout Toko
+      </a>
       <a href="#kelola-jasa" class="sidebar-item" data-view="kelola-jasa"
         onclick="switchSellerView('kelola-jasa', event)">
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -851,6 +859,8 @@
       <button class="tab-btn-main active" data-tab="home" onclick="switchSellerView('home', event)">Home</button>
       <button class="tab-btn-main" data-tab="daftar-produk" onclick="switchSellerView('daftar-produk', event)">Daftar
         Produk</button>
+      <button class="tab-btn-main" data-tab="layout-toko" onclick="switchSellerView('layout-toko', event)">Layout
+        Toko</button>
       <button class="tab-btn-main" data-tab="kelola-jasa" onclick="switchSellerView('kelola-jasa', event)">Kelola
         Jasa</button>
       <button class="tab-btn-main" data-tab="tambah-produk" onclick="switchSellerView('tambah-produk', event)">+ Tambah
@@ -1382,6 +1392,176 @@
 
     </div><!-- END #tab-daftar-produk -->
 
+
+    <!-- ═══════════════════════════════════════════════════════════
+       MODUL BARU: PENGATURAN LAYOUT TOKO (DRAG-AND-DROP SORTABLEJS)
+       ═══════════════════════════════════════════════════════════ -->
+    <div id="tab-layout-toko" class="tab-panel">
+
+      <!-- Header Modul -->
+      <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <div class="flex items-center gap-2 mb-1">
+            <span class="text-lg">🔀</span>
+            <h2 class="text-lg font-bold text-slate-900">Pengaturan Layout Toko &amp; Visual Merchandising</h2>
+          </div>
+          <p class="text-xs text-slate-500 max-w-2xl leading-relaxed">
+            Geser dan atur urutan posisi produk secara visual (drag &amp; drop). Setiap perubahan susunan akan otomatis tersimpan ke tabel database <code class="bg-slate-100 text-emerald-800 px-1 py-0.5 rounded font-mono text-[11px]">seller_products</code> di Supabase dan tampil terbarui secara real-time di halaman depan toko pembeli.
+          </p>
+        </div>
+
+        <div class="flex items-center gap-2.5 shrink-0">
+          <div id="layout-sync-badge" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span id="layout-sync-text">Tersinkronisasi Real-Time</span>
+          </div>
+          <a href="/etalase" target="_blank"
+            class="px-3.5 py-2 text-xs font-bold text-emerald-800 hover:text-emerald-900 bg-white border border-emerald-200 hover:bg-emerald-50 rounded-xl transition flex items-center gap-1.5 shadow-xs">
+            <span>Lihat Etalase Toko</span>
+            <span>↗</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Banner Petunjuk Drag & Drop -->
+      <div class="p-4 rounded-xl border border-blue-200 bg-blue-50/70 mb-6 flex items-start gap-3">
+        <span class="text-blue-600 text-lg">💡</span>
+        <div class="text-xs text-blue-900 leading-relaxed">
+          <strong class="font-bold">Tips Pengaturan Layout:</strong> Produk di urutan <strong>#1</strong> dan <strong>#2</strong> akan menjadi produk sorotan utama di bagian teratas etalase tokomu. Klik dan tahan ikon pegangan <span class="font-mono bg-blue-100 px-1 rounded">⠿</span> pada kartu produk untuk menggeser posisinya.
+        </div>
+      </div>
+
+      <!-- Container Grid Drag-and-Drop SortableJS -->
+      <div class="bg-slate-50/80 rounded-2xl p-6 border border-slate-200 shadow-sm">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500">
+            Daftar Produk Etalase Toko (Geser untuk Mengubah Urutan)
+          </h3>
+          <span id="sortable-count-label" class="text-xs font-semibold text-slate-500">4 Produk Terpasang</span>
+        </div>
+
+        <!-- LIST CONTAINER UNTUK SORTABLEJS -->
+        <div id="sortable-store-products" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+
+          <!-- Product Item 1 -->
+          <div class="sortable-product-card bg-white rounded-xl p-4 border border-slate-200 shadow-xs hover:shadow-md transition cursor-grab active:cursor-grabbing relative select-none flex flex-col justify-between"
+            data-product-id="prd-kopi-gayo" data-position="1">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="pos-badge px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-emerald-100 text-emerald-800">
+                  Posisi #1
+                </span>
+                <span class="drag-handle text-slate-400 hover:text-slate-700 text-lg px-1 cursor-grab" title="Tahan dan geser posisi">
+                  ⠿
+                </span>
+              </div>
+              <div class="rounded-lg overflow-hidden aspect-square bg-slate-100 mb-3 border border-slate-100">
+                <img src="https://images.unsplash.com/photo-1610889556528-9a770e32642f?w=300&q=75" alt="Kopi Gayo" class="w-full h-full object-cover pointer-events-none" />
+              </div>
+              <span class="text-[10px] font-bold uppercase tracking-wide text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">Kopi</span>
+              <h4 class="font-bold text-xs text-slate-900 mt-1.5 line-clamp-2">Kopi Gayo Premium 100g</h4>
+            </div>
+            <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between">
+              <span class="text-xs font-extrabold text-slate-900">Rp 22.000</span>
+              <span class="text-[11px] text-slate-500 font-mono">Stok: 120</span>
+            </div>
+          </div>
+
+          <!-- Product Item 2 -->
+          <div class="sortable-product-card bg-white rounded-xl p-4 border border-slate-200 shadow-xs hover:shadow-md transition cursor-grab active:cursor-grabbing relative select-none flex flex-col justify-between"
+            data-product-id="prd-baju-tenun" data-position="2">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="pos-badge px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-purple-100 text-purple-800">
+                  Posisi #2
+                </span>
+                <span class="drag-handle text-slate-400 hover:text-slate-700 text-lg px-1 cursor-grab" title="Tahan dan geser posisi">
+                  ⠿
+                </span>
+              </div>
+              <div class="rounded-lg overflow-hidden aspect-square bg-slate-100 mb-3 border border-slate-100">
+                <img src="https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?w=300&q=75" alt="Kemeja Tenun" class="w-full h-full object-cover pointer-events-none" />
+              </div>
+              <span class="text-[10px] font-bold uppercase tracking-wide text-purple-700 bg-purple-50 px-2 py-0.5 rounded">Baju / Tenun</span>
+              <h4 class="font-bold text-xs text-slate-900 mt-1.5 line-clamp-2">Kemeja Tenun Ikat Wastra</h4>
+            </div>
+            <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between">
+              <span class="text-xs font-extrabold text-slate-900">Rp 285.000</span>
+              <span class="text-[11px] text-slate-500 font-mono">Stok: 45</span>
+            </div>
+          </div>
+
+          <!-- Product Item 3 -->
+          <div class="sortable-product-card bg-white rounded-xl p-4 border border-slate-200 shadow-xs hover:shadow-md transition cursor-grab active:cursor-grabbing relative select-none flex flex-col justify-between"
+            data-product-id="prd-madu-hutan" data-position="3">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="pos-badge px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-amber-100 text-amber-800">
+                  Posisi #3
+                </span>
+                <span class="drag-handle text-slate-400 hover:text-slate-700 text-lg px-1 cursor-grab" title="Tahan dan geser posisi">
+                  ⠿
+                </span>
+              </div>
+              <div class="rounded-lg overflow-hidden aspect-square bg-slate-100 mb-3 border border-slate-100">
+                <img src="https://images.unsplash.com/photo-1571115177098-24ec42ed204d?w=300&q=75" alt="Madu Hutan" class="w-full h-full object-cover pointer-events-none" />
+              </div>
+              <span class="text-[10px] font-bold uppercase tracking-wide text-amber-700 bg-amber-50 px-2 py-0.5 rounded">Herbal</span>
+              <h4 class="font-bold text-xs text-slate-900 mt-1.5 line-clamp-2">Madu Hutan Kalimantan 250ml</h4>
+            </div>
+            <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between">
+              <span class="text-xs font-extrabold text-slate-900">Rp 65.000</span>
+              <span class="text-[11px] text-slate-500 font-mono">Stok: 80</span>
+            </div>
+          </div>
+
+          <!-- Product Item 4 -->
+          <div class="sortable-product-card bg-white rounded-xl p-4 border border-slate-200 shadow-xs hover:shadow-md transition cursor-grab active:cursor-grabbing relative select-none flex flex-col justify-between"
+            data-product-id="prd-beras-organik" data-position="4">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="pos-badge px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-slate-200 text-slate-800">
+                  Posisi #4
+                </span>
+                <span class="drag-handle text-slate-400 hover:text-slate-700 text-lg px-1 cursor-grab" title="Tahan dan geser posisi">
+                  ⠿
+                </span>
+              </div>
+              <div class="rounded-lg overflow-hidden aspect-square bg-slate-100 mb-3 border border-slate-100">
+                <img src="https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=300&q=75" alt="Beras Organik" class="w-full h-full object-cover pointer-events-none" />
+              </div>
+              <span class="text-[10px] font-bold uppercase tracking-wide text-slate-700 bg-slate-100 px-2 py-0.5 rounded">Pangan</span>
+              <h4 class="font-bold text-xs text-slate-900 mt-1.5 line-clamp-2">Beras Organik Merah 1kg</h4>
+            </div>
+            <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between">
+              <span class="text-xs font-extrabold text-slate-900">Rp 32.000</span>
+              <span class="text-[11px] text-slate-500 font-mono">Stok: 200</span>
+            </div>
+          </div>
+
+        </div><!-- /#sortable-store-products -->
+
+        <div class="mt-6 flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 border-t border-slate-200">
+          <p class="text-xs text-slate-500">
+            Perubahan posisi tersimpan otomatis setiap kali Anda selesai melepas drag kartu.
+          </p>
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="resetDefaultLayoutOrder()"
+              class="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-900 border border-slate-300 rounded-xl bg-white hover:bg-slate-50 transition">
+              Kembalikan Urutan Awal
+            </button>
+            <button type="button" onclick="saveStoreLayoutOrderManual()"
+              class="px-4 py-2 text-xs font-bold text-white bg-emerald-700 hover:bg-emerald-800 rounded-xl transition shadow-xs flex items-center gap-1.5">
+              <span>💾</span>
+              <span>Simpan Susunan</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </div><!-- END #tab-layout-toko -->
+
     <!-- ═══════════════════════════════════════════════════════════
        4. TAB: KELOLA JASA
        ═══════════════════════════════════════════════════════════ -->
@@ -1476,14 +1656,13 @@
             </div>
             <div>
               <label class="block text-xs font-semibold text-slate-700 mb-1">Kategori Produk *</label>
-              <select id="new-prod-category" required
-                class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 bg-white">
-                <option value="Pangan">Pangan &amp; Hasil Bumi</option>
-                <option value="Kopi & Teh">Kopi &amp; Teh Nusantara</option>
-                <option value="Kerajinan">Kerajinan Tradisional</option>
-                <option value="Herbal">Herbal &amp; Madu Hutan</option>
-                <option value="Fashion">Fashion &amp; Tenun Wastra</option>
-                <option value="Organik">Produk Organik &amp; Alami</option>
+              <select id="new-prod-category" required onchange="handleCategoryChange(this.value)"
+                class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 bg-white font-medium">
+                <option value="kopi" selected>☕ Kopi Nusantara (Gramasi Berat &amp; Jenis Gilingan)</option>
+                <option value="baju">👕 Baju / Pakaian &amp; Wastra (Varian Warna &amp; Ukuran)</option>
+                <option value="pangan">🌾 Pangan &amp; Hasil Bumi</option>
+                <option value="kerajinan">🪵 Kerajinan Tradisional</option>
+                <option value="herbal">🍯 Herbal &amp; Madu Hutan</option>
               </select>
             </div>
             <div class="md:col-span-2">
@@ -1492,6 +1671,192 @@
               <textarea id="new-prod-desc" rows="3"
                 placeholder="Jelaskan proses panen, rasa, manfaat, dan cara penggunaan..."
                 class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 outline-none"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!--  DYNAMIC FORM ATRIBUT BERBASIS KATEGORI (CONDITIONAL)       -->
+        <!--  Disimpan dalam format JSONB 'attributes' ke Supabase        -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+
+        <!-- 1. FORM KHUSUS KATEGORI KOPI -->
+        <div id="section-cat-kopi" class="p-5 rounded-2xl border border-emerald-200 bg-emerald-50/50 space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-emerald-200/80">
+            <div class="flex items-center gap-2">
+              <span class="text-base">☕</span>
+              <h4 class="text-xs font-bold text-emerald-950 uppercase tracking-wide">
+                Spesifikasi Khusus Kopi (Disimpan ke Kolom JSONB attributes)
+              </h4>
+            </div>
+            <span class="text-[10px] font-bold bg-emerald-200 text-emerald-900 px-2 py-0.5 rounded-full">Kategori Kopi Aktif</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Gramasi Berat Kopi -->
+            <div>
+              <label class="block text-xs font-bold text-emerald-900 mb-1.5">
+                Pilihan Gramasi Berat Produk:
+              </label>
+              <div class="flex flex-wrap gap-2 text-xs text-slate-700" id="coffee-weights-group">
+                <label class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-emerald-200 cursor-pointer select-none">
+                  <input type="checkbox" name="coffee_weights" value="100g" checked class="accent-emerald-700" />
+                  <span>100g</span>
+                </label>
+                <label class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-emerald-200 cursor-pointer select-none">
+                  <input type="checkbox" name="coffee_weights" value="200g" checked class="accent-emerald-700" />
+                  <span>200g</span>
+                </label>
+                <label class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-emerald-200 cursor-pointer select-none">
+                  <input type="checkbox" name="coffee_weights" value="250g" class="accent-emerald-700" />
+                  <span>250g</span>
+                </label>
+                <label class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-emerald-200 cursor-pointer select-none">
+                  <input type="checkbox" name="coffee_weights" value="500g" checked class="accent-emerald-700" />
+                  <span>500g</span>
+                </label>
+                <label class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-emerald-200 cursor-pointer select-none">
+                  <input type="checkbox" name="coffee_weights" value="1kg" checked class="accent-emerald-700" />
+                  <span>1kg</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Jenis Gilingan Kopi -->
+            <div>
+              <label class="block text-xs font-bold text-emerald-900 mb-1.5">
+                Pilihan Jenis Gilingan (Grind Size):
+              </label>
+              <div class="grid grid-cols-2 gap-2 text-xs text-slate-700" id="coffee-grinds-group">
+                <label class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-emerald-200 cursor-pointer select-none">
+                  <input type="checkbox" name="coffee_grinds" value="Biji Utuh (Whole Bean)" checked class="accent-emerald-700" />
+                  <span>Biji Utuh</span>
+                </label>
+                <label class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-emerald-200 cursor-pointer select-none">
+                  <input type="checkbox" name="coffee_grinds" value="Giling Kasar (Coarse)" checked class="accent-emerald-700" />
+                  <span>Giling Kasar</span>
+                </label>
+                <label class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-emerald-200 cursor-pointer select-none">
+                  <input type="checkbox" name="coffee_grinds" value="Giling Sedang (Medium)" checked class="accent-emerald-700" />
+                  <span>Giling Sedang</span>
+                </label>
+                <label class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-emerald-200 cursor-pointer select-none">
+                  <input type="checkbox" name="coffee_grinds" value="Giling Halus (Fine)" checked class="accent-emerald-700" />
+                  <span>Giling Halus</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Level Sangrai & Origin -->
+            <div>
+              <label class="block text-xs font-bold text-emerald-900 mb-1">Profil Sangrai (Roast Level)</label>
+              <select id="coffee-roast-level" class="w-full px-3 py-2 text-xs rounded-xl border border-emerald-200 bg-white focus:ring-2 focus:ring-emerald-500 outline-none">
+                <option value="Light Roast">Light Roast (Cita rasa asam buah cerah)</option>
+                <option value="Medium Roast" selected>Medium Roast (Seimbang, karamel manis)</option>
+                <option value="Medium Dark Roast">Medium Dark Roast (Body tebal, cokelat pekat)</option>
+                <option value="Dark Roast">Dark Roast (Intens, rasa panggang kuat)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-emerald-900 mb-1">Asal Daerah Kopi (Origin)</label>
+              <input type="text" id="coffee-origin" placeholder="Contoh: Takengon, Aceh Tengah (1.500 mdpl)"
+                value="Takengon, Aceh Tengah"
+                class="w-full px-3 py-2 text-xs rounded-xl border border-emerald-200 bg-white focus:ring-2 focus:ring-emerald-500 outline-none" />
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. FORM KHUSUS KATEGORI BAJU / PAKAIAN -->
+        <div id="section-cat-baju" class="p-5 rounded-2xl border border-purple-200 bg-purple-50/50 space-y-4 hidden">
+          <div class="flex items-center justify-between pb-3 border-b border-purple-200/80">
+            <div class="flex items-center gap-2">
+              <span class="text-base">👕</span>
+              <h4 class="text-xs font-bold text-purple-950 uppercase tracking-wide">
+                Spesifikasi Khusus Baju (Disimpan ke Kolom JSONB attributes)
+              </h4>
+            </div>
+            <span class="text-[10px] font-bold bg-purple-200 text-purple-900 px-2 py-0.5 rounded-full">Kategori Baju Aktif</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Varian Warna (Kolor) -->
+            <div>
+              <label class="block text-xs font-bold text-purple-900 mb-1.5">
+                Varian Warna Pakaian (Kolor):
+              </label>
+              <div class="flex flex-wrap gap-2 text-xs text-slate-700" id="clothes-colors-group">
+                <label class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-purple-200 cursor-pointer select-none">
+                  <input type="checkbox" name="cloth_colors" value="Hitam" checked class="accent-purple-700" />
+                  <span>Hitam</span>
+                </label>
+                <label class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-purple-200 cursor-pointer select-none">
+                  <input type="checkbox" name="cloth_colors" value="Putih" checked class="accent-purple-700" />
+                  <span>Putih</span>
+                </label>
+                <label class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-purple-200 cursor-pointer select-none">
+                  <input type="checkbox" name="cloth_colors" value="Navy Blue" checked class="accent-purple-700" />
+                  <span>Navy</span>
+                </label>
+                <label class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-purple-200 cursor-pointer select-none">
+                  <input type="checkbox" name="cloth_colors" value="Terracotta" checked class="accent-purple-700" />
+                  <span>Terracotta</span>
+                </label>
+                <label class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-purple-200 cursor-pointer select-none">
+                  <input type="checkbox" name="cloth_colors" value="Hijau Botol" class="accent-purple-700" />
+                  <span>Hijau Botol</span>
+                </label>
+              </div>
+              <input type="text" id="cloth-custom-colors" placeholder="Tambah warna lain (pisahkan dengan koma)..."
+                class="mt-2 w-full px-3 py-1.5 text-xs rounded-lg border border-purple-200 bg-white focus:ring-2 focus:ring-purple-500 outline-none" />
+            </div>
+
+            <!-- Ukuran Pakaian (Size) -->
+            <div>
+              <label class="block text-xs font-bold text-purple-900 mb-1.5">
+                Pilihan Ukuran Pakaian (Size):
+              </label>
+              <div class="flex flex-wrap gap-2 text-xs text-slate-700" id="clothes-sizes-group">
+                <label class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-purple-200 cursor-pointer select-none">
+                  <input type="checkbox" name="cloth_sizes" value="S" checked class="accent-purple-700" />
+                  <span>S</span>
+                </label>
+                <label class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-purple-200 cursor-pointer select-none">
+                  <input type="checkbox" name="cloth_sizes" value="M" checked class="accent-purple-700" />
+                  <span>M</span>
+                </label>
+                <label class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-purple-200 cursor-pointer select-none">
+                  <input type="checkbox" name="cloth_sizes" value="L" checked class="accent-purple-700" />
+                  <span>L</span>
+                </label>
+                <label class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-purple-200 cursor-pointer select-none">
+                  <input type="checkbox" name="cloth_sizes" value="XL" checked class="accent-purple-700" />
+                  <span>XL</span>
+                </label>
+                <label class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-purple-200 cursor-pointer select-none">
+                  <input type="checkbox" name="cloth_sizes" value="XXL" class="accent-purple-700" />
+                  <span>XXL</span>
+                </label>
+                <label class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-purple-200 cursor-pointer select-none">
+                  <input type="checkbox" name="cloth_sizes" value="All Size" class="accent-purple-700" />
+                  <span>All Size</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Bahan Kain / Material & Fitting Guide -->
+            <div>
+              <label class="block text-xs font-bold text-purple-900 mb-1">Bahan Kain / Material</label>
+              <input type="text" id="cloth-material" placeholder="Contoh: Katun Combed 30s / Tenun Ikat Asli"
+                value="Katun Tenun Tradisional Tangan Asli"
+                class="w-full px-3 py-2 text-xs rounded-xl border border-purple-200 bg-white focus:ring-2 focus:ring-purple-500 outline-none" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-purple-900 mb-1">Panduan Potongan (Fitting Guide)</label>
+              <select id="cloth-size-guide" class="w-full px-3 py-2 text-xs rounded-xl border border-purple-200 bg-white focus:ring-2 focus:ring-purple-500 outline-none">
+                <option value="Regular Fit" selected>Regular Fit (Potongan Standar Nyaman)</option>
+                <option value="Slim Fit">Slim Fit (Pas Badan)</option>
+                <option value="Oversized">Oversized / Loose Cut</option>
+              </select>
             </div>
           </div>
         </div>
@@ -2190,6 +2555,10 @@
       // Update URL hash
       window.location.hash = viewId;
       window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      if (viewId === 'layout-toko') {
+        setTimeout(initStoreLayoutSortable, 50);
+      }
     }
 
     // Auto-switch based on URL Hash upon page load
@@ -2217,44 +2586,329 @@
       showToast('Seluruh Pengaturan Toko Berhasil Disimpan!', '💾');
     }
 
-    function handleAddNewProduct(e) {
+    /* ════════════════════════════════════════════════════════
+       DYNAMIC CATEGORY FORM (CONDITIONAL RENDERING)
+       Menampilkan form khusus Baju vs Kopi & simpan ke JSONB
+    ════════════════════════════════════════════════════════ */
+    function handleCategoryChange(selectedCategory) {
+      const catKopi = document.getElementById('section-cat-kopi');
+      const catBaju = document.getElementById('section-cat-baju');
+      if (!catKopi || !catBaju) return;
+
+      const cat = (selectedCategory || '').toLowerCase();
+      if (cat === 'baju') {
+        catBaju.classList.remove('hidden');
+        catKopi.classList.add('hidden');
+      } else if (cat === 'kopi') {
+        catKopi.classList.remove('hidden');
+        catBaju.classList.add('hidden');
+      } else {
+        // Kategori umum lainnya: sembunyikan form spesifik baju & kopi
+        catKopi.classList.add('hidden');
+        catBaju.classList.add('hidden');
+      }
+    }
+
+    // Supabase Client helper for seller dashboard
+    let sellerSupabase = null;
+    function getSellerSupabase() {
+      if (sellerSupabase) return sellerSupabase;
+      try {
+        if (typeof supabase !== 'undefined' && window.SUPABASE_CONFIG) {
+          sellerSupabase = supabase.createClient(window.SUPABASE_CONFIG.url, window.SUPABASE_CONFIG.publishableKey);
+        }
+      } catch (e) {
+        console.warn('Inisialisasi seller Supabase:', e);
+      }
+      return sellerSupabase;
+    }
+
+    /* ════════════════════════════════════════════════════════
+       SORTABLEJS: PENGATURAN LAYOUT TOKO (DRAG-AND-DROP)
+       Menyimpan susunan posisi ke Supabase 'seller_products'
+    ════════════════════════════════════════════════════════ */
+    let storeSortableInstance = null;
+
+    function initStoreLayoutSortable() {
+      const container = document.getElementById('sortable-store-products');
+      if (!container || typeof Sortable === 'undefined') return;
+
+      if (storeSortableInstance) {
+        storeSortableInstance.destroy();
+      }
+
+      storeSortableInstance = new Sortable(container, {
+        animation: 200,
+        handle: '.drag-handle, .sortable-product-card',
+        ghostClass: 'bg-emerald-50',
+        chosenClass: 'ring-2 ring-emerald-500 shadow-xl scale-[1.01]',
+        dragClass: 'opacity-90',
+        onEnd: function (evt) {
+          handleReorderStoreProducts();
+        }
+      });
+    }
+
+    async function handleReorderStoreProducts() {
+      const container = document.getElementById('sortable-store-products');
+      if (!container) return;
+
+      const cards = Array.from(container.children);
+      const reorderedItems = [];
+
+      // Update badge posisi visual (#1, #2, #3...) seketika
+      cards.forEach((card, index) => {
+        const newPos = index + 1;
+        card.setAttribute('data-position', newPos);
+        const badge = card.querySelector('.pos-badge');
+        if (badge) {
+          badge.textContent = `Posisi #${newPos}`;
+          badge.className = `pos-badge px-2.5 py-0.5 rounded-full text-xs font-extrabold ${newPos === 1 ? 'bg-emerald-100 text-emerald-800' : newPos === 2 ? 'bg-purple-100 text-purple-800' : 'bg-slate-200 text-slate-800'}`;
+        }
+        reorderedItems.push({
+          id: card.getAttribute('data-product-id'),
+          position: newPos,
+          name: card.querySelector('h4')?.textContent?.trim() || ''
+        });
+      });
+
+      // Update status sync badge
+      const syncBadge = document.getElementById('layout-sync-text');
+      if (syncBadge) syncBadge.textContent = 'Menyimpan perubahan...';
+
+      // 1. Simpan ke Supabase tabel seller_products
+      const sb = getSellerSupabase();
+      let savedToDb = false;
+
+      if (sb) {
+        try {
+          const updatePromises = reorderedItems.map(item => {
+            return sb
+              .from('seller_products')
+              .update({
+                position: item.position,
+                updated_at: new Date().toISOString()
+              })
+              .eq('id', item.id);
+          });
+          await Promise.all(updatePromises);
+          savedToDb = true;
+        } catch (err) {
+          console.warn('Gagal update ke tabel seller_products di Supabase:', err);
+        }
+      }
+
+      // 2. Simpan urutan ke BobProductsStore / localStorage
+      try {
+        const orderMap = {};
+        reorderedItems.forEach(item => { orderMap[item.id] = item.position; });
+        localStorage.setItem('bob_seller_products_layout_order', JSON.stringify(orderMap));
+
+        if (typeof BobProductsStore !== 'undefined') {
+          reorderedItems.forEach(item => {
+            BobProductsStore.setFeatured(item.id, true, item.position);
+          });
+        }
+      } catch (e) {}
+
+      // Selesai menyimpan
+      if (syncBadge) {
+        syncBadge.textContent = savedToDb ? 'Tersimpan di Supabase ✓' : 'Tersinkronisasi Real-Time ✓';
+        setTimeout(() => {
+          if (syncBadge) syncBadge.textContent = 'Tersinkronisasi Real-Time';
+        }, 2500);
+      }
+
+      showToast(`Susunan layout toko diperbarui! (Produk #1: ${reorderedItems[0]?.name || ''})`, '🔀');
+
+      // Dispatch event agar halaman storefront/etalase langsung merespons
+      if (typeof window !== 'undefined' && typeof window.dispatchEvent === 'function') {
+        window.dispatchEvent(new CustomEvent('bob:products-reordered', { detail: { items: reorderedItems } }));
+      }
+    }
+
+    function saveStoreLayoutOrderManual() {
+      handleReorderStoreProducts();
+    }
+
+    function resetDefaultLayoutOrder() {
+      const container = document.getElementById('sortable-store-products');
+      if (!container) return;
+
+      // Urutkan kembali berdasarkan ID standar
+      const defaultOrder = ['prd-kopi-gayo', 'prd-baju-tenun', 'prd-madu-hutan', 'prd-beras-organik'];
+      const cards = Array.from(container.children);
+      cards.sort((a, b) => {
+        const idA = a.getAttribute('data-product-id');
+        const idB = b.getAttribute('data-product-id');
+        return defaultOrder.indexOf(idA) - defaultOrder.indexOf(idB);
+      });
+      cards.forEach(card => container.appendChild(card));
+      handleReorderStoreProducts();
+    }
+
+    /* ════════════════════════════════════════════════════════
+       SUBMIT PRODUK BARU DENGAN ATRIBUT JSONB & SUPABASE
+    ════════════════════════════════════════════════════════ */
+    async function handleAddNewProduct(e) {
       e.preventDefault();
       const name = document.getElementById('new-prod-name').value.trim();
-      const cat = document.getElementById('new-prod-category').value;
-      const price = parseInt(document.getElementById('new-prod-price').value);
-      const stock = parseInt(document.getElementById('new-prod-stock').value);
+      const category = (document.getElementById('new-prod-category').value || 'kopi').toLowerCase();
+      const desc = document.getElementById('new-prod-desc').value.trim();
+      const price = parseInt(document.getElementById('new-prod-price').value) || 0;
+      const stock = parseInt(document.getElementById('new-prod-stock').value) || 0;
+      const weight = parseInt(document.getElementById('new-prod-weight').value) || 500;
 
+      // 1. Kumpulkan Atribut Dinamis JSONB berdasarkan Kategori
+      const attributes = {};
+
+      if (category === 'kopi') {
+        const weights = Array.from(document.querySelectorAll('input[name="coffee_weights"]:checked')).map(el => el.value);
+        const grinds = Array.from(document.querySelectorAll('input[name="coffee_grinds"]:checked')).map(el => el.value);
+        const roast = document.getElementById('coffee-roast-level').value;
+        const origin = document.getElementById('coffee-origin').value.trim();
+
+        attributes.weights = weights.length ? weights : ['100g', '200g', '500g'];
+        attributes.grind_sizes = grinds.length ? grinds : ['Biji Utuh', 'Giling Halus'];
+        attributes.roast_level = roast;
+        if (origin) attributes.origin = origin;
+
+      } else if (category === 'baju') {
+        const colors = Array.from(document.querySelectorAll('input[name="cloth_colors"]:checked')).map(el => el.value);
+        const customColor = document.getElementById('cloth-custom-colors').value.trim();
+        if (customColor) {
+          customColor.split(',').forEach(c => {
+            const clean = c.trim();
+            if (clean && !colors.includes(clean)) colors.push(clean);
+          });
+        }
+        const sizes = Array.from(document.querySelectorAll('input[name="cloth_sizes"]:checked')).map(el => el.value);
+        const material = document.getElementById('cloth-material').value.trim();
+        const sizeGuide = document.getElementById('cloth-size-guide').value;
+
+        attributes.colors = colors.length ? colors : ['Hitam', 'Putih', 'Navy'];
+        attributes.sizes = sizes.length ? sizes : ['S', 'M', 'L', 'XL'];
+        if (material) attributes.material = material;
+        if (sizeGuide) attributes.size_guide = sizeGuide;
+      }
+
+      const generatedId = 'prd-' + Date.now().toString(36);
+      const defaultImg = category === 'baju'
+        ? 'https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?w=400&q=75'
+        : 'https://images.unsplash.com/photo-1610889556528-9a770e32642f?w=400&q=75';
+
+      // 2. Simpan ke database Supabase (tabel products & seller_products dengan kolom JSONB attributes)
+      const sb = getSellerSupabase();
+      if (sb) {
+        try {
+          await sb.from('products').insert([{
+            id: generatedId,
+            name: name,
+            category: category,
+            price: price,
+            stock: stock,
+            weight: weight,
+            description: desc,
+            image_url: defaultImg,
+            attributes: attributes // Format JSONB
+          }]);
+
+          await sb.from('seller_products').insert([{
+            id: 'sp-' + Date.now().toString(36),
+            product_id: generatedId,
+            name: name,
+            category: category,
+            price: price,
+            stock: stock,
+            image_url: defaultImg,
+            position: 99,
+            attributes: attributes // Format JSONB
+          }]);
+        } catch (dbErr) {
+          console.warn('Penyimpanan ke Supabase:', dbErr);
+        }
+      }
+
+      // 3. Tambahkan ke BobProductsStore lokal agar segera tampil di etalase
+      if (typeof BobProductsStore !== 'undefined') {
+        BobProductsStore.add({
+          id: generatedId,
+          name: name,
+          category: category,
+          price: price,
+          priceStr: 'Rp ' + price.toLocaleString('id-ID'),
+          img: defaultImg,
+          desc: desc,
+          detailUrl: `pages/products/product-detail.html?id=${generatedId}`,
+          attributes: attributes
+        });
+      }
+
+      // 4. Tambahkan baris baru ke tabel Daftar Produk
       const tbody = document.getElementById('seller-product-tbody');
-      if (tbody && name) {
+      if (tbody) {
         const tr = document.createElement('tr');
         tr.className = "hover:bg-slate-50/50 transition animate-in fade-in";
         tr.innerHTML = `
-        <td class="p-3">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-xs">BARU</div>
-            <div>
-              <p class="font-bold text-slate-900">${name}</p>
-              <p class="text-[10px] text-slate-400 font-mono">SKU: RM-AUTO-${Date.now().toString().slice(-4)}</p>
+          <td class="p-3">
+            <div class="flex items-center gap-3">
+              <img src="${defaultImg}" class="w-10 h-10 rounded-lg object-cover bg-slate-100" />
+              <div>
+                <p class="font-bold text-slate-900">${name}</p>
+                <p class="text-[10px] text-slate-400 font-mono">ID: ${generatedId}</p>
+              </div>
             </div>
-          </div>
-        </td>
-        <td class="p-3">${cat}</td>
-        <td class="p-3 font-semibold text-slate-900">Rp ${price.toLocaleString('id-ID')}</td>
-        <td class="p-3 font-bold text-emerald-700">${stock} pcs</td>
-        <td class="p-3">0 pcs</td>
-        <td class="p-3">
-          <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">Aktif</span>
-        </td>
-        <td class="p-3 text-right space-x-2">
-          <button onclick="editProductPrompt('${name}', ${price}, ${stock})" class="text-emerald-700 font-semibold hover:underline">Edit</button>
-          <button onclick="this.closest('tr').remove(); showToast('Produk dihapus', '🗑️')" class="text-rose-600 hover:underline">Hapus</button>
-        </td>
-      `;
+          </td>
+          <td class="p-3 capitalize">${category}</td>
+          <td class="p-3 font-semibold text-slate-900">Rp ${price.toLocaleString('id-ID')}</td>
+          <td class="p-3 font-bold text-emerald-700">${stock} pcs</td>
+          <td class="p-3">0 pcs</td>
+          <td class="p-3">
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">Aktif</span>
+          </td>
+          <td class="p-3 text-right space-x-2">
+            <a href="../products/product-detail.html?id=${generatedId}" target="_blank" class="text-blue-600 hover:underline">Lihat</a>
+            <button onclick="editProductPrompt('${name}', ${price}, ${stock})" class="text-emerald-700 font-semibold hover:underline">Edit</button>
+            <button onclick="this.closest('tr').remove(); showToast('Produk dihapus', '🗑️')" class="text-rose-600 hover:underline">Hapus</button>
+          </td>
+        `;
         tbody.prepend(tr);
       }
 
-      showToast(`Produk "${name}" berhasil ditambahkan ke etalase!`, '🎉');
-      switchSellerView('daftar-produk');
+      // 5. Tambahkan kartu baru ke modul Drag-and-Drop Layout Toko
+      const sortableContainer = document.getElementById('sortable-store-products');
+      if (sortableContainer) {
+        const newPos = sortableContainer.children.length + 1;
+        const newCard = document.createElement('div');
+        newCard.className = "sortable-product-card bg-white rounded-xl p-4 border border-slate-200 shadow-xs hover:shadow-md transition cursor-grab active:cursor-grabbing relative select-none flex flex-col justify-between";
+        newCard.setAttribute('data-product-id', generatedId);
+        newCard.setAttribute('data-position', newPos);
+        newCard.innerHTML = `
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="pos-badge px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-slate-200 text-slate-800">
+                Posisi #${newPos}
+              </span>
+              <span class="drag-handle text-slate-400 hover:text-slate-700 text-lg px-1 cursor-grab" title="Tahan dan geser posisi">
+                ⠿
+              </span>
+            </div>
+            <div class="rounded-lg overflow-hidden aspect-square bg-slate-100 mb-3 border border-slate-100">
+              <img src="${defaultImg}" alt="${name}" class="w-full h-full object-cover pointer-events-none" />
+            </div>
+            <span class="text-[10px] font-bold uppercase tracking-wide text-slate-700 bg-slate-100 px-2 py-0.5 rounded capitalize">${category}</span>
+            <h4 class="font-bold text-xs text-slate-900 mt-1.5 line-clamp-2">${name}</h4>
+          </div>
+          <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between">
+            <span class="text-xs font-extrabold text-slate-900">Rp ${price.toLocaleString('id-ID')}</span>
+            <span class="text-[11px] text-slate-500 font-mono">Stok: ${stock}</span>
+          </div>
+        `;
+        sortableContainer.appendChild(newCard);
+      }
+
+      showToast(`Produk "${name}" (Kategori: ${category.toUpperCase()}) berhasil disimpan dengan atribut JSONB!`, '🎉');
+      switchSellerView('layout-toko');
     }
 
     function editProductPrompt(name, currentPrice, currentStock) {
@@ -2271,6 +2925,11 @@
         showToast(`Pesanan ${inv} berhasil diproses dengan No. Resi: ${resi}`, '🚚');
       }
     }
+
+    // Inisialisasi Sortable saat dokumen siap
+    window.addEventListener('DOMContentLoaded', () => {
+      initStoreLayoutSortable();
+    });
 
     /* ════════════════════════════════════════════════════════
        CHAT & MESSAGING SIMULATOR

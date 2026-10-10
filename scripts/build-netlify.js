@@ -6,7 +6,7 @@ const path = require('node:path');
 const projectRoot = path.resolve(__dirname, '..');
 const outputDirectory = path.resolve(projectRoot, 'dist');
 const publicFiles = ['index.html', 'script.js', 'style.css'];
-const publicDirectories = ['api', 'assets', 'layouts', 'pages'];
+const publicDirectories = ['api', 'assets', 'layouts', 'pages', 'articles', 'etalase'];
 const excludedFiles = new Set(['google-maps-config.js']);
 
 if (!outputDirectory.startsWith(projectRoot + path.sep)) {
@@ -37,6 +37,8 @@ for (const directory of publicDirectories) {
 
 const requiredOutput = [
   'index.html',
+  'articles/index.html',
+  'etalase/index.html',
   'assets/js/lang.js',
   'assets/js/public-layout.js',
   'assets/js/layout.js',
