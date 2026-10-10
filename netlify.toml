@@ -62,3 +62,33 @@
   to = "/pages/main/author-profile.html"
   status = 200
 
+[[redirects]]
+  from = "/pages/main/cerita-kami.html"
+  to = "/cerita-kami"
+  status = 301
+
+[[redirects]]
+  from = "/pages/main/cerita-kami"
+  to = "/cerita-kami"
+  status = 301
+
+[[redirects]]
+  from = "/pages/main/events.html"
+  to = "/events"
+  status = 301
+
+[[redirects]]
+  from = "/pages/main/events"
+  to = "/events"
+  status = 301
+
+[[redirects]]
+  from = "/cerita-kami"
+  to = "/cerita-kami/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/events"
+  to = "/events/index.html"
+  status = 200
+

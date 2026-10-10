@@ -6,7 +6,7 @@ const path = require('node:path');
 const projectRoot = path.resolve(__dirname, '..');
 const outputDirectory = path.resolve(projectRoot, 'dist');
 const publicFiles = ['index.html', 'script.js', 'style.css'];
-const publicDirectories = ['api', 'assets', 'layouts', 'pages', 'articles', 'etalase'];
+const publicDirectories = ['api', 'assets', 'layouts', 'pages', 'articles', 'etalase', 'cerita-kami', 'events'];
 const excludedFiles = new Set(['google-maps-config.js']);
 
 if (!outputDirectory.startsWith(projectRoot + path.sep)) {
@@ -39,6 +39,8 @@ const requiredOutput = [
   'index.html',
   'articles/index.html',
   'etalase/index.html',
+  'cerita-kami/index.html',
+  'events/index.html',
   'assets/js/lang.js',
   'assets/js/public-layout.js',
   'assets/js/layout.js',
@@ -48,8 +50,7 @@ const requiredOutput = [
   'assets/brand/1.png',
   'layouts/_public-navbar.html',
   'layouts/_footer.html',
-  'api/auth.js',
-  'pages/main/events.html'
+  'api/auth.js'
 ];
 
 for (const file of requiredOutput) {

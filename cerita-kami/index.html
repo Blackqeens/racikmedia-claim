@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth public-layout-page">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cerita Kami — Racik Media | Platform Editorial &amp; Commerce Lokal</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../assets/css/shared.css" />
+  <link rel="stylesheet" href="../assets/css/lang.css" />
+  <link rel="stylesheet" href="../assets/css/public-layout.css" />
+
+  <!-- Google Fonts: Lora (Serif) + Inter (Sans) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <script src="../assets/js/tailwind-config.js"></script>
+
+  <style>
+/* Hairline divider */
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    /* Custom pattern styling */
+    .hero-dots-pattern {
+      background-image: radial-gradient(rgba(255, 255, 255, 0.15) 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+  </style>
+</head>
+
+<body class="bg-gray-50 text-gray-900 antialiased selection:bg-emerald-100 selection:text-emerald-900 public-layout-page">
+
+  <!-- Navbar publik dan footer dimuat sebagai komponen bersama. -->
+  <div id="rm-navbar-root"></div>
+
+
+<!-- ============================================================
+     HERO COVER SECTION: TENTANG RACIK MEDIA
+     ============================================================ -->
+<section class="public-hero public-hero--indonesia bg-gradient-to-br from-emerald-900 via-emerald-800 to-teal-900 text-white">
+  <!-- Decorative Ambient Pattern -->
+  <div class="public-hero-pattern"></div>
+
+  <div class="public-hero__content flex flex-col items-center">
+
+    <!-- Tagline Badge -->
+    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-700/60 border border-emerald-500/40 text-emerald-200 text-xs font-semibold tracking-widest uppercase mb-4">
+      <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+      Platform Editorial &amp; Commerce Lokal
+    </div>
+
+    <!-- Main Title -->
+    <h1 class="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white max-w-4xl leading-tight mb-3">
+      Racik Media: Menghubungkan Cerita Autentik &amp; Karya Nyata Nusantara
+    </h1>
+
+    <!-- Core Statement (Directly from Card Description) -->
+    <p class="font-sans text-sm sm:text-base text-emerald-100 max-w-3xl leading-relaxed font-light mb-4">
+      &ldquo;Kami menghubungkan cerita autentik dari penjuru Nusantara dengan pembaca yang peduli — dan produk yang layak dibawa pulang.&rdquo;
+    </p>
+
+    <!-- Quick action links -->
+    <div class="flex flex-wrap items-center justify-center gap-3">
+      <a href="#kisah" class="px-5 py-2.5 rounded-full bg-emerald-500 text-emerald-950 font-bold text-sm hover:bg-emerald-400 transition-colors shadow-lg shadow-emerald-950/40">
+        Baca Kisah Lengkap ↓
+      </a>
+      <a href="homepage.html#marketplace" class="px-5 py-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white font-medium text-sm backdrop-blur-sm transition-colors border border-white/20">
+        Jelajah Etalase Lokal →
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================
+     METRICS & STATS SECTION (From Profile Card Stats)
+     ============================================================ -->
+<section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 -mt-10 relative z-10">
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 bg-white rounded-2xl shadow-xl border border-gray-100 p-6 sm:p-8">
+    
+    <!-- Stat 1 -->
+    <div class="flex flex-col items-center text-center p-3">
+      <span class="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-emerald-800">240+</span>
+      <span class="text-xs sm:text-sm font-semibold text-gray-800 mt-1">Artikel Mendalam</span>
+      <span class="text-[11px] text-gray-500 mt-0.5 leading-tight">Liputan jurnalisme warga dari pelosok desa hingga kota</span>
+    </div>
+
+    <!-- Stat 2 -->
+    <div class="flex flex-col items-center text-center p-3 border-l border-gray-100">
+      <span class="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-emerald-800">1.2K</span>
+      <span class="text-xs sm:text-sm font-semibold text-gray-800 mt-1">Pembaca Peduli</span>
+      <span class="text-[11px] text-gray-500 mt-0.5 leading-tight">Komunitas pembaca sadar yang mendukung produk nusantara</span>
+    </div>
+
+    <!-- Stat 3 -->
+    <div class="flex flex-col items-center text-center p-3 border-t md:border-t-0 md:border-l border-gray-100">
+      <span class="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-emerald-800">85+</span>
+      <span class="text-xs sm:text-sm font-semibold text-gray-800 mt-1">Produk Terkurasi</span>
+      <span class="text-[11px] text-gray-500 mt-0.5 leading-tight">Dijual langsung oleh produsen tanpa potongan tengkulak</span>
+    </div>
+
+    <!-- Stat 4 -->
+    <div class="flex flex-col items-center text-center p-3 border-t md:border-t-0 border-l border-gray-100">
+      <span class="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-emerald-800">34+</span>
+      <span class="text-xs sm:text-sm font-semibold text-gray-800 mt-1">Wilayah Nusantara</span>
+      <span class="text-[11px] text-gray-500 mt-0.5 leading-tight">Jaringan produsen &amp; penulis dari Sabang sampai Merauke</span>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================
+     BULLETIN / PENGUMUMAN BANNER (From Profile Card)
+     ============================================================ -->
+<section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mt-12">
+  <div class="bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-100/60 rounded-xl p-5 border border-emerald-200/80 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    <div class="flex items-start gap-3.5">
+      <div class="w-10 h-10 rounded-lg bg-emerald-700 text-white flex items-center justify-center shrink-0 shadow">
+        <span class="text-lg">📢</span>
+      </div>
+      <div>
+        <p class="text-[10px] font-sans font-bold tracking-widest uppercase text-emerald-800">Pengumuman &amp; Edisi Terkini</p>
+        <p class="text-sm text-gray-800 font-medium leading-relaxed mt-0.5">
+          Edisi <span class="font-bold text-emerald-950">Panen Raya 2025</span> kini live — 12 cerita baru dari petani muda inspiratif Indonesia.
+        </p>
+      </div>
+    </div>
+    <a href="homepage.html#articles" class="whitespace-nowrap px-4 py-2 text-xs font-semibold bg-emerald-800 hover:bg-emerald-900 text-white rounded-full transition-colors shadow">
+      Baca Edisi Panen Raya →
+    </a>
+  </div>
+</section>
+
+<!-- ============================================================
+     NARASI UTAMA: APA ITU RACIK MEDIA & KENAPA KAMI HADIR?
+     ============================================================ -->
+<section id="kisah" class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+    
+    <!-- Sisi Kiri: Judul & Konsep -->
+    <div class="lg:col-span-5 flex flex-col gap-4">
+      <div class="flex items-center gap-2">
+        <span class="w-8 border-t-2 border-emerald-700"></span>
+        <span class="text-xs font-semibold tracking-widest uppercase text-emerald-800">Filosofi &amp; Asal Mula</span>
+      </div>
+      <h2 class="font-serif text-3xl sm:text-4xl font-bold text-gray-900 leading-tight">
+        Meracik Cerita, Merawat Martabat Karya Lokal.
+      </h2>
+      <p class="font-sans text-sm text-gray-600 leading-relaxed">
+        Di Indonesia, setiap jengkal tanah melahirkan kearifan. Namun seringkali cerita indah dari kebun, bengkel kriya, dan dapur tradisional hilang di tengah kebisingan informasi modern.
+      </p>
+      <div class="p-4 rounded-xl bg-emerald-900 text-white mt-2">
+        <p class="font-serif italic text-sm leading-relaxed text-emerald-100">
+          &ldquo;Kata &lsquo;Racik&rsquo; berarti memadukan bahan-bahan terbaik dengan takaran yang pas, cinta, dan ketelitian. Kami meracik jurnalisme yang menyentuh hati dengan etalase perdagangan yang adil bagi penciptanya.&rdquo;
+        </p>
+      </div>
+    </div>
+
+    <!-- Sisi Kanan: Penjelasan Mendalam -->
+    <div class="lg:col-span-7 flex flex-col gap-6 text-gray-700 leading-relaxed font-sans text-sm sm:text-base">
+      <p>
+        <strong>Racik Media</strong> didirikan atas satu keyakinan sederhana: <em>sebuah produk lokal tidak akan pernah bernilai penuh tanpa narasi yang menjelaskannya</em>. 
+      </p>
+      <p>
+        Beras organik bukan hanya karbohidrat; ia adalah perjuangan petani di lereng gunung yang menolak pestisida kimia demi tanah air yang lestari. Tas anyaman rotan bukan hanya aksesori; ia adalah keterampilan jari-jemari pengrajin Cirebon yang diwariskan lintas generasi.
+      </p>
+      <p>
+        Melalui Racik Media, kami memadukan dua pilar besar:
+      </p>
+      
+      <!-- Dua Pilar -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+        <div class="p-4 rounded-lg border border-gray-200 bg-white hover:border-emerald-300 transition-colors shadow-sm">
+          <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-sm mb-3">1</div>
+          <h3 class="font-serif font-bold text-gray-900 text-base mb-1">Editorial yang Autentik</h3>
+          <p class="text-xs text-gray-500 leading-relaxed">
+            Menulis jurnal mendalam dan fotografi jujur dari lapangan tanpa sensasi, mengangkat suara asli komunitas dan pejuang ekonomi mandiri.
+          </p>
+        </div>
+
+        <div class="p-4 rounded-lg border border-gray-200 bg-white hover:border-emerald-300 transition-colors shadow-sm">
+          <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-sm mb-3">2</div>
+          <h3 class="font-serif font-bold text-gray-900 text-base mb-1">Commerce yang Berkeadilan</h3>
+          <p class="text-xs text-gray-500 leading-relaxed">
+            Menyediakan etalase langsung di mana pembeli dapat membeli karya berkualitas langsung dari produsen lokal tanpa rantai tengkulak.
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================
+     5 PILAR FOKUS RACIK MEDIA (From the Card Tags)
+     ============================================================ -->
+<section class="bg-white py-16 border-y border-gray-200">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    
+    <div class="text-center max-w-2xl mx-auto mb-12">
+      <div class="inline-flex items-center gap-2 mb-2">
+        <span class="w-6 border-t-2 border-emerald-700"></span>
+        <span class="text-xs font-semibold tracking-widest uppercase text-emerald-800">Bidang Liputan &amp; Kurasi</span>
+        <span class="w-6 border-t-2 border-emerald-700"></span>
+      </div>
+      <h2 class="font-serif text-3xl sm:text-4xl font-bold text-gray-900">
+        5 Pilar Utama Racik Media
+      </h2>
+      <p class="font-sans text-sm text-gray-500 mt-3">
+        Fokus tematik yang kami telusuri dalam setiap jurnal, riset lapangan, dan kurasi etalase produk.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
+
+      <!-- Pilar 1: Agrikultur -->
+      <div class="group flex flex-col bg-gray-50 rounded-xl p-5 border border-gray-200 hover:border-emerald-500 hover:shadow-lg transition-all">
+        <div class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+          🌾
+        </div>
+        <span class="text-[10px] font-sans font-bold tracking-widest uppercase text-emerald-700">Pilar 01</span>
+        <h3 class="font-serif text-lg font-bold text-gray-900 mt-1 mb-2">Agrikultur</h3>
+        <p class="text-xs text-gray-600 leading-relaxed">
+          Kedaulatan pangan, inovasi bertani regeneratif, serta kiprah petani milenial yang merajut kemandirian pangan nasional.
+        </p>
+      </div>
+
+      <!-- Pilar 2: Kerajinan -->
+      <div class="group flex flex-col bg-gray-50 rounded-xl p-5 border border-gray-200 hover:border-emerald-500 hover:shadow-lg transition-all">
+        <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+          🧺
+        </div>
+        <span class="text-[10px] font-sans font-bold tracking-widest uppercase text-emerald-700">Pilar 02</span>
+        <h3 class="font-serif text-lg font-bold text-gray-900 mt-1 mb-2">Kerajinan</h3>
+        <p class="text-xs text-gray-600 leading-relaxed">
+          Seni kriya tangan tradisional — dari rotan, tenun, gerabah hingga ukiran kayu yang diakui hingga ke kancah global.
+        </p>
+      </div>
+
+      <!-- Pilar 3: Kuliner -->
+      <div class="group flex flex-col bg-gray-50 rounded-xl p-5 border border-gray-200 hover:border-emerald-500 hover:shadow-lg transition-all">
+        <div class="w-12 h-12 rounded-xl bg-rose-100 text-rose-800 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+          ☕
+        </div>
+        <span class="text-[10px] font-sans font-bold tracking-widest uppercase text-emerald-700">Pilar 03</span>
+        <h3 class="font-serif text-lg font-bold text-gray-900 mt-1 mb-2">Kuliner</h3>
+        <p class="text-xs text-gray-600 leading-relaxed">
+          Resep pusaka, kopi arabika pegunungan, madu hutan liar, serta khazanah rempah-rempah yang membentuk identitas rasa Nusantara.
+        </p>
+      </div>
+
+      <!-- Pilar 4: Sosial -->
+      <div class="group flex flex-col bg-gray-50 rounded-xl p-5 border border-gray-200 hover:border-emerald-500 hover:shadow-lg transition-all">
+        <div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-800 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+          🤝
+        </div>
+        <span class="text-[10px] font-sans font-bold tracking-widest uppercase text-emerald-700">Pilar 04</span>
+        <h3 class="font-serif text-lg font-bold text-gray-900 mt-1 mb-2">Sosial</h3>
+        <p class="text-xs text-gray-600 leading-relaxed">
+          Inisiatif akar rumput, gotong royong warga desa, dan pemberdayaan ekonomi perempuan yang menciptakan dampak sosial nyata.
+        </p>
+      </div>
+
+      <!-- Pilar 5: Budaya -->
+      <div class="group flex flex-col bg-gray-50 rounded-xl p-5 border border-gray-200 hover:border-emerald-500 hover:shadow-lg transition-all">
+        <div class="w-12 h-12 rounded-xl bg-purple-100 text-purple-800 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+          🎭
+        </div>
+        <span class="text-[10px] font-sans font-bold tracking-widest uppercase text-emerald-700">Pilar 05</span>
+        <h3 class="font-serif text-lg font-bold text-gray-900 mt-1 mb-2">Budaya</h3>
+        <p class="text-xs text-gray-600 leading-relaxed">
+          Ritual adat, filosofi hidup lokal, musik tradisional, dan arsip kebudayaan Nusantara yang dijaga agar tak tergerus zaman.
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================
+     NILAI-NILAI UTAMA (OUR CORE VALUES)
+     ============================================================ -->
+<section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <div class="text-center max-w-2xl mx-auto mb-12">
+    <div class="inline-flex items-center gap-2 mb-2">
+      <span class="w-6 border-t-2 border-emerald-700"></span>
+      <span class="text-xs font-semibold tracking-widest uppercase text-emerald-800">Pedoman Kami</span>
+      <span class="w-6 border-t-2 border-emerald-700"></span>
+    </div>
+    <h2 class="font-serif text-3xl sm:text-4xl font-bold text-gray-900">
+      Nilai yang Kami Pegang Teguh
+    </h2>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+    
+    <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex flex-col gap-3">
+      <div class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-lg">
+        ✦
+      </div>
+      <h3 class="font-serif font-bold text-xl text-gray-900">Autentisitas &amp; Fakta</h3>
+      <p class="font-sans text-sm text-gray-600 leading-relaxed">
+        Setiap cerita yang kami tulis bersumber dari wawancara langsung dan observasi lapangan. Tanpa dramatisasi palsu, hanya kenyataan yang jujur.
+      </p>
+    </div>
+
+    <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex flex-col gap-3">
+      <div class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-lg">
+        ⚖
+      </div>
+      <h3 class="font-serif font-bold text-xl text-gray-900">Keadilan untuk Produsen</h3>
+      <p class="font-sans text-sm text-gray-600 leading-relaxed">
+        Kami memastikan produsen mendapatkan imbal balik yang bermartabat atas kerja keras mereka, bukan harga perasan yang merugikan.
+      </p>
+    </div>
+
+    <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex flex-col gap-3">
+      <div class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-lg">
+        🌱
+      </div>
+      <h3 class="font-serif font-bold text-xl text-gray-900">Keberlanjutan Lingkungan</h3>
+      <p class="font-sans text-sm text-gray-600 leading-relaxed">
+        Memprioritaskan komunitas dan produsen yang mengutamakan praktik ramah alam, minim sampah, dan menjaga keanekaragaman hayati nusantara.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================
+     CALL TO ACTION: GABUNG KE DALAM GERAKAN
+     ============================================================ -->
+<section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+  <div class="rounded-3xl bg-gradient-to-r from-emerald-900 via-emerald-800 to-emerald-950 p-8 sm:p-12 text-white text-center flex flex-col items-center gap-6 shadow-2xl relative overflow-hidden">
+    <div class="absolute inset-0 hero-dots-pattern opacity-15"></div>
+    <div class="relative z-10 max-w-2xl flex flex-col items-center gap-3">
+      <span class="text-xs font-semibold tracking-widest uppercase text-emerald-300">Mari Berkolaborasi</span>
+      <h2 class="font-serif text-2xl sm:text-4xl font-bold leading-snug">
+        Punya Cerita atau Produk Lokal yang Layak Dikenal Luas?
+      </h2>
+      <p class="font-sans text-sm sm:text-base text-emerald-100 leading-relaxed font-light">
+        Bergabunglah bersama ratusan kontributor jurnal dan pelaku UMKM lokal di seluruh Indonesia. Jadilah bagian dari narasi kebanggaan Nusantara.
+      </p>
+    </div>
+
+    <div class="relative z-10 flex flex-wrap items-center justify-center gap-4 pt-2">
+      <a href="write.html" class="px-6 py-3 rounded-full bg-white text-emerald-900 font-bold text-sm hover:bg-emerald-50 transition-colors shadow-md">
+        ✍ Tulis Cerita Anda
+      </a>
+      <a href="../seller/seller-register.html" class="px-6 py-3 rounded-full bg-emerald-700 hover:bg-emerald-600 text-white font-semibold text-sm transition-colors border border-emerald-500/50">
+        🏪 Daftarkan Produk / Jasa
+      </a>
+      <a href="homepage.html" class="px-6 py-3 rounded-full bg-transparent hover:bg-white/10 text-emerald-200 font-medium text-sm transition-colors border border-emerald-400/30">
+        Jelajah Beranda Racik Media
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<div id="rm-footer-root">
+<footer class="site-footer" role="contentinfo" aria-label="Footer situs">
+  <div class="site-footer__inner">
+
+    <!-- Top: brand + 3 nav groups -->
+    <div class="site-footer__top">
+
+      <!-- Brand -->
+      <div class="footer-brand">
+        <a href="homepage.html" class="footer-brand__logo">Racik<span>Media</span></a>
+        <p class="footer-brand__desc">
+          Platform editorial &amp; marketplace untuk produk lokal Indonesia — ditulis, dikurasi, dan dijual oleh komunitas.
+        </p>
+        <!-- Media sosial -->
+        <nav class="footer-brand__socials" aria-label="Media sosial">
+          <a href="#" class="footer-social-btn" aria-label="Instagram">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+              <rect x="2" y="2" width="20" height="20" rx="5"/>
+              <circle cx="12" cy="12" r="4"/>
+              <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+            </svg>
+          </a>
+          <a href="#" class="footer-social-btn" aria-label="X (Twitter)">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L2.002 2.25H8.08l4.26 5.634 5.904-5.634zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/>
+            </svg>
+          </a>
+          <a href="#" class="footer-social-btn" aria-label="YouTube">
+            <svg fill="currentColor" viewBox="0 0 24 24">
+              <path d="M23 7s-.3-2-1.2-2.8c-1.1-1.2-2.4-1.2-3-1.3C16.6 2.8 12 2.8 12 2.8s-4.6 0-6.8.1c-.6.1-1.9.1-3 1.3C1.3 5 1 7 1 7S.7 9.1.7 11.3v2c0 2.1.3 4.3.3 4.3s.3 2 1.2 2.8c1.1 1.2 2.6 1.1 3.3 1.2C7.4 21.8 12 21.8 12 21.8s4.6 0 6.8-.2c.6-.1 1.9-.1 3-1.2.9-.8 1.2-2.8 1.2-2.8s.3-2.1.3-4.3v-2C23.3 9.1 23 7 23 7zm-13.4 8.8V8.2l8.1 3.8-8.1 3.8z"/>
+            </svg>
+          </a>
+        </nav>
+      </div>
+
+      <!-- Kolom 1 — Fitur -->
+      <nav aria-labelledby="footer-fitur">
+        <h3 class="footer-nav__title" id="footer-fitur">Fitur</h3>
+        <ul class="footer-nav__list">
+          <li><a href="/articles">Jelajah Jurnal</a></li>
+          <li><a href="/etalase">Etalase Produk &amp; Jasa</a></li>
+          <li><a href="/cerita-kami">Cerita Kami</a></li>
+          <li><a href="/events" target="_blank" rel="noopener noreferrer">Events &amp; Kalender</a></li>
+          <li><a href="../seller/seller-dashboard.html">Dasbor Seller</a></li>
+        </ul>
+      </nav>
+
+      <!-- Kolom 2 — Bantuan -->
+      <nav aria-labelledby="footer-bantuan">
+        <h3 class="footer-nav__title" id="footer-bantuan">Bantuan</h3>
+        <ul class="footer-nav__list">
+          <li><a href="#">Tutorial Jurnal</a></li>
+          <li><a href="#">Kontak Admin</a></li>
+          <li><a href="#">Pusat Bantuan</a></li>
+        </ul>
+      </nav>
+
+      <!-- Kolom 3 — Legalitas -->
+      <nav aria-labelledby="footer-legal">
+        <h3 class="footer-nav__title" id="footer-legal">Legalitas</h3>
+        <ul class="footer-nav__list">
+          <li><a href="#">Kebijakan Privasi</a></li>
+          <li><a href="#">Syarat &amp; Ketentuan</a></li>
+        </ul>
+      </nav>
+
+    </div>
+
+    <!-- Bottom bar -->
+    <div class="site-footer__bottom" style="display:flex;align-items:center;justify-content:space-between;gap:0.75rem;flex-wrap:wrap;">
+      <p>&copy; 2026 Racik Media Nusantara</p>
+      <p style="display:inline-flex;align-items:center;gap:0.25rem;">
+        Dibuat dengan
+        <svg style="width:1rem;height:1rem;color:#f43f5e;" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M12 21.35 10.55 20C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09A6 6 0 0 1 16.5 3C19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.51L12 21.35Z"/>
+        </svg>
+        untuk produk lokal Indonesia.
+      </p>
+    </div>
+
+  </div>
+</footer>
+</div>
+
+  <!-- Language Switcher JS -->
+  <script src="../assets/js/lang.js"></script>
+  <script src="../assets/js/layout.js"></script>
+  <script src="../assets/js/public-layout.js"></script>
+</body>
+</html>

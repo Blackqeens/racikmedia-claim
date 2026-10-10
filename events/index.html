@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth public-layout-page">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Events &amp; Jadwal Kegiatan — Racik Media Nusantara</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../assets/css/shared.css" />
+  <link rel="stylesheet" href="../assets/css/lang.css" />
+  <link rel="stylesheet" href="../assets/css/public-layout.css" />
+
+  <!-- Google Fonts: Lora (Serif) + Inter (Sans) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <script src="../assets/js/tailwind-config.js"></script>
+
+  <style>
+/* Hairline divider */
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    /* Calendar styles */
+    .cal-cell {
+      min-height: 44px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s;
+      position: relative;
+    }
+    .cal-cell:hover:not(.empty) {
+      background-color: #ecfdf5;
+    }
+    .cal-cell.selected {
+      background-color: #047857 !important;
+      color: #ffffff !important;
+    }
+    .cal-cell.selected .cal-dot {
+      background-color: #ffffff !important;
+    }
+    .cal-cell.today {
+      border: 1.5px solid #059669;
+      font-weight: 700;
+    }
+
+    /* Event Card Hover */
+    .event-card {
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .event-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.1);
+    }
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+    
+  </style>
+</head>
+
+<body class="bg-gray-50 text-gray-900 antialiased selection:bg-emerald-100 selection:text-emerald-900 public-layout-page">
+
+  <!-- Navbar publik dan footer dimuat sebagai komponen bersama. -->
+  <div id="rm-navbar-root"></div>
+
+
+<!-- ============================================================
+     HERO COVER SECTION
+     ============================================================ -->
+<section class="public-hero public-hero--events bg-gradient-to-br from-emerald-900 via-emerald-800 to-teal-900 text-white">
+  <div class="public-hero-pattern"></div>
+  
+  <div class="public-hero__content">
+    <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-800/80 border border-emerald-500/40 text-emerald-200 text-xs font-semibold uppercase tracking-wider mb-4">
+      <span>📅</span> Kalender Resmi Agenda &amp; Kegiatan
+    </div>
+    <h1 class="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-4">
+      Jadwal Kegiatan &amp; Events Racik Media
+    </h1>
+    <p class="font-sans text-emerald-100 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed font-light">
+      Kumpulan festival panen raya, lokakarya kriya, diskusi kurator, bazar UMKM, dan webinar yang dipublikasikan oleh admin. Pantau dengan mudah apakah kegiatan <span class="text-emerald-300 font-semibold underline">sudah dilaksanakan</span> atau <span class="text-emerald-300 font-semibold underline">akan datang</span>.
+    </p>
+
+    <!-- Legenda Status Cepat -->
+    <div class="flex flex-wrap items-center justify-center gap-3 sm:gap-6 mt-6 pt-4 border-t border-emerald-800/80 text-xs">
+      <div class="flex items-center gap-2 bg-emerald-900/60 px-3 py-1.5 rounded-full border border-emerald-500/30">
+        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span class="text-emerald-200 font-medium">Akan Datang (Mendatang)</span>
+      </div>
+      <div class="flex items-center gap-2 bg-amber-900/40 px-3 py-1.5 rounded-full border border-amber-500/30">
+        <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+        <span class="text-amber-200 font-medium">Sedang Berlangsung (Hari Ini)</span>
+      </div>
+      <div class="flex items-center gap-2 bg-gray-800/60 px-3 py-1.5 rounded-full border border-gray-600/40">
+        <span class="w-2.5 h-2.5 rounded-full bg-gray-400"></span>
+        <span class="text-gray-300 font-medium">Sudah Dilaksanakan (Selesai)</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     MAIN LAYOUT: KALENDER (KIRI) + DAFTAR EVENT (KANAN)
+     ============================================================ -->
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+  
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+    
+    <!-- ═══════════════════════════════════════════════════
+         KOLOM KIRI (lg:col-span-5): KALENDER INTERAKTIF
+         ═══════════════════════════════════════════════════ -->
+    <div class="lg:col-span-5 flex flex-col gap-6 sticky top-24">
+      
+      <!-- Card Kalender -->
+      <div class="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+        
+        <!-- Header Bulan & Navigasi -->
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h2 class="font-serif text-lg font-bold text-gray-900" id="cal-month-title">September 2026</h2>
+            <p class="text-[11px] text-gray-500">Klik tanggal untuk memfilter kegiatan</p>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <button onclick="changeMonth(-1)" class="w-8 h-8 rounded-lg border border-gray-200 hover:bg-gray-100 flex items-center justify-center text-gray-600 text-sm font-bold transition-colors" title="Bulan Sebelumnya">
+              &lt;
+            </button>
+            <button onclick="goToCurrentMonth()" class="px-2.5 py-1 text-xs font-semibold rounded-lg bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-200 transition-colors">
+              Bulan Ini
+            </button>
+            <button onclick="changeMonth(1)" class="w-8 h-8 rounded-lg border border-gray-200 hover:bg-gray-100 flex items-center justify-center text-gray-600 text-sm font-bold transition-colors" title="Bulan Berikutnya">
+              &gt;
+            </button>
+          </div>
+        </div>
+
+        <!-- Nama-nama hari -->
+        <div class="grid grid-cols-7 gap-1 text-center mb-2">
+          <span class="text-[11px] font-bold text-red-600">Min</span>
+          <span class="text-[11px] font-semibold text-gray-500">Sen</span>
+          <span class="text-[11px] font-semibold text-gray-500">Sel</span>
+          <span class="text-[11px] font-semibold text-gray-500">Rab</span>
+          <span class="text-[11px] font-semibold text-gray-500">Kam</span>
+          <span class="text-[11px] font-semibold text-gray-500">Jum</span>
+          <span class="text-[11px] font-semibold text-gray-500">Sab</span>
+        </div>
+
+        <!-- Grid Tanggal -->
+        <div id="calendar-grid" class="grid grid-cols-7 gap-1 text-sm font-medium">
+          <!-- Diisi otomatis oleh JavaScript -->
+        </div>
+
+        <!-- Filter tanggal aktif banner -->
+        <div id="date-filter-indicator" class="mt-4 pt-4 border-t border-gray-100 hidden items-center justify-between text-xs">
+          <span class="text-gray-700">Filter tanggal: <strong id="selected-date-label" class="text-emerald-800"></strong></span>
+          <button onclick="resetDateFilter()" class="text-emerald-700 hover:underline font-semibold text-[11px]">
+            Tampilkan Semua Tanggal ✕
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Quick Summary Box -->
+      <div class="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl border border-emerald-200 p-5 flex flex-col gap-3">
+        <div class="flex items-center gap-2">
+          <span class="text-base">📢</span>
+          <h3 class="font-serif font-bold text-sm text-emerald-950">Informasi Publikasi Admin</h3>
+        </div>
+        <p class="text-xs text-emerald-900 leading-relaxed">
+          Seluruh agenda acara dikelola dan disahkan langsung oleh Administrator Racik Media. Bagi kegiatan yang <strong>Sudah Dilaksanakan</strong>, Anda dapat melihat foto dokumentasi, hasil riset, dan laporan kegiatan dengan mengklik tombol terkait.
+        </p>
+        <div class="pt-2 border-t border-emerald-200/60 flex items-center justify-between text-[11px] text-emerald-800 font-medium">
+          <span>Terakhir diperbarui: 25 Sep 2026</span>
+          <span class="font-bold text-emerald-700">● Live Database</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════
+         KOLOM KANAN (lg:col-span-7): FILTER & EVENT LIST
+         ═══════════════════════════════════════════════════ -->
+    <div class="lg:col-span-7 flex flex-col gap-6">
+      
+      <!-- Toolbar Filter Status Kegiatan -->
+      <div class="bg-white rounded-2xl border border-gray-200 p-4 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        
+        <!-- Status Tabs -->
+        <div class="flex items-center gap-1.5 flex-wrap" id="status-filter-group">
+          <button onclick="setStatusFilter('all')" data-status="all" class="status-tab active px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-800 text-white transition-colors">
+            Semua (8)
+          </button>
+          <button onclick="setStatusFilter('upcoming')" data-status="upcoming" class="status-tab px-3 py-1.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-200 transition-colors">
+            🟢 Akan Datang (4)
+          </button>
+          <button onclick="setStatusFilter('ongoing')" data-status="ongoing" class="status-tab px-3 py-1.5 rounded-full text-xs font-medium bg-amber-50 text-amber-800 hover:bg-amber-100 border border-amber-200 transition-colors">
+            🟡 Sedang Berjalan (1)
+          </button>
+          <button onclick="setStatusFilter('completed')" data-status="completed" class="status-tab px-3 py-1.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors">
+            ⚪ Sudah Dilaksanakan (3)
+          </button>
+        </div>
+
+        <!-- Search input -->
+        <div class="w-full sm:w-48">
+          <input
+            type="text"
+            id="event-search"
+            oninput="renderEvents()"
+            placeholder="Cari acara / lokasi..."
+            class="w-full text-xs px-3 py-1.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-emerald-600"
+          />
+        </div>
+
+      </div>
+
+      <!-- Result Counter Status -->
+      <div class="flex items-center justify-between text-xs text-gray-500 font-medium px-1">
+        <span id="event-count-label">Menampilkan semua jadwal kegiatan</span>
+        <span class="text-[11px] text-emerald-700">Verifikasi Resmi Admin ✓</span>
+      </div>
+
+      <!-- Daftar Event Cards -->
+      <div id="events-container" class="flex flex-col gap-4">
+        <!-- Diisi otomatis oleh JavaScript -->
+      </div>
+
+      <!-- Empty State -->
+      <div id="events-empty" class="hidden text-center py-12 bg-white rounded-2xl border border-gray-200 p-8">
+        <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3 text-xl">
+          🗓️
+        </div>
+        <h3 class="font-serif font-bold text-gray-800 text-base">Tidak ada kegiatan yang sesuai</h3>
+        <p class="text-xs text-gray-500 mt-1 max-w-sm mx-auto">Tidak ada jadwal kegiatan dengan filter atau tanggal yang Anda pilih.</p>
+        <button onclick="resetAllEventFilters()" class="mt-4 px-4 py-2 text-xs font-semibold bg-emerald-700 text-white rounded-full hover:bg-emerald-800">
+          Reset Filter &amp; Tampilkan Semua
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+
+</main>
+
+<!-- ============================================================
+     MODAL 1: DAFTAR KEGIATAN (UNTUK EVENT AKAN DATANG)
+     ============================================================ -->
+<div id="register-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4">
+  <div class="bg-white rounded-2xl max-w-md w-full overflow-hidden shadow-2xl border border-gray-100 animate-in fade-in zoom-in duration-200">
+    <div class="bg-emerald-800 px-6 py-4 text-white flex items-center justify-between">
+      <div>
+        <span class="text-[10px] text-emerald-300 tracking-wider uppercase font-semibold">Pendaftaran Peserta</span>
+        <h3 class="font-serif font-bold text-base leading-tight mt-0.5" id="reg-event-title"></h3>
+      </div>
+      <button onclick="closeRegisterModal()" class="text-emerald-200 hover:text-white text-xl leading-none">&times;</button>
+    </div>
+    <form onsubmit="handleRegistrationSubmit(event)" class="p-6 flex flex-col gap-3.5">
+      <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-100 text-xs text-emerald-900">
+        <p><strong>Waktu:</strong> <span id="reg-event-date"></span></p>
+        <p><strong>Lokasi:</strong> <span id="reg-event-loc"></span></p>
+        <p class="text-[11px] text-emerald-700 mt-1">🎟 Gratis biaya registrasi — kuota terbatas.</p>
+      </div>
+
+      <div>
+        <label class="block text-xs font-semibold text-gray-700 mb-1">Nama Lengkap</label>
+        <input type="text" required placeholder="Nama Anda" class="w-full text-xs px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-emerald-600" />
+      </div>
+
+      <div>
+        <label class="block text-xs font-semibold text-gray-700 mb-1">Email Aktif</label>
+        <input type="email" required placeholder="email@domain.com" class="w-full text-xs px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-emerald-600" />
+      </div>
+
+      <div>
+        <label class="block text-xs font-semibold text-gray-700 mb-1">Nomor WhatsApp</label>
+        <input type="tel" required placeholder="0812xxxxxxxx" class="w-full text-xs px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-emerald-600" />
+      </div>
+
+      <div>
+        <label class="block text-xs font-semibold text-gray-700 mb-1">Instansi / Komunitas / UMKM (Opsional)</label>
+        <input type="text" placeholder="Nama organisasi / mandiri" class="w-full text-xs px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-emerald-600" />
+      </div>
+
+      <div class="flex items-center justify-end gap-2 pt-2 border-t border-gray-100">
+        <button type="button" onclick="closeRegisterModal()" class="px-4 py-2 text-xs font-semibold text-gray-600 hover:bg-gray-100 rounded-lg">Batal</button>
+        <button type="submit" class="px-5 py-2 text-xs font-bold bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg transition-colors">
+          Konfirmasi Pendaftaran
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ============================================================
+     MODAL 2: DOKUMENTASI & NOTULA (UNTUK EVENT SUDAH DILAKSANAKAN)
+     ============================================================ -->
+<div id="recap-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4">
+  <div class="bg-white rounded-2xl max-w-lg w-full overflow-hidden shadow-2xl border border-gray-100 animate-in fade-in zoom-in duration-200 max-h-[90vh] flex flex-col">
+    <div class="bg-gray-900 px-6 py-4 text-white flex items-center justify-between shrink-0">
+      <div>
+        <span class="text-[10px] text-emerald-400 tracking-wider uppercase font-semibold">Dokumentasi Resmi Kegiatan Selesai</span>
+        <h3 class="font-serif font-bold text-base leading-tight mt-0.5" id="recap-title"></h3>
+      </div>
+      <button onclick="closeRecapModal()" class="text-gray-400 hover:text-white text-xl leading-none">&times;</button>
+    </div>
+    
+    <div class="p-6 overflow-y-auto flex flex-col gap-4 text-xs text-gray-700 leading-relaxed">
+      <div class="rounded-xl overflow-hidden aspect-video bg-gray-100">
+        <img id="recap-img" src="" alt="Dokumentasi Acara" class="w-full h-full object-cover" />
+      </div>
+
+      <div class="p-3 bg-gray-50 rounded-xl border border-gray-200">
+        <div class="grid grid-cols-2 gap-2 text-[11px]">
+          <div><strong>Waktu:</strong> <span id="recap-date"></span></div>
+          <div><strong>Status:</strong> <span class="text-emerald-700 font-bold">✓ Sukses Dilaksanakan</span></div>
+          <div><strong>Lokasi:</strong> <span id="recap-loc"></span></div>
+          <div><strong>Partisipan:</strong> <span id="recap-att"></span></div>
+        </div>
+      </div>
+
+      <div>
+        <h4 class="font-serif font-bold text-sm text-gray-900 mb-1">Rangkuman &amp; Hasil Kegiatan:</h4>
+        <p id="recap-summary" class="text-gray-600 leading-relaxed"></p>
+      </div>
+
+      <div class="pt-2 border-t border-gray-100 flex items-center justify-between">
+        <span class="text-[11px] text-gray-400">Arsip Dokumentasi Racik Media Nusantara</span>
+        <button onclick="closeRecapModal()" class="px-4 py-1.5 text-xs font-semibold bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg">
+          Tutup Dokumentasi
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<div id="rm-footer-root">
+<footer class="site-footer" role="contentinfo" aria-label="Footer situs">
+  <div class="site-footer__inner">
+
+    <div class="site-footer__top">
+
+      <!-- Brand -->
+      <div class="footer-brand">
+        <a href="homepage.html" class="footer-brand__logo">Racik<span>Media</span></a>
+        <p class="footer-brand__desc">
+          Platform editorial &amp; marketplace untuk produk lokal Indonesia — ditulis, dikurasi, dan dijual oleh komunitas.
+        </p>
+        <nav class="footer-brand__socials" aria-label="Media sosial">
+          <a href="#" class="footer-social-btn" aria-label="Instagram">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+              <rect x="2" y="2" width="20" height="20" rx="5"/>
+              <circle cx="12" cy="12" r="4"/>
+              <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+            </svg>
+          </a>
+          <a href="#" class="footer-social-btn" aria-label="X (Twitter)">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L2.002 2.25H8.08l4.26 5.634 5.904-5.634zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/>
+            </svg>
+          </a>
+        </nav>
+      </div>
+
+      <!-- Kolom 1 — Fitur -->
+      <nav aria-labelledby="footer-fitur">
+        <h3 class="footer-nav__title" id="footer-fitur">Fitur</h3>
+        <ul class="footer-nav__list">
+          <li><a href="/articles">Jelajah Jurnal</a></li>
+          <li><a href="/etalase">Etalase Produk &amp; Jasa</a></li>
+          <li><a href="/cerita-kami" target="_blank" rel="noopener noreferrer">Cerita Kami</a></li>
+          <li><a href="/events">Events &amp; Kalender</a></li>
+        </ul>
+      </nav>
+
+      <!-- Kolom 2 — Mitra & Penyelenggara -->
+      <nav aria-labelledby="footer-mitra">
+        <h3 class="footer-nav__title" id="footer-mitra">Penyelenggara</h3>
+        <ul class="footer-nav__list">
+          <li><a href="#">Ajukan Kolaborasi Event</a></li>
+          <li><a href="../seller/seller-register.html">Daftar Seller</a></li>
+          <li><a href="write.html">Tulis Artikel</a></li>
+          <li><a href="#">Kontak Kurator</a></li>
+        </ul>
+      </nav>
+
+      <!-- Kolom 3 — Legalitas -->
+      <nav aria-labelledby="footer-legal">
+        <h3 class="footer-nav__title" id="footer-legal">Legalitas</h3>
+        <ul class="footer-nav__list">
+          <li><a href="#">Kebijakan Privasi</a></li>
+          <li><a href="#">Syarat &amp; Ketentuan Event</a></li>
+        </ul>
+      </nav>
+
+    </div>
+
+    <div class="site-footer__bottom" style="display:flex;align-items:center;justify-content:space-between;gap:0.75rem;flex-wrap:wrap;">
+      <p>&copy; 2026 Racik Media Nusantara</p>
+      <p style="display:inline-flex;align-items:center;gap:0.25rem;">
+        Dibuat dengan
+        <svg style="width:1rem;height:1rem;color:#f43f5e;" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M12 21.35 10.55 20C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09A6 6 0 0 1 16.5 3C19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.51L12 21.35Z"/>
+        </svg>
+        untuk produk lokal Indonesia.
+      </p>
+    </div>
+
+  </div>
+</footer>
+</div>
+
+<!-- ============================================================
+     JAVASCRIPT: KALENDER & EVENT LOGIC
+     ============================================================ -->
+<script>
+// Data Events Terverifikasi Admin
+var EVENTS_DATA = [
+  {
+    id: 'evt-01',
+    title: 'Festival Panen Raya 2026: Dari Sawah ke Pasar Global',
+    status: 'upcoming', // upcoming, ongoing, completed
+    category: 'Festival & Pameran',
+    dateStr: '2026-09-28',
+    dateLabel: '28 September 2026',
+    timeLabel: '09:00 - 17:00 WIB',
+    location: 'Desa Wisata Organik Batu, Malang & Live YouTube',
+    isOnline: false,
+    quota: 'Terbuka untuk 500 Peserta',
+    organizer: 'Admin Racik Media & Asosiasi Petani Milenial',
+    desc: 'Temu akbar 200+ petani milenial se-Jawa Timur, pameran hasil panen organik, serta demo teknologi rantai pasok digital langsung ke konsumen tanpa perantara tengkulak.',
+    img: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=700&q=80',
+    recapSummary: 'Akan segera dilaksanakan pada 28 September 2026. Tiket dan akses live streaming telah dibuka secara cuma-cuma untuk publik.',
+    attendance: 'Target 500 peserta'
+  },
+  {
+    id: 'evt-02',
+    title: 'Diskusi Kurasi: Mengangkat Produk Lokal ke Pasar Ritel Modern',
+    status: 'ongoing',
+    category: 'Diskusi Panel',
+    dateStr: '2026-09-25', // Hari Ini
+    dateLabel: '25 September 2026 (Hari Ini)',
+    timeLabel: '14:00 - 16:30 WIB',
+    location: 'Racik Media Hub Jakarta & Instagram Live',
+    isOnline: true,
+    quota: 'Sedang Berjalan Sekarang',
+    organizer: 'Dewan Kurator Racik Media',
+    desc: 'Sesi kupas tuntas bersama praktisi ritel terkemuka mengenai standarisasi kemasan ramah lingkungan, izin edar P-IRT & BPOM, dan strategi branding produk lokal.',
+    img: 'https://images.unsplash.com/photo-1511578314322-379afb476865?w=700&q=80',
+    recapSummary: 'Sesi sedang berlangsung hari ini dengan antusiasme lebih dari 320 penonton live streaming dan 45 peserta langsung di Racik Hub.',
+    attendance: '360+ peserta aktif'
+  },
+  {
+    id: 'evt-03',
+    title: 'Lokakarya Eksklusif: Seni Anyaman Rotan Modern Tegalwangi',
+    status: 'upcoming',
+    category: 'Workshop Kriya',
+    dateStr: '2026-09-30',
+    dateLabel: '30 September 2026',
+    timeLabel: '13:00 - 16:30 WIB',
+    location: 'Galeri Kriya Racik Media Bandung & Zoom',
+    isOnline: false,
+    quota: 'Sisa 12 Kursi',
+    organizer: 'Admin Kriya & Maestro Pengrajin Cirebon',
+    desc: 'Belajar langsung dari maestro pengrajin rotan Cirebon mengenai teknik anyaman kontemporer yang diminati butik interior di Paris dan Tokyo.',
+    img: 'https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=700&q=80',
+    recapSummary: 'Materi workshop meliputi pemilihan rotan manau berkualitas, teknik bending alami, dan pelapisan akhir anti jamur berbasis air.',
+    attendance: 'Maks. 30 peserta'
+  },
+  {
+    id: 'evt-04',
+    title: 'Webinar Nasional: Menembus Sertifikasi Organik & Ekspor UMKM',
+    status: 'upcoming',
+    category: 'Webinar Edukasi',
+    dateStr: '2026-10-05',
+    dateLabel: '05 Oktober 2026',
+    timeLabel: '10:00 - 12:00 WIB',
+    location: 'Online via Zoom Cloud Meetings',
+    isOnline: true,
+    quota: 'Terbuka 1.000 Peserta',
+    organizer: 'Admin Racik Media & Konsultan Sertifikasi',
+    desc: 'Panduan langkah demi langkah bagi petani dan produsen pangan lokal untuk mendapatkan sertifikasi organik nasional dan standar keamanan pangan ekspor.',
+    img: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=700&q=80',
+    recapSummary: 'Pendaftaran masih dibuka. Dapatkan modul PDF dan panduan SOP checklist pasca-webinar.',
+    attendance: '1.000 kapasitas Zoom'
+  },
+  {
+    id: 'evt-05',
+    title: 'Bazar Rasa & Rempah Nusantara 2026',
+    status: 'upcoming',
+    category: 'Bazar & Pameran',
+    dateStr: '2026-10-12',
+    dateLabel: '12 - 14 Oktober 2026',
+    timeLabel: '10:00 - 21:00 WIB',
+    location: 'Atrium Plaza Senayan, Jakarta Pusat',
+    isOnline: false,
+    quota: 'Terbuka untuk Umum',
+    organizer: 'Admin Komersial Racik Media',
+    desc: 'Etalase langsung 50 booth petani kopi, pemanen madu hutan, produsen cokelat single-origin, dan rempah langka dari 18 provinsi di Indonesia.',
+    img: 'https://images.unsplash.com/photo-1610889556528-9a770e32642f?w=700&q=80',
+    recapSummary: 'Ajang temu langsung antara produsen lokal dengan ribuan penikmat kuliner dan pembeli korporat.',
+    attendance: 'Estimasi 5.000 pengunjung'
+  },
+  {
+    id: 'evt-06',
+    title: 'Pameran Tenun Ikat Tradisional & Peluncuran Koleksi Flores',
+    status: 'completed',
+    category: 'Pameran Budaya',
+    dateStr: '2026-09-15',
+    dateLabel: '15 September 2026',
+    timeLabel: 'Kegiatan Telah Selesai',
+    location: 'Bentara Budaya, Yogyakarta',
+    isOnline: false,
+    quota: 'Selesai Dilaksanakan',
+    organizer: 'Kurator Seni Racik Media & Sanggar Tenun Sikka',
+    desc: 'Pameran 40 helai kain tenun ikat pewarna alam langka dari Sikka, Flores, disertai peluncuran katalog kurasi digital Racik Media.',
+    img: 'https://images.unsplash.com/photo-1606744837616-56c9a5c6a6eb?w=700&q=80',
+    recapSummary: 'Acara sukses dihadiri oleh 450 pengunjung offline dan mencatat total kurasi karya tenun senilai Rp 85 juta yang disalurkan 100% langsung ke penenun lansia di Maumere.',
+    attendance: '450 Pengunjung Terverifikasi'
+  },
+  {
+    id: 'evt-07',
+    title: 'Pelatihan Pasca-Panen Kopi Gayo: Fermentasi & Anaerobik',
+    status: 'completed',
+    category: 'Pelatihan Teknis',
+    dateStr: '2026-09-10',
+    dateLabel: '10 September 2026',
+    timeLabel: 'Kegiatan Telah Selesai',
+    location: 'Koperasi Petani Bener Meriah, Aceh Tengah',
+    isOnline: false,
+    quota: 'Selesai Dilaksanakan',
+    organizer: 'Admin Agronomi Racik Media',
+    desc: 'Pelatihan intensif 3 hari bagi 35 petani muda Gayo untuk menguasai metode fermentasi anaerobik terkontrol guna menaikkan cupping score di atas 86.',
+    img: 'https://images.unsplash.com/photo-1559525839-b184a4d698c7?w=700&q=80',
+    recapSummary: 'Sebanyak 35 peserta berhasil lulus uji kompetensi uji petik dan fermentasi. 2 lot kopi hasil panen perdana langsung dipesan oleh roastery mitra di Jakarta.',
+    attendance: '35 Petani Muda Tersertifikasi'
+  },
+  {
+    id: 'evt-08',
+    title: 'Sarasehan Budaya & Khazanah Jamu Tradisional Nusantara',
+    status: 'completed',
+    category: 'Sarasehan Budaya',
+    dateStr: '2026-09-01',
+    dateLabel: '01 September 2026',
+    timeLabel: 'Kegiatan Telah Selesai',
+    location: 'Museum Jamu Indonesia, Surakarta',
+    isOnline: false,
+    quota: 'Selesai Dilaksanakan',
+    organizer: 'Admin Budaya Racik Media',
+    desc: 'Eksplorasi naskah kuno Serat Centhini tentang resep jamu Jawa dan integrasinya dengan sertifikasi fitofarmaka masa kini.',
+    img: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=700&q=80',
+    recapSummary: 'Menghadirkan tabib senior dan peneliti biologi farmasi. Menghasilkan publikasi artikel komprehensif di jurnal Racik Media.',
+    attendance: '120 Peserta & Akademisi'
+  }
+];
+
+// State kalender
+var currentCalDate = new Date(2026, 8, 25); // Default: September 2026 (bulan 8 di JS)
+var selectedDateFilter = null;
+var currentStatusFilter = 'all';
+
+var MONTH_NAMES = [
+  'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+  'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+];
+
+function renderCalendar() {
+  var year = currentCalDate.getFullYear();
+  var month = currentCalDate.getMonth();
+
+  document.getElementById('cal-month-title').textContent = MONTH_NAMES[month] + ' ' + year;
+
+  var firstDayIndex = new Date(year, month, 1).getDay(); // 0 = Minggu
+  var daysInMonth = new Date(year, month + 1, 0).getDate();
+
+  var container = document.getElementById('calendar-grid');
+  var html = '';
+
+  // Hari kosong awal bulan
+  for (var i = 0; i < firstDayIndex; i++) {
+    html += '<div class="cal-cell empty text-gray-300"></div>';
+  }
+
+  // Hari dalam bulan
+  for (var day = 1; day <= daysInMonth; day++) {
+    var dateString = year + '-' + String(month + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0');
+    
+    // Cari apakah ada event di tanggal ini
+    var dayEvents = EVENTS_DATA.filter(function(e) { return e.dateStr === dateString; });
+    var hasEvent = dayEvents.length > 0;
+    
+    var isSelected = (selectedDateFilter === dateString);
+    var isToday = (year === 2026 && month === 8 && day === 25); // 25 September 2026
+
+    var dotColor = '';
+    if (hasEvent) {
+      var hasUpcoming = dayEvents.some(function(e) { return e.status === 'upcoming'; });
+      var hasOngoing = dayEvents.some(function(e) { return e.status === 'ongoing'; });
+      var hasCompleted = dayEvents.some(function(e) { return e.status === 'completed'; });
+
+      if (hasOngoing) dotColor = 'bg-amber-500 ring-2 ring-amber-200';
+      else if (hasUpcoming) dotColor = 'bg-emerald-500 ring-2 ring-emerald-200';
+      else if (hasCompleted) dotColor = 'bg-gray-400';
+    }
+
+    var cellClass = 'cal-cell text-gray-800';
+    if (isToday) cellClass += ' today';
+    if (isSelected) cellClass += ' selected';
+
+    html += '<div class="' + cellClass + '" onclick="selectCalendarDate(\'' + dateString + '\', ' + day + ')">';
+    html += '  <span class="text-xs">' + day + '</span>';
+    if (hasEvent) {
+      html += '  <span class="cal-dot w-2 h-2 rounded-full mt-0.5 ' + dotColor + '"></span>';
+    }
+    html += '</div>';
+  }
+
+  container.innerHTML = html;
+}
+
+function changeMonth(direction) {
+  currentCalDate.setMonth(currentCalDate.getMonth() + direction);
+  renderCalendar();
+}
+
+function goToCurrentMonth() {
+  currentCalDate = new Date(2026, 8, 25);
+  renderCalendar();
+}
+
+function selectCalendarDate(dateString, day) {
+  if (selectedDateFilter === dateString) {
+    selectedDateFilter = null; // Toggle off
+    document.getElementById('date-filter-indicator').classList.add('hidden');
+    document.getElementById('date-filter-indicator').classList.remove('flex');
+  } else {
+    selectedDateFilter = dateString;
+    var month = currentCalDate.getMonth();
+    var year = currentCalDate.getFullYear();
+    document.getElementById('selected-date-label').textContent = day + ' ' + MONTH_NAMES[month] + ' ' + year;
+    document.getElementById('date-filter-indicator').classList.remove('hidden');
+    document.getElementById('date-filter-indicator').classList.add('flex');
+  }
+  renderCalendar();
+  renderEvents();
+}
+
+function resetDateFilter() {
+  selectedDateFilter = null;
+  document.getElementById('date-filter-indicator').classList.add('hidden');
+  document.getElementById('date-filter-indicator').classList.remove('flex');
+  renderCalendar();
+  renderEvents();
+}
+
+function setStatusFilter(status) {
+  currentStatusFilter = status;
+  document.querySelectorAll('#status-filter-group .status-tab').forEach(function(btn) {
+    if (btn.getAttribute('data-status') === status) {
+      btn.className = 'status-tab active px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-800 text-white transition-colors';
+    } else {
+      btn.className = 'status-tab px-3 py-1.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors';
+    }
+  });
+  renderEvents();
+}
+
+function resetAllEventFilters() {
+  selectedDateFilter = null;
+  currentStatusFilter = 'all';
+  document.getElementById('event-search').value = '';
+  document.getElementById('date-filter-indicator').classList.add('hidden');
+  document.getElementById('date-filter-indicator').classList.remove('flex');
+  setStatusFilter('all');
+  renderCalendar();
+  renderEvents();
+}
+
+function renderEvents() {
+  var container = document.getElementById('events-container');
+  var emptyState = document.getElementById('events-empty');
+  var countLabel = document.getElementById('event-count-label');
+  var query = (document.getElementById('event-search').value || '').toLowerCase().trim();
+
+  var filtered = EVENTS_DATA.filter(function(e) {
+    if (currentStatusFilter !== 'all' && e.status !== currentStatusFilter) return false;
+    if (selectedDateFilter && e.dateStr !== selectedDateFilter) return false;
+    if (query) {
+      var matchTitle = e.title.toLowerCase().includes(query);
+      var matchLoc = e.location.toLowerCase().includes(query);
+      var matchDesc = e.desc.toLowerCase().includes(query);
+      if (!matchTitle && !matchLoc && !matchDesc) return false;
+    }
+    return true;
+  });
+
+  countLabel.textContent = 'Menampilkan ' + filtered.length + ' kegiatan terverifikasi admin';
+
+  if (filtered.length === 0) {
+    container.innerHTML = '';
+    emptyState.classList.remove('hidden');
+    return;
+  }
+
+  emptyState.classList.add('hidden');
+
+  var html = '';
+  filtered.forEach(function(e) {
+    // Status Badge & Styles
+    var statusBadge = '';
+    var statusBorder = '';
+    var actionBtn = '';
+
+    if (e.status === 'upcoming') {
+      statusBadge = '<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">🟢 Akan Datang (Belum Dilaksanakan)</span>';
+      statusBorder = 'border-l-4 border-l-emerald-600';
+      actionBtn = '<button onclick="openRegisterModal(\'' + e.id + '\')" class="px-4 py-2 text-xs font-bold bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg transition-colors shadow-sm">Daftar Kegiatan Gratis →</button>';
+    } else if (e.status === 'ongoing') {
+      statusBadge = '<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-100 text-amber-900 border border-amber-300 animate-pulse">🟡 Sedang Berlangsung (Hari Ini)</span>';
+      statusBorder = 'border-l-4 border-l-amber-500';
+      actionBtn = '<button onclick="alert(\'Menghubungkan ke ruang streaming/Zoom Racik Media...\')" class="px-4 py-2 text-xs font-bold bg-amber-600 hover:bg-amber-700 text-white rounded-lg transition-colors shadow-sm">Masuk Ruang Siaran Langsung →</button>';
+    } else {
+      statusBadge = '<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-gray-100 text-gray-600 border border-gray-300">✓ Sudah Dilaksanakan (Selesai)</span>';
+      statusBorder = 'border-l-4 border-l-gray-400 opacity-90';
+      actionBtn = '<button onclick="openRecapModal(\'' + e.id + '\')" class="px-4 py-2 text-xs font-semibold bg-gray-800 hover:bg-gray-900 text-white rounded-lg transition-colors">Lihat Dokumentasi &amp; Notula 📖</button>';
+    }
+
+    html += '<article class="event-card bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm ' + statusBorder + ' p-5 flex flex-col gap-3">';
+    
+    // Top Row: Category + Status Badge
+    html += '  <div class="flex flex-wrap items-center justify-between gap-2">';
+    html += '    <div class="flex items-center gap-2">';
+    html += '      <span class="text-[10px] font-bold tracking-widest uppercase bg-gray-100 text-gray-700 px-2.5 py-0.5 rounded-md">' + e.category + '</span>';
+    html += '      <span class="text-[11px] text-gray-400">· Oleh ' + e.organizer + '</span>';
+    html += '    </div>';
+    html += '    ' + statusBadge;
+    html += '  </div>';
+
+    // Title
+    html += '  <h3 class="font-serif text-base sm:text-lg font-bold text-gray-900 leading-snug hover:text-emerald-800 transition-colors">';
+    html += '    ' + e.title;
+    html += '  </h3>';
+
+    // Metadata Grid
+    html += '  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-gray-600 py-1 bg-gray-50 rounded-lg p-3 border border-gray-100">';
+    html += '    <div class="flex items-center gap-2">';
+    html += '      <span class="text-emerald-700">🗓</span>';
+    html += '      <span><strong>Tanggal:</strong> ' + e.dateLabel + ' (' + e.timeLabel + ')</span>';
+    html += '    </div>';
+    html += '    <div class="flex items-center gap-2">';
+    html += '      <span class="text-emerald-700">📍</span>';
+    html += '      <span><strong>Lokasi:</strong> ' + e.location + '</span>';
+    html += '    </div>';
+    html += '  </div>';
+
+    // Description
+    html += '  <p class="text-xs text-gray-500 leading-relaxed font-sans">' + e.desc + '</p>';
+
+    // Bottom Action Row
+    html += '  <div class="pt-2 border-t border-gray-100 flex flex-wrap items-center justify-between gap-3 mt-1">';
+    html += '    <span class="text-[11px] text-gray-400">Status Kuota: <strong class="text-gray-700">' + e.quota + '</strong></span>';
+    html += '    ' + actionBtn;
+    html += '  </div>';
+
+    html += '</article>';
+  });
+
+  container.innerHTML = html;
+}
+
+// Modal Registrasi Logic
+function openRegisterModal(id) {
+  var e = EVENTS_DATA.find(function(x) { return x.id === id; });
+  if (!e) return;
+  document.getElementById('reg-event-title').textContent = e.title;
+  document.getElementById('reg-event-date').textContent = e.dateLabel + ' (' + e.timeLabel + ')';
+  document.getElementById('reg-event-loc').textContent = e.location;
+  document.getElementById('register-modal').classList.remove('hidden');
+  document.getElementById('register-modal').classList.add('flex');
+}
+
+function closeRegisterModal() {
+  document.getElementById('register-modal').classList.add('hidden');
+  document.getElementById('register-modal').classList.remove('flex');
+}
+
+function handleRegistrationSubmit(ev) {
+  ev.preventDefault();
+  alert('Selamat! Registrasi Anda telah berhasil didata oleh Admin Racik Media. E-tiket dan tautan konfirmasi telah dikirimkan ke WhatsApp/Email Anda.');
+  closeRegisterModal();
+}
+
+// Modal Dokumentasi Logic
+function openRecapModal(id) {
+  var e = EVENTS_DATA.find(function(x) { return x.id === id; });
+  if (!e) return;
+  document.getElementById('recap-title').textContent = e.title;
+  document.getElementById('recap-date').textContent = e.dateLabel;
+  document.getElementById('recap-loc').textContent = e.location;
+  document.getElementById('recap-att').textContent = e.attendance;
+  document.getElementById('recap-summary').textContent = e.recapSummary;
+  document.getElementById('recap-img').src = e.img;
+  document.getElementById('recap-modal').classList.remove('hidden');
+  document.getElementById('recap-modal').classList.add('flex');
+}
+
+function closeRecapModal() {
+  document.getElementById('recap-modal').classList.add('hidden');
+  document.getElementById('recap-modal').classList.remove('flex');
+}
+
+// Initial Render
+renderCalendar();
+renderEvents();
+</script>
+
+
+
+  <!-- Language Switcher JS -->
+  <script src="../assets/js/lang.js"></script>
+  <script src="../assets/js/layout.js"></script>
+  <script src="../assets/js/public-layout.js"></script>
+</body>
+</html>
