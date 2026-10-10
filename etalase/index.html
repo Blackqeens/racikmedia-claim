@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth public-layout-page">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Etalase Produk &amp; Jasa — Racik Media Nusantara</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../assets/css/shared.css" />
+  <link rel="stylesheet" href="../assets/css/lang.css" />
+  <link rel="stylesheet" href="../assets/css/public-layout.css" />
+
+  <!-- Google Fonts: Lora (Serif) + Inter (Sans) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
+
+  <script src="../assets/js/tailwind-config.js"></script>
+  <script src="../assets/js/products-store.js"></script>
+
+  <style>
+    /* Product card hover effect */
+    .catalog-card {
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .catalog-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.12);
+    }
+
+    /* Banner Ajakan Jual: Gradient & Animasi Mengikuti Tombol Login */
+    @keyframes loginGradientFlow {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    .banner-jual-gradient {
+      background: var(--rm-login-gradient, linear-gradient(110deg, #064e3b 0%, #047857 35%, #0369a1 70%, #064e3b 100%));
+      background-size: var(--rm-login-gradient-size, 240% 240%);
+      animation: loginGradientFlow 8s ease infinite;
+    }
+
+    .banner-jual-pattern {
+      background-image: radial-gradient(#fff 1px, transparent 1px);
+      background-size: 16px 16px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .banner-jual-gradient {
+        animation: none;
+      }
+    }
+  </style>
+</head>
+
+<body
+  class="bg-gray-50 text-gray-900 antialiased selection:bg-emerald-100 selection:text-emerald-900 public-layout-page">
+
+  <!-- Navbar publik dan footer dimuat sebagai komponen bersama. -->
+  <div id="rm-navbar-root"></div>
+
+
+  <!-- ============================================================
+     HERO COVER SECTION
+     ============================================================ -->
+  <section
+    class="public-hero public-hero--showcase bg-gradient-to-br from-emerald-900 via-emerald-800 to-teal-900 text-white">
+    <div class="public-hero-pattern"></div>
+
+    <div class="public-hero__content">
+      <div
+        class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-700/60 border border-emerald-500/40 text-emerald-200 text-xs font-semibold uppercase tracking-wider mb-4">
+        <span></span> Etalase Resmi Terkurasi Admin
+      </div>
+      <h1 class="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-4">
+        Etalase Produk &amp; Jasa Lokal Nusantara
+      </h1>
+      <p class="font-sans text-emerald-100 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed font-light">
+        Koleksi karya artisan pilihan, hasil bumi asli Nusantara, dan jasa keahlian profesional komunitas lokal yang
+        siap Anda pesan langsung tanpa rantai tengkulak.
+      </p>
+
+      <!-- Stat Highlights -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto mt-8 pt-6 border-t border-emerald-700/60">
+        <div>
+          <span class="font-serif text-2xl sm:text-3xl font-bold text-white">85+</span>
+          <p class="text-xs text-emerald-200">Produk Terkurasi</p>
+        </div>
+        <div>
+          <span class="font-serif text-2xl sm:text-3xl font-bold text-white">24+</span>
+          <p class="text-xs text-emerald-200">Layanan Jasa Ahli</p>
+        </div>
+        <div>
+          <span class="font-serif text-2xl sm:text-3xl font-bold text-white">100%</span>
+          <p class="text-xs text-emerald-200">Produsen Langsung</p>
+        </div>
+        <div>
+          <span class="font-serif text-2xl sm:text-3xl font-bold text-white">Fair Trade</span>
+          <p class="text-xs text-emerald-200">Keadilan Margin</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+     FILTER & SEARCH BAR SECTION
+     ============================================================ -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 -mt-6 relative z-20">
+    <div class="bg-white rounded-2xl shadow-xl border border-gray-100 p-4 sm:p-6 flex flex-col md:flex-row gap-4 items-stretch md:items-center justify-between">
+      
+      <!-- Filter Type Tabs -->
+      <div class="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0" id="filter-type-group">
+        <button onclick="setFilterType('all')" data-type="all"
+          class="tab-type active px-3.5 py-1.5 text-xs font-semibold rounded-full bg-emerald-700 text-white transition-colors">
+          Semua (All)
+        </button>
+        <button onclick="setFilterType('produk')" data-type="produk"
+          class="tab-type px-3.5 py-1.5 text-xs font-medium rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors">
+          🛒 Produk Fisik
+        </button>
+        <button onclick="setFilterType('jasa')" data-type="jasa"
+          class="tab-type px-3.5 py-1.5 text-xs font-medium rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors">
+          🛠️ Layanan Jasa
+        </button>
+        <button onclick="setFilterType('b2b')" data-type="b2b"
+          class="tab-type px-3.5 py-1.5 text-xs font-medium rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors">
+          📦 Grosir B2B
+        </button>
+      </div>
+
+      <!-- Search & Sort Controls -->
+      <div class="flex items-center gap-2.5">
+        <div class="relative flex-1 md:w-64">
+          <input type="text" id="search-input" oninput="renderItems()"
+            placeholder="Cari produk, jasa, daerah..."
+            class="w-full pl-9 pr-4 py-2 text-xs bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:bg-white transition-all" />
+          <svg class="w-4 h-4 text-gray-400 absolute left-3 top-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </div>
+
+        <select id="sort-select" onchange="renderItems()"
+          class="text-xs bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-600">
+          <option value="populer">Terpopuler</option>
+          <option value="termurah">Harga Terendah</option>
+          <option value="termahal">Harga Tertinggi</option>
+        </select>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+     CATALOG GRID SECTION
+     ============================================================ -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-12">
+    <!-- Status summary -->
+    <div class="flex items-center justify-between mb-8">
+      <p id="result-status" class="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+        Memuat katalog etalase...
+      </p>
+      <div class="flex items-center gap-2 text-xs text-gray-400">
+        <span>📍 Asli Nusantara</span>
+        <span>•</span>
+        <span>🛡️ Terverifikasi</span>
+      </div>
+    </div>
+
+    <!-- Grid Container -->
+    <div id="catalog-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <!-- Diisi otomatis oleh JavaScript -->
+    </div>
+
+    <!-- Empty State -->
+    <div id="empty-state" class="hidden text-center py-20">
+      <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+        🔍
+      </div>
+      <h3 class="font-serif text-lg font-bold text-gray-800 mb-1">Tidak Ditemukan Hasil</h3>
+      <p class="text-xs text-gray-500 max-w-sm mx-auto mb-5">
+        Tidak ada produk atau jasa yang cocok dengan kriteria pencarian Anda. Coba ubah kata kunci atau filter.
+      </p>
+      <button onclick="resetFilters()"
+        class="px-4 py-2 text-xs font-semibold rounded-full bg-emerald-700 text-white hover:bg-emerald-800 transition-colors">
+        Reset Filter
+      </button>
+    </div>
+  </main>
+
+  <!-- ============================================================
+     BANNER AJAKAN JUAL PRODUK / JASA
+     ============================================================ -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 pb-16">
+    <div class="banner-jual-gradient rounded-3xl p-8 sm:p-12 text-white relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8 shadow-2xl">
+      <div class="banner-jual-pattern absolute inset-0 opacity-10"></div>
+      
+      <div class="relative z-10 max-w-xl">
+        <span class="inline-block text-[10px] font-bold tracking-widest uppercase bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full mb-3 text-emerald-100">
+          Kolaborasi Mitra Lokal
+        </span>
+        <h2 class="font-serif text-2xl sm:text-3xl font-bold mb-3 leading-snug">
+          Punya Produk Unggulan atau Keahlian Lokal?
+        </h2>
+        <p class="font-sans text-xs sm:text-sm text-emerald-50 leading-relaxed font-light">
+          Daftarkan produk hasil bumi, kerajinan tangan, atau jasa pelatihan Anda ke dalam etalase terverifikasi Racik
+          Media untuk menjangkau ribuan pembeli peduli.
+        </p>
+      </div>
+      <div class="relative z-10 flex flex-wrap gap-3">
+        <a href="/pages/seller/seller-register.html"
+          class="px-5 py-2.5 bg-white hover:bg-emerald-50 text-emerald-950 text-xs font-bold rounded-full transition-all shadow hover:shadow-lg hover:-translate-y-0.5">
+          Daftar Sebagai Seller Produk →
+        </a>
+        <a href="/pages/seller/service-provider-dashboard.html"
+          class="px-5 py-2.5 bg-black/25 hover:bg-black/35 text-white border border-white/30 text-xs font-semibold rounded-full transition-all hover:-translate-y-0.5">
+          Penerimaan Layanan Jasa
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+     ORDER MODAL (SIMULASI PEMESANAN / CHECKOUT)
+     ============================================================ -->
+  <div id="order-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div
+      class="bg-white rounded-2xl max-w-md w-full overflow-hidden shadow-2xl border border-gray-100 animate-in fade-in zoom-in duration-200">
+      <div class="bg-emerald-800 px-6 py-4 text-white flex items-center justify-between">
+        <h3 class="font-serif font-bold text-base" id="modal-title">Form Pemesanan Langsung</h3>
+        <button onclick="closeOrderModal()"
+          class="text-emerald-200 hover:text-white text-xl leading-none">&times;</button>
+      </div>
+      <div class="p-6 flex flex-col gap-4">
+        <div class="flex items-center gap-3 p-3 bg-emerald-50 rounded-xl border border-emerald-100">
+          <img id="modal-img" src="" alt="" class="w-14 h-14 rounded-lg object-cover border border-emerald-200" />
+          <div>
+            <h4 id="modal-item-name" class="font-serif font-bold text-sm text-gray-900 leading-snug"></h4>
+            <p id="modal-item-price" class="text-xs font-bold text-emerald-700 mt-0.5"></p>
+            <span id="modal-item-badge" class="text-[10px] text-gray-500"></span>
+          </div>
+        </div>
+
+        <form onsubmit="handleOrderSubmit(event)" class="flex flex-col gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-gray-700 mb-1">Nama Lengkap</label>
+            <input type="text" required placeholder="Nama Anda"
+              class="w-full text-xs px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-emerald-600" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-700 mb-1">Nomor WhatsApp / Kontak</label>
+            <input type="tel" required placeholder="0812xxxxxxxx"
+              class="w-full text-xs px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-emerald-600" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-700 mb-1">Jumlah Pesanan / Kebutuhan</label>
+            <input type="number" min="1" value="1"
+              class="w-full text-xs px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-emerald-600" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-700 mb-1">Catatan Tambahan</label>
+            <textarea rows="2" placeholder="Alamat pengiriman / jadwal pelaksanaan jasa..."
+              class="w-full text-xs px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-emerald-600"></textarea>
+          </div>
+
+          <div class="flex items-center justify-end gap-2 pt-2">
+            <button type="button" onclick="closeOrderModal()"
+              class="px-4 py-2 text-xs font-semibold text-gray-600 hover:bg-gray-100 rounded-lg">Batal</button>
+            <button type="submit"
+              class="px-5 py-2 text-xs font-bold bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg transition-colors">
+              Kirim Pemesanan ke Produsen
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div id="rm-footer-root"></div>
+
+  <!-- ============================================================
+     CATALOG JAVASCRIPT LOGIC
+     ============================================================ -->
+  <script>
+    var CATALOG_ITEMS = (function () {
+      /* ── Ambil data dari BobProductsStore jika tersedia ── */
+      if (window.BobProductsStore) {
+        var storeItems = window.BobProductsStore.getAll();
+        var resolve = window.BobProductsStore.resolveUrl;
+        return storeItems.map(function (item) {
+          var copy = Object.assign({}, item);
+          if (resolve) {
+            copy.detailUrl = resolve(item.detailUrl, 'root');
+          }
+          return copy;
+        });
+      }
+
+      /* ── Fallback ── */
+      return [];
+    })();
+
+    var currentFilterType = 'all';
+
+    function setFilterType(type) {
+      currentFilterType = type;
+      document.querySelectorAll('#filter-type-group .tab-type').forEach(function (btn) {
+        if (btn.getAttribute('data-type') === type) {
+          btn.className = 'tab-type active px-3.5 py-1.5 text-xs font-semibold rounded-full bg-emerald-700 text-white transition-colors';
+        } else {
+          btn.className = 'tab-type px-3.5 py-1.5 text-xs font-medium rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors';
+        }
+      });
+      renderItems();
+    }
+
+    function resetFilters() {
+      document.getElementById('search-input').value = '';
+      document.getElementById('sort-select').value = 'populer';
+      setFilterType('all');
+    }
+
+    function renderItems() {
+      var q = (document.getElementById('search-input').value || '').toLowerCase().trim();
+      var sort = document.getElementById('sort-select').value;
+      var container = document.getElementById('catalog-grid');
+      var emptyState = document.getElementById('empty-state');
+      var statusText = document.getElementById('result-status');
+
+      var filtered = CATALOG_ITEMS.filter(function (item) {
+        if (currentFilterType === 'produk' && item.category !== 'produk') return false;
+        if (currentFilterType === 'jasa' && item.category !== 'jasa') return false;
+        if (currentFilterType === 'b2b' && item.model !== 'B2B') return false;
+
+        if (q) {
+          var matchName = item.name.toLowerCase().includes(q);
+          var matchOrigin = item.origin.toLowerCase().includes(q);
+          var matchDesc = item.desc.toLowerCase().includes(q);
+          if (!matchName && !matchOrigin && !matchDesc) return false;
+        }
+        return true;
+      });
+
+      // Sort
+      if (sort === 'termurah') {
+        filtered.sort(function (a, b) { return a.price - b.price; });
+      } else if (sort === 'termahal') {
+        filtered.sort(function (a, b) { return b.price - a.price; });
+      }
+
+      statusText.textContent = 'Menampilkan ' + filtered.length + ' produk & jasa';
+
+      if (filtered.length === 0) {
+        container.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+
+      var html = '';
+      filtered.forEach(function (item) {
+        var isJasa = item.category === 'jasa';
+        var badgeColor = isJasa ? 'bg-amber-100 text-amber-800' : (item.model === 'B2B' ? 'bg-blue-100 text-blue-800' : 'bg-emerald-100 text-emerald-800');
+        var btnText = isJasa ? 'Pesan Jasa Ini' : (item.model === 'B2B' ? 'Pesan Pasokan Grosir' : 'Beli Sekarang');
+        var resolvedDetail = item.detailUrl;
+        if (resolvedDetail && resolvedDetail !== '#' && resolvedDetail.indexOf('http') !== 0 && resolvedDetail.indexOf('/') !== 0) {
+          resolvedDetail = '/' + resolvedDetail;
+        }
+        var detailHref = isJasa ? '/pages/products/service-detail.html?id=' + encodeURIComponent(item.id) : (resolvedDetail || '#');
+
+        html += '<div class="catalog-card bg-white rounded-xl border border-gray-200 overflow-hidden flex flex-col">';
+        html += '  <div class="relative aspect-square overflow-hidden bg-gray-100">';
+        html += '    <img src="' + item.img + '" alt="' + item.name + '" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" loading="lazy" />';
+        html += '    <span class="absolute top-2.5 left-2.5 text-[10px] font-bold px-2 py-0.5 rounded-full ' + badgeColor + ' shadow-sm">' + item.badge + '</span>';
+        if (item.is_featured) {
+          html += '    <span class="absolute top-2.5 right-2.5 text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-400 text-amber-900 shadow-sm">★ Unggulan</span>';
+        }
+        html += '    <span class="absolute bottom-2.5 right-2.5 text-[10px] bg-black/70 backdrop-blur-sm text-white px-2 py-0.5 rounded-md font-sans">⭐ ' + item.rating + '</span>';
+        html += '  </div>';
+
+        html += '  <div class="p-4 flex flex-col flex-1 gap-2">';
+        html += '    <span class="text-[10px] font-sans text-gray-400 uppercase tracking-wide">📍 ' + item.origin + '</span>';
+        html += '    <h3 class="font-serif text-sm font-bold text-gray-900 leading-snug line-clamp-2 hover:text-emerald-800 transition-colors">';
+        html += '      <a href="' + (detailHref !== '#' ? detailHref : 'javascript:void(0)') + '" onclick="' + (!isJasa && detailHref === '#' ? 'openOrderModal(\'' + item.id + '\')' : '') + '">' + item.name + '</a>';
+        html += '    </h3>';
+        html += '    <p class="text-xs text-gray-500 line-clamp-2 leading-relaxed">' + item.desc + '</p>';
+
+        html += '    <div class="mt-auto pt-3 border-t border-gray-100 flex items-center justify-between">';
+        html += '      <div>';
+        html += '        <span class="text-[10px] text-gray-400 block">' + item.unit + '</span>';
+        html += '        <span class="font-serif text-sm font-bold text-emerald-800">' + item.priceStr + '</span>';
+        html += '      </div>';
+        if (isJasa) {
+          html += '      <a href="' + detailHref + '" class="px-3.5 py-1.5 text-xs font-bold rounded-lg bg-emerald-800 hover:bg-emerald-900 text-white transition-colors shadow-sm">';
+          html += '        ' + btnText;
+          html += '      </a>';
+        } else if (detailHref && detailHref !== '#') {
+          html += '      <a href="' + detailHref + '" class="px-3.5 py-1.5 text-xs font-bold rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white transition-colors shadow-sm">';
+          html += '        ' + btnText;
+          html += '      </a>';
+        } else {
+          html += '      <button onclick="openOrderModal(\'' + item.id + '\')" class="px-3.5 py-1.5 text-xs font-bold rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white transition-colors shadow-sm">';
+          html += '        ' + btnText;
+          html += '      </button>';
+        }
+        html += '    </div>';
+        html += '  </div>';
+        html += '</div>';
+      });
+
+      container.innerHTML = html;
+    }
+
+    function openOrderModal(id) {
+      var item = CATALOG_ITEMS.find(function (x) { return x.id === id; });
+      if (!item) return;
+
+      document.getElementById('modal-item-name').textContent = item.name;
+      document.getElementById('modal-item-price').textContent = item.priceStr + ' (' + item.unit + ')';
+      document.getElementById('modal-item-badge').textContent = '📍 ' + item.origin + ' · ' + item.badge;
+      document.getElementById('modal-img').src = item.img;
+      document.getElementById('order-modal').classList.remove('hidden');
+      document.getElementById('order-modal').classList.add('flex');
+    }
+
+    function closeOrderModal() {
+      document.getElementById('order-modal').classList.add('hidden');
+      document.getElementById('order-modal').classList.remove('flex');
+    }
+
+    function handleOrderSubmit(e) {
+      e.preventDefault();
+      alert('Terima kasih! Pesanan Anda telah diterima oleh Admin Racik Media dan akan segera diteruskan langsung ke mitra produsen/penyedia jasa via WhatsApp.');
+      closeOrderModal();
+    }
+
+    // Render awal
+    if (new URLSearchParams(window.location.search).get('jenis') === 'jasa') {
+      setFilterType('jasa');
+    } else {
+      renderItems();
+    }
+  </script>
+
+  <!-- Language Switcher JS -->
+  <script src="../assets/js/lang.js"></script>
+  <script src="../assets/js/layout.js"></script>
+  <script src="../assets/js/public-layout.js"></script>
+</body>
+
+</html>
