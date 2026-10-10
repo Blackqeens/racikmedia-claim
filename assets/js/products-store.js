@@ -241,7 +241,7 @@
       id: 'srv-01',
       name: 'Jasa Pelatihan & Workshop Kriya Rotan',
       category: 'jasa',
-      subcat: 'layanan',
+      subcat: 'kriya',
       model: 'JASA',
       price: 1500000,
       priceStr: 'Rp 1.500.000',
@@ -253,14 +253,14 @@
       badge: 'Layanan Jasa',
       desc: 'Lokakarya teknik anyam rotan modern dibimbing langsung oleh instruktur pengrajin ahli Tegalwangi.',
       detailUrl: 'pages/products/service-detail.html?id=srv-01',
-      is_featured: false,
-      featured_order: null
+      is_featured: true,
+      featured_order: 1
     },
     {
       id: 'srv-02',
       name: 'Jasa Kurasi & Uji Organoleptik Kopi Nusantara',
       category: 'jasa',
-      subcat: 'layanan',
+      subcat: 'kurasi kopi',
       model: 'JASA',
       price: 750000,
       priceStr: 'Rp 750.000',
@@ -272,14 +272,14 @@
       badge: 'Layanan Jasa',
       desc: 'Evaluasi cita rasa, cupping score, dan penerbitan lembar audit profil rasa oleh Q-Grader terlisensi.',
       detailUrl: 'pages/products/service-detail.html?id=srv-02',
-      is_featured: false,
-      featured_order: null
+      is_featured: true,
+      featured_order: 2
     },
     {
       id: 'srv-03',
       name: 'Jasa Liputan & Dokumentasi Visual UMKM',
       category: 'jasa',
-      subcat: 'layanan',
+      subcat: 'dokumentasi',
       model: 'JASA',
       price: 2200000,
       priceStr: 'Rp 2.200.000',
@@ -290,15 +290,15 @@
       img: 'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=600&q=80',
       badge: 'Layanan Jasa',
       desc: 'Liputan jurnalisme foto lapangan mendalam untuk membangun brand storytelling produk lokal Anda.',
-      detailUrl: 'pages/main/etalase.html',
-      is_featured: false,
-      featured_order: null
+      detailUrl: 'pages/products/service-detail.html?id=srv-03',
+      is_featured: true,
+      featured_order: 3
     },
     {
       id: 'srv-04',
       name: 'Jasa Pendampingan Sertifikasi Organik & Halal',
       category: 'jasa',
-      subcat: 'layanan',
+      subcat: 'sertifikasi',
       model: 'JASA',
       price: 3500000,
       priceStr: 'Rp 3.500.000',
@@ -309,15 +309,15 @@
       img: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&q=80',
       badge: 'Layanan Jasa',
       desc: 'Audit SOP, penyusunan dokumen, uji laboratorium pendukung hingga sertifikat resmi terbit.',
-      detailUrl: 'pages/main/etalase.html',
-      is_featured: false,
-      featured_order: null
+      detailUrl: 'pages/products/service-detail.html?id=srv-04',
+      is_featured: true,
+      featured_order: 4
     },
     {
       id: 'srv-05',
       name: 'Jasa Workshop Seduh Manual & Barista Komunitas',
       category: 'jasa',
-      subcat: 'layanan',
+      subcat: 'workshop',
       model: 'JASA',
       price: 850000,
       priceStr: 'Rp 850.000',
@@ -328,9 +328,9 @@
       img: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=600&q=80',
       badge: 'Layanan Jasa',
       desc: 'Kelas praktik brewing V60, Aeropress, Kalita Wave, serta pemahaman karakter green bean Nusantara.',
-      detailUrl: 'pages/main/etalase.html',
-      is_featured: false,
-      featured_order: null
+      detailUrl: 'pages/products/service-detail.html?id=srv-05',
+      is_featured: true,
+      featured_order: 5
     }
   ];
 
@@ -339,7 +339,31 @@
       var raw = localStorage.getItem(STORAGE_KEY);
       if (raw) {
         var parsed = JSON.parse(raw);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          // Sinkronisasi: pastikan item jasa default ada dan terisi link detail/is_featured
+          var needsSave = false;
+          DEFAULT_PRODUCTS.forEach(function (def) {
+            var found = parsed.find(function (p) { return p.id === def.id; });
+            if (!found) {
+              parsed.push(def);
+              needsSave = true;
+            } else if (def.category === 'jasa') {
+              if (def.is_featured && !found.is_featured && found.featured_order === null) {
+                found.is_featured = true;
+                found.featured_order = def.featured_order;
+                needsSave = true;
+              }
+              if (def.detailUrl && (!found.detailUrl || found.detailUrl.indexOf('etalase.html') !== -1)) {
+                found.detailUrl = def.detailUrl;
+                needsSave = true;
+              }
+            }
+          });
+          if (needsSave) {
+            save(parsed);
+          }
+          return parsed;
+        }
       }
     } catch (e) {
       console.warn('[BobProductsStore] Gagal membaca storage, menggunakan data default.', e);
@@ -366,13 +390,28 @@
       return load();
     },
 
-    getFeatured: function () {
+    getFeatured: function (category) {
       var all = load();
       return all
-        .filter(function (p) { return Boolean(p.is_featured); })
+        .filter(function (p) {
+          if (!Boolean(p.is_featured)) return false;
+          if (category === 'produk') return p.category === 'produk' || p.category !== 'jasa';
+          if (category === 'jasa') return p.category === 'jasa';
+          return true;
+        })
         .sort(function (a, b) {
           return (a.featured_order || 999) - (b.featured_order || 999);
         });
+    },
+
+    getFeaturedProducts: function () {
+      return store.getFeatured('produk');
+    },
+
+    getFeaturedServices: function () {
+      var featured = store.getFeatured('jasa');
+      if (featured.length > 0) return featured;
+      return load().filter(function (p) { return p.category === 'jasa'; });
     },
 
     getById: function (id) {
