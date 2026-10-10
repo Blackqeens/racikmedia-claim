@@ -33,6 +33,17 @@
 (function () {
   'use strict';
 
+  var LANGUAGE_FEATURE_ENABLED = false;
+  if (!LANGUAGE_FEATURE_ENABLED) {
+    document.documentElement.setAttribute('lang', 'id');
+    window.RMlang = {
+      set: function () { return 'id'; },
+      get: function () { return 'id'; },
+      reset: function () { return 'id'; }
+    };
+    return;
+  }
+
   /* ── Konstanta ─────────────────────────────────────── */
   var STORAGE_KEY  = 'rm_lang';
   var DEFAULT_LANG = 'id';

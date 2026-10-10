@@ -162,6 +162,11 @@ body.rm-has-public-navbar { padding-top: 65px; }
   margin-left: auto;
 }
 
+#lang-switcher,
+#rm-lang-floating {
+  display: none !important;
+}
+
 .rm-public-header__language-label { color: #0f766e; }
 
 .rm-public-header__back {

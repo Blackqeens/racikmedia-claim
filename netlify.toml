@@ -1,3 +1,18 @@
 [build]
   command = "node scripts/build-netlify.js"
   publish = "dist"
+
+[functions]
+  directory = "netlify/functions"
+
+[[redirects]]
+  from = "/api/shipping"
+  to = "/.netlify/functions/shipping"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/checkout"
+  to = "/.netlify/functions/checkout"
+  status = 200
+  force = true
