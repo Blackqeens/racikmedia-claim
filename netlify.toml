@@ -16,3 +16,49 @@
   to = "/.netlify/functions/checkout"
   status = 200
   force = true
+
+[[redirects]]
+  from = "/pages/main/articles.html"
+  to = "/articles"
+  status = 301
+
+[[redirects]]
+  from = "/pages/main/articles"
+  to = "/articles"
+  status = 301
+
+[[redirects]]
+  from = "/pages/main/etalase.html"
+  to = "/etalase"
+  status = 301
+
+[[redirects]]
+  from = "/pages/main/etalase"
+  to = "/etalase"
+  status = 301
+
+[[redirects]]
+  from = "/articles"
+  to = "/articles/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/etalase"
+  to = "/etalase/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/bookmarks"
+  to = "/pages/main/bookmarks.html"
+  status = 200
+
+[[redirects]]
+  from = "/article-detail"
+  to = "/pages/main/article-detail.html"
+  status = 200
+
+[[redirects]]
+  from = "/author-profile"
+  to = "/pages/main/author-profile.html"
+  status = 200
+
