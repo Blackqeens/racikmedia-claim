@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id" class="scroll-smooth public-layout-page">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -15,7 +16,9 @@
   <!-- Google Fonts: Lora (Serif) + Inter (Sans) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap"
+    rel="stylesheet" />
 
   <script src="./assets/js/tailwind-config.js"></script>
   <script src="./assets/js/products-store.js"></script>
@@ -26,1159 +29,1345 @@
 
 <body class="bg-white text-gray-900 antialiased public-layout-page">
 
-<!-- ============================================================
+  <!-- ============================================================
      HEADER
      ============================================================ -->
-<div id="rm-navbar-root"></div>
-
-<!-- ============================================================
+  <div id="rm-navbar-root"></div>
+  <!-- ============================================================
      HERO CAROUSEL SECTION — Racik Media
      Fully encapsulated: CSS scoped under .rc-carousel, JS in IIFE
      ============================================================ -->
-<style>
-  /* ── Carousel Container ─────────────────────────────────── */
-  .rc-carousel {
-    position: relative;
-    width: 100%;
-    overflow: hidden;
-    background: #111;
-    isolation: isolate;        /* contain stacking context */
-  }
-  .rc-carousel,
-  .rc-carousel * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
-
-  /* ── Track ───────────────────────────────────────────────── */
-  .rc-carousel__track {
-    display: flex;
-    width: 400%;             /* 4 slides × 100% */
-    transition: transform 1.2s cubic-bezier(0.65, 0, 0.35, 1);
-    will-change: transform;
-  }
-
-  /* ── Each Slide ──────────────────────────────────────────── */
-  .rc-carousel__slide {
-    position: relative;
-    width: 25%;              /* 100% / 4 */
-    flex-shrink: 0;
-    min-height: 440px;
-  }
-  @media (min-width: 640px) {
-    .rc-carousel__slide { min-height: 480px; }
-  }
-  @media (min-width: 1024px) {
-    .rc-carousel__slide { min-height: 735px; }
-  }
-
-  /* ── Slide Image ─────────────────────────────────────────── */
-  .rc-carousel__img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-    display: block;
-    filter: brightness(0.72);
-    transition: transform 8s linear;
-  }
-  .rc-carousel__img-link {
-    position: absolute;
-    inset: 0;
-    display: block;
-  }
-  .rc-carousel__img-link:focus-visible {
-    outline: 3px solid #34d399;
-    outline-offset: -3px;
-  }
-  .rc-carousel__slide.is-active .rc-carousel__img {
-    transform: scale(1.06);   /* slow Ken Burns zoom */
-  }
-
-  /* ── Gradient Overlay ────────────────────────────────────── */
-  .rc-carousel__overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      to top,
-      rgba(0,0,0,0.78) 0%,
-      rgba(0,0,0,0.38) 40%,
-      rgba(0,0,0,0.12) 70%,
-      transparent 100%
-    );
-    pointer-events: none;
-  }
-
-  /* ── Text Box (centered, semi-transparent) ───────────────── */
-  .rc-carousel__content {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    padding: 5% 0 32px;
-    z-index: 2;
-    pointer-events: none;
-  }
-  .rc-carousel__textbox {
-    background: rgba(0, 0, 0, 0.15);
-    backdrop-filter: blur(2px);
-    -webkit-backdrop-filter: blur(2px);
-    border: 1px solid rgba(255,255,255,0.06);
-    border-radius: 16px;
-    padding: 36px 48px;
-    max-width: 900px;
-    width: min(90%, 900px);
-    text-align: center;
-    pointer-events: auto;
-    opacity: 0;
-    transform: translateY(28px);
-    transition: opacity 0.8s ease 0.4s, transform 0.25s ease;
-  }
-  .rc-carousel__slide.is-active .rc-carousel__textbox {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  .rc-carousel__slide.is-active .rc-carousel__textbox:hover,
-  .rc-carousel__slide.is-active .rc-carousel__textbox:focus-within {
-    transform: translateY(-3px);
-  }
-  .rc-carousel__label {
-    display: inline-block;
-    font-family: 'Inter', system-ui, sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: #6ee7b7;
-    margin-bottom: 12px;
-  }
-  .rc-carousel__title {
-    font-family: 'Lora', Georgia, serif;
-    font-size: 1.9rem;
-    font-weight: 700;
-    line-height: 1.3;
-    color: #ffffff;
-    margin-bottom: 10px;
-    text-shadow: 0 2px 12px rgba(0,0,0,0.4);
-  }
-  @media (min-width: 640px) {
-    .rc-carousel__title { font-size: 2.4rem; }
-  }
-  @media (min-width: 1024px) {
-    .rc-carousel__title { font-size: 3.2rem; }
-    .rc-carousel__textbox {
-      width: min(54vw, 900px);
-      padding: 44px 56px;
+  <style>
+    /* ── Carousel Container ─────────────────────────────────── */
+    .rc-carousel {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+      background: #111;
+      isolation: isolate;
+      /* contain stacking context */
     }
-  }
-  .rc-carousel__desc {
-    font-family: 'Inter', system-ui, sans-serif;
-    font-size: 18px;
-    font-weight: 300;
-    line-height: 1.65;
-    color: rgba(255,255,255,0.82);
-    margin-bottom: 22px;
-  }
-  .rc-carousel__desc a {
-    display: inline-block;
-    max-width: 100%;
-    color: inherit;
-    text-decoration: none;
-  }
-  .rc-carousel__desc a:focus-visible {
-    outline: 2px solid #6ee7b7;
-    outline-offset: 3px;
-  }
-  .rc-carousel__cta {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    font-family: 'Inter', system-ui, sans-serif;
-    font-size: 16px;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    color: #ffffff;
-    background: #047857;
-    border: none;
-    padding: 11px 28px;
-    border-radius: 999px;
-    cursor: pointer;
-    text-decoration: none;
-    transition: background 0.25s ease, box-shadow 0.25s ease;
-    box-shadow: 0 4px 16px rgba(4,120,87,0.35);
-  }
-  .rc-carousel__cta:hover {
-    background: #065f46;
-    box-shadow: 0 6px 24px rgba(4,120,87,0.45);
-  }
-  .rc-carousel__cta svg {
-    width: 14px;
-    height: 14px;
-    transition: transform 0.2s ease;
-  }
-  .rc-carousel__cta:hover svg {
-    transform: translateX(3px);
-  }
 
-  /* ── Navigation Arrows ───────────────────────────────────── */
-  .rc-carousel__arrow {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 5;
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    border: 1.5px solid rgba(255,255,255,0.3);
-    background: rgba(0,0,0,0.25);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
-    opacity: 0;
-  }
-  .rc-carousel:hover .rc-carousel__arrow {
-    opacity: 1;
-  }
-  .rc-carousel__arrow:hover {
-    background: rgba(0,0,0,0.5);
-    border-color: rgba(255,255,255,0.5);
-  }
-  .rc-carousel__arrow--prev { left: 16px; }
-  .rc-carousel__arrow--next { right: 16px; }
-  @media (min-width: 1024px) {
-    .rc-carousel__arrow--prev { left: 32px; }
-    .rc-carousel__arrow--next { right: 32px; }
-  }
-  .rc-carousel__arrow svg {
-    width: 18px;
-    height: 18px;
-  }
+    .rc-carousel,
+    .rc-carousel * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-  /* ── Dot Indicators ──────────────────────────────────────── */
-  .rc-carousel__dots {
-    position: absolute;
-    bottom: 24px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 5;
-    display: flex;
-    gap: 10px;
-    list-style: none;
-  }
-  .rc-carousel__dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    border: 2px solid rgba(255,255,255,0.5);
-    background: transparent;
-    cursor: pointer;
-    transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
-    padding: 0;
-  }
-  .rc-carousel__dot:hover {
-    border-color: #fff;
-  }
-  .rc-carousel__dot.is-active {
-    background: #fff;
-    border-color: #fff;
-    transform: scale(1.2);
-  }
+    /* ── Track ───────────────────────────────────────────────── */
+    .rc-carousel__track {
+      display: flex;
+      width: 400%;
+      /* 4 slides × 100% */
+      transition: transform 1.2s cubic-bezier(0.65, 0, 0.35, 1);
+      will-change: transform;
+    }
 
-  /* ── Progress Bar ────────────────────────────────────────── */
-  .rc-carousel__progress {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    height: 3px;
-    background: linear-gradient(90deg, #10b981, #047857);
-    z-index: 6;
-    transition: width 5s linear;
-    width: 0%;
-  }
-  .rc-carousel__progress.is-running {
-    width: 100%;
-  }
-</style>
+    /* ── Each Slide ──────────────────────────────────────────── */
+    .rc-carousel__slide {
+      position: relative;
+      width: 25%;
+      /* 100% / 4 */
+      flex-shrink: 0;
+      min-height: 440px;
+    }
 
-<section id="hero" class="rc-carousel" aria-label="Hero Carousel Racik Media">
+    @media (min-width: 640px) {
+      .rc-carousel__slide {
+        min-height: 480px;
+      }
+    }
 
-  <!-- Track -->
-  <div class="rc-carousel__track" id="rcTrack">
+    @media (min-width: 1024px) {
+      .rc-carousel__slide {
+        min-height: 735px;
+      }
+    }
 
-    <!-- Slide 1 — Marketplace -->
-    <div class="rc-carousel__slide is-active" data-index="0">
-      <a href="/etalase" class="rc-carousel__img-link" aria-label="Buka Etalase Produk dan Jasa">
-        <img
-          src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1600&q=80"
-          alt="Marketplace Racik Media — produk lokal pilihan"
-          class="rc-carousel__img"
-          loading="eager"
-        />
-      </a>
-      <div class="rc-carousel__overlay"></div>
-      <div class="rc-carousel__content">
-        <div class="rc-carousel__textbox">
-          <h2 class="rc-carousel__title" data-id="Pasar Racik Tepat Guna" data-en="A Marketplace with Purpose" data-zh="有意义的本地市场">Pasar Racik Tepat Guna</h2>
-          <p class="rc-carousel__desc">
-            <a href="/etalase" data-id="Temukan produk lokal terbaik dari seluruh Nusantara — dari kerajinan tangan, rempah pilihan, hingga kebutuhan sehari-hari, langsung dari produsen terpercaya." data-en="Discover the best local products from across Indonesia—from crafts and spices to everyday essentials, directly from trusted producers." data-zh="探索来自印度尼西亚各地的优质本地产品，从手工艺品和香料到日常用品，直接来自值得信赖的生产者。">
-              Temukan produk lokal terbaik dari seluruh Nusantara — dari kerajinan tangan, rempah pilihan, hingga kebutuhan sehari-hari, langsung dari produsen terpercaya.
+    /* ── Slide Image ─────────────────────────────────────────── */
+    .rc-carousel__img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+      filter: brightness(0.72);
+      transition: transform 8s linear;
+    }
+
+    .rc-carousel__img-link {
+      position: absolute;
+      inset: 0;
+      display: block;
+    }
+
+    .rc-carousel__img-link:focus-visible {
+      outline: 3px solid #34d399;
+      outline-offset: -3px;
+    }
+
+    .rc-carousel__slide.is-active .rc-carousel__img {
+      transform: scale(1.06);
+      /* slow Ken Burns zoom */
+    }
+
+    /* ── Gradient Overlay ────────────────────────────────────── */
+    .rc-carousel__overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top,
+          rgba(0, 0, 0, 0.78) 0%,
+          rgba(0, 0, 0, 0.38) 40%,
+          rgba(0, 0, 0, 0.12) 70%,
+          transparent 100%);
+      pointer-events: none;
+    }
+
+    /* ── Text Box (centered, semi-transparent) ───────────────── */
+    .rc-carousel__content {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 5% 0 32px;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .rc-carousel__textbox {
+      background: rgba(0, 0, 0, 0.15);
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 16px;
+      padding: 36px 48px;
+      max-width: 900px;
+      width: min(90%, 900px);
+      text-align: center;
+      pointer-events: auto;
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.8s ease 0.4s, transform 0.25s ease;
+    }
+
+    .rc-carousel__slide.is-active .rc-carousel__textbox {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .rc-carousel__slide.is-active .rc-carousel__textbox:hover,
+    .rc-carousel__slide.is-active .rc-carousel__textbox:focus-within {
+      transform: translateY(-3px);
+    }
+
+    .rc-carousel__label {
+      display: inline-block;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #6ee7b7;
+      margin-bottom: 12px;
+    }
+
+    .rc-carousel__title {
+      font-family: 'Lora', Georgia, serif;
+      font-size: 1.9rem;
+      font-weight: 700;
+      line-height: 1.3;
+      color: #ffffff;
+      margin-bottom: 10px;
+      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    @media (min-width: 640px) {
+      .rc-carousel__title {
+        font-size: 2.4rem;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .rc-carousel__title {
+        font-size: 3.2rem;
+      }
+
+      .rc-carousel__textbox {
+        width: min(54vw, 900px);
+        padding: 44px 56px;
+      }
+    }
+
+    .rc-carousel__desc {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 18px;
+      font-weight: 300;
+      line-height: 1.65;
+      color: rgba(255, 255, 255, 0.82);
+      margin-bottom: 22px;
+    }
+
+    .rc-carousel__desc a {
+      display: inline-block;
+      max-width: 100%;
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .rc-carousel__desc a:focus-visible {
+      outline: 2px solid #6ee7b7;
+      outline-offset: 3px;
+    }
+
+    .rc-carousel__cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: #ffffff;
+      background: #047857;
+      border: none;
+      padding: 11px 28px;
+      border-radius: 999px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.25s ease, box-shadow 0.25s ease;
+      box-shadow: 0 4px 16px rgba(4, 120, 87, 0.35);
+    }
+
+    .rc-carousel__cta:hover {
+      background: #065f46;
+      box-shadow: 0 6px 24px rgba(4, 120, 87, 0.45);
+    }
+
+    .rc-carousel__cta svg {
+      width: 14px;
+      height: 14px;
+      transition: transform 0.2s ease;
+    }
+
+    .rc-carousel__cta:hover svg {
+      transform: translateX(3px);
+    }
+
+    /* ── Navigation Arrows ───────────────────────────────────── */
+    .rc-carousel__arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 5;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(255, 255, 255, 0.3);
+      background: rgba(0, 0, 0, 0.25);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+      opacity: 0;
+    }
+
+    .rc-carousel:hover .rc-carousel__arrow {
+      opacity: 1;
+    }
+
+    .rc-carousel__arrow:hover {
+      background: rgba(0, 0, 0, 0.5);
+      border-color: rgba(255, 255, 255, 0.5);
+    }
+
+    .rc-carousel__arrow--prev {
+      left: 16px;
+    }
+
+    .rc-carousel__arrow--next {
+      right: 16px;
+    }
+
+    @media (min-width: 1024px) {
+      .rc-carousel__arrow--prev {
+        left: 32px;
+      }
+
+      .rc-carousel__arrow--next {
+        right: 32px;
+      }
+    }
+
+    .rc-carousel__arrow svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    /* ── Dot Indicators ──────────────────────────────────────── */
+    .rc-carousel__dots {
+      position: absolute;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 5;
+      display: flex;
+      gap: 10px;
+      list-style: none;
+    }
+
+    .rc-carousel__dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.5);
+      background: transparent;
+      cursor: pointer;
+      transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+      padding: 0;
+    }
+
+    .rc-carousel__dot:hover {
+      border-color: #fff;
+    }
+
+    .rc-carousel__dot.is-active {
+      background: #fff;
+      border-color: #fff;
+      transform: scale(1.2);
+    }
+
+    /* ── Progress Bar ────────────────────────────────────────── */
+    .rc-carousel__progress {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #10b981, #047857);
+      z-index: 6;
+      transition: width 5s linear;
+      width: 0%;
+    }
+
+    .rc-carousel__progress.is-running {
+      width: 100%;
+    }
+  </style>
+
+  <section id="hero" class="rc-carousel" aria-label="Hero Carousel Racik Media">
+
+    <!-- Track -->
+    <div class="rc-carousel__track" id="rcTrack">
+
+      <!-- Slide 1 — Marketplace -->
+      <div class="rc-carousel__slide is-active" data-index="0">
+        <a href="/etalase" class="rc-carousel__img-link" aria-label="Buka Etalase Produk dan Jasa">
+          <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1600&q=80"
+            alt="Marketplace Racik Media — produk lokal pilihan" class="rc-carousel__img" loading="eager" />
+        </a>
+        <div class="rc-carousel__overlay"></div>
+        <div class="rc-carousel__content">
+          <div class="rc-carousel__textbox">
+            <h2 class="rc-carousel__title" data-id="Pasar Racik Tepat Guna" data-en="A Marketplace with Purpose"
+              data-zh="有意义的本地市场">Pasar Racik Tepat Guna</h2>
+            <p class="rc-carousel__desc">
+              <a href="/etalase"
+                data-id="Temukan produk lokal terbaik dari seluruh Nusantara — dari kerajinan tangan, rempah pilihan, hingga kebutuhan sehari-hari, langsung dari produsen terpercaya."
+                data-en="Discover the best local products from across Indonesia—from crafts and spices to everyday essentials, directly from trusted producers."
+                data-zh="探索来自印度尼西亚各地的优质本地产品，从手工艺品和香料到日常用品，直接来自值得信赖的生产者。">
+                Temukan produk lokal terbaik dari seluruh Nusantara — dari kerajinan tangan, rempah pilihan, hingga
+                kebutuhan sehari-hari, langsung dari produsen terpercaya.
+              </a>
+            </p>
+            <a href="/etalase" class="rc-carousel__cta">
+              <span data-id="Jelajahi Marketplace" data-en="Explore Marketplace" data-zh="浏览市场">Jelajahi
+                Marketplace</span>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
             </a>
-          </p>
-          <a href="/etalase" class="rc-carousel__cta">
-            <span data-id="Jelajahi Marketplace" data-en="Explore Marketplace" data-zh="浏览市场">Jelajahi Marketplace</span>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 12h14M12 5l7 7-7 7"/>
-            </svg>
-          </a>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Slide 2 — Articles -->
-    <div class="rc-carousel__slide" data-index="1">
-      <a href="/articles" class="rc-carousel__img-link" aria-label="Buka Jelajah Jurnal">
-        <img
-          src="https://images.unsplash.com/photo-1457369804613-52c61a468e7d?w=1600&q=80"
-          alt="Artikel Racik Media — wawasan dan tabayyun"
-          class="rc-carousel__img"
-          loading="lazy"
-        />
-      </a>
-      <div class="rc-carousel__overlay"></div>
-      <div class="rc-carousel__content">
-        <div class="rc-carousel__textbox">
-          <h2 class="rc-carousel__title" data-id="Kilas Wawasan &amp; Tabayyun" data-en="Insights &amp; Verified Stories" data-zh="洞察与核实报道">Kilas Wawasan &amp; Tabayyun</h2>
-          <p class="rc-carousel__desc">
-            <a href="/articles" data-id="Bacaan mendalam yang diverifikasi — artikel, opini, dan investigasi untuk membangun perspektif yang jernih dan bijak di era informasi." data-en="In-depth, verified reading—articles, opinions, and investigations for a clear and thoughtful perspective in the information age." data-zh="经过核实的深度阅读——文章、观点与调查报道，帮助您在信息时代建立清晰而审慎的视角。">
-              Bacaan mendalam yang diverifikasi — artikel, opini, dan investigasi untuk membangun perspektif yang jernih dan bijak di era informasi.
+      <!-- Slide 2 — Articles -->
+      <div class="rc-carousel__slide" data-index="1">
+        <a href="/articles" class="rc-carousel__img-link" aria-label="Buka Jelajah Jurnal">
+          <img src="https://images.unsplash.com/photo-1457369804613-52c61a468e7d?w=1600&q=80"
+            alt="Artikel Racik Media — wawasan dan tabayyun" class="rc-carousel__img" loading="lazy" />
+        </a>
+        <div class="rc-carousel__overlay"></div>
+        <div class="rc-carousel__content">
+          <div class="rc-carousel__textbox">
+            <h2 class="rc-carousel__title" data-id="Kilas Wawasan &amp; Tabayyun"
+              data-en="Insights &amp; Verified Stories" data-zh="洞察与核实报道">Kilas Wawasan &amp; Tabayyun</h2>
+            <p class="rc-carousel__desc">
+              <a href="/articles"
+                data-id="Bacaan mendalam yang diverifikasi — artikel, opini, dan investigasi untuk membangun perspektif yang jernih dan bijak di era informasi."
+                data-en="In-depth, verified reading—articles, opinions, and investigations for a clear and thoughtful perspective in the information age."
+                data-zh="经过核实的深度阅读——文章、观点与调查报道，帮助您在信息时代建立清晰而审慎的视角。">
+                Bacaan mendalam yang diverifikasi — artikel, opini, dan investigasi untuk membangun perspektif yang
+                jernih dan bijak di era informasi.
+              </a>
+            </p>
+            <a href="/articles" class="rc-carousel__cta">
+              <span data-id="Baca Koleksi Artikel" data-en="Browse Journal" data-zh="浏览期刊">Baca Koleksi Artikel</span>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
             </a>
-          </p>
-          <a href="/articles" class="rc-carousel__cta">
-            <span data-id="Baca Koleksi Artikel" data-en="Browse Journal" data-zh="浏览期刊">Baca Koleksi Artikel</span>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 12h14M12 5l7 7-7 7"/>
-            </svg>
-          </a>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Slide 3 — Events -->
-    <div class="rc-carousel__slide" data-index="2">
-      <a href="/events" class="rc-carousel__img-link" aria-label="Buka halaman Events">
-        <img
-          src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1600&q=80"
-          alt="Events Racik Media — agenda komunitas"
-          class="rc-carousel__img"
-          loading="lazy"
-        />
-      </a>
-      <div class="rc-carousel__overlay"></div>
-      <div class="rc-carousel__content">
-        <div class="rc-carousel__textbox">
-          <h2 class="rc-carousel__title" data-id="Agenda &amp; Kegiatan Komunitas" data-en="Community Events &amp; Activities" data-zh="社区活动与日程">Agenda &amp; Kegiatan Komunitas</h2>
-          <p class="rc-carousel__desc">
-            <a href="/events" data-id="Ikuti workshop, pameran, dan diskusi bersama komunitas kreatif Racik Media. Dari online hingga offline, ada ruang untuk setiap gagasan." data-en="Join workshops, exhibitions, and discussions with the Racik Media creative community. Online or in person, there is room for every idea." data-zh="与 Racik Media 创意社区一起参加工作坊、展览和讨论。无论线上还是线下，每个想法都有展示空间。">
-              Ikuti workshop, pameran, dan diskusi bersama komunitas kreatif Racik Media. Dari online hingga offline, ada ruang untuk setiap gagasan.
+      <!-- Slide 3 — Events -->
+      <div class="rc-carousel__slide" data-index="2">
+        <a href="/events" class="rc-carousel__img-link" aria-label="Buka halaman Events">
+          <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1600&q=80"
+            alt="Events Racik Media — agenda komunitas" class="rc-carousel__img" loading="lazy" />
+        </a>
+        <div class="rc-carousel__overlay"></div>
+        <div class="rc-carousel__content">
+          <div class="rc-carousel__textbox">
+            <h2 class="rc-carousel__title" data-id="Agenda &amp; Kegiatan Komunitas"
+              data-en="Community Events &amp; Activities" data-zh="社区活动与日程">Agenda &amp; Kegiatan Komunitas</h2>
+            <p class="rc-carousel__desc">
+              <a href="/events"
+                data-id="Ikuti workshop, pameran, dan diskusi bersama komunitas kreatif Racik Media. Dari online hingga offline, ada ruang untuk setiap gagasan."
+                data-en="Join workshops, exhibitions, and discussions with the Racik Media creative community. Online or in person, there is room for every idea."
+                data-zh="与 Racik Media 创意社区一起参加工作坊、展览和讨论。无论线上还是线下，每个想法都有展示空间。">
+                Ikuti workshop, pameran, dan diskusi bersama komunitas kreatif Racik Media. Dari online hingga offline,
+                ada ruang untuk setiap gagasan.
+              </a>
+            </p>
+            <a href="/events" class="rc-carousel__cta">
+              <span data-id="Lihat Agenda Event" data-en="View Events" data-zh="查看活动">Lihat Agenda Event</span>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
             </a>
-          </p>
-          <a href="/events" class="rc-carousel__cta">
-            <span data-id="Lihat Agenda Event" data-en="View Events" data-zh="查看活动">Lihat Agenda Event</span>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 12h14M12 5l7 7-7 7"/>
-            </svg>
-          </a>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Slide 4 — About Us -->
-    <div class="rc-carousel__slide" data-index="3">
-      <a href="/cerita-kami" class="rc-carousel__img-link" aria-label="Buka halaman Cerita Kami">
-        <img
-          src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1600&q=80"
-          alt="Tentang Racik Media — mengenal kami"
-          class="rc-carousel__img"
-          loading="lazy"
-        />
-      </a>
-      <div class="rc-carousel__overlay"></div>
-      <div class="rc-carousel__content">
-        <div class="rc-carousel__textbox">
-          <h2 class="rc-carousel__title" data-id="Mengenal Racik Media" data-en="Meet Racik Media" data-zh="认识 Racik Media">Mengenal Racik Media</h2>
-          <p class="rc-carousel__desc">
-            <a href="/cerita-kami" data-id="Platform editorial dan marketplace yang mengangkat produk lokal Indonesia. Kami percaya bahwa setiap daerah memiliki cerita dan karya yang layak dikenal dunia." data-en="An editorial and marketplace platform championing Indonesian local products. We believe every region has stories and creations worth sharing with the world." data-zh="一个推广印度尼西亚本地产品的编辑与市场平台。我们相信，每个地区都有值得世界了解的故事与作品。">
-              Platform editorial dan marketplace yang mengangkat produk lokal Indonesia. Kami percaya bahwa setiap daerah memiliki cerita dan karya yang layak dikenal dunia.
+      <!-- Slide 4 — About Us -->
+      <div class="rc-carousel__slide" data-index="3">
+        <a href="/cerita-kami" class="rc-carousel__img-link" aria-label="Buka halaman Cerita Kami">
+          <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1600&q=80"
+            alt="Tentang Racik Media — mengenal kami" class="rc-carousel__img" loading="lazy" />
+        </a>
+        <div class="rc-carousel__overlay"></div>
+        <div class="rc-carousel__content">
+          <div class="rc-carousel__textbox">
+            <h2 class="rc-carousel__title" data-id="Mengenal Racik Media" data-en="Meet Racik Media"
+              data-zh="认识 Racik Media">Mengenal Racik Media</h2>
+            <p class="rc-carousel__desc">
+              <a href="/cerita-kami"
+                data-id="Platform editorial dan marketplace yang mengangkat produk lokal Indonesia. Kami percaya bahwa setiap daerah memiliki cerita dan karya yang layak dikenal dunia."
+                data-en="An editorial and marketplace platform championing Indonesian local products. We believe every region has stories and creations worth sharing with the world."
+                data-zh="一个推广印度尼西亚本地产品的编辑与市场平台。我们相信，每个地区都有值得世界了解的故事与作品。">
+                Platform editorial dan marketplace yang mengangkat produk lokal Indonesia. Kami percaya bahwa setiap
+                daerah memiliki cerita dan karya yang layak dikenal dunia.
+              </a>
+            </p>
+            <a href="/cerita-kami" class="rc-carousel__cta">
+              <span data-id="Cerita Kami" data-en="Our Story" data-zh="我们的故事">Cerita Kami</span>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
             </a>
-          </p>
-          <a href="/cerita-kami" class="rc-carousel__cta">
-            <span data-id="Cerita Kami" data-en="Our Story" data-zh="我们的故事">Cerita Kami</span>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 12h14M12 5l7 7-7 7"/>
-            </svg>
-          </a>
+          </div>
         </div>
       </div>
+
+    </div><!-- /track -->
+
+    <!-- Prev / Next Arrows -->
+    <button class="rc-carousel__arrow rc-carousel__arrow--prev" aria-label="Slide sebelumnya" id="rcPrev">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      </svg>
+    </button>
+    <button class="rc-carousel__arrow rc-carousel__arrow--next" aria-label="Slide berikutnya" id="rcNext">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      </svg>
+    </button>
+
+    <!-- Dot Indicators -->
+    <div class="rc-carousel__dots" id="rcDots">
+      <button class="rc-carousel__dot is-active" data-goto="0" aria-label="Slide 1"></button>
+      <button class="rc-carousel__dot" data-goto="1" aria-label="Slide 2"></button>
+      <button class="rc-carousel__dot" data-goto="2" aria-label="Slide 3"></button>
+      <button class="rc-carousel__dot" data-goto="3" aria-label="Slide 4"></button>
     </div>
 
-  </div><!-- /track -->
+    <!-- Progress Bar -->
+    <div class="rc-carousel__progress" id="rcProgress"></div>
 
-  <!-- Prev / Next Arrows -->
-  <button class="rc-carousel__arrow rc-carousel__arrow--prev" aria-label="Slide sebelumnya" id="rcPrev">
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-    </svg>
-  </button>
-  <button class="rc-carousel__arrow rc-carousel__arrow--next" aria-label="Slide berikutnya" id="rcNext">
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-    </svg>
-  </button>
+  </section>
 
-  <!-- Dot Indicators -->
-  <div class="rc-carousel__dots" id="rcDots">
-    <button class="rc-carousel__dot is-active" data-goto="0" aria-label="Slide 1"></button>
-    <button class="rc-carousel__dot" data-goto="1" aria-label="Slide 2"></button>
-    <button class="rc-carousel__dot" data-goto="2" aria-label="Slide 3"></button>
-    <button class="rc-carousel__dot" data-goto="3" aria-label="Slide 4"></button>
+  <!-- Carousel JS (IIFE — fully encapsulated) -->
+  <script>
+    (function () {
+      'use strict';
+
+      const TOTAL = 4;
+      const DELAY = 5000;  // 5 seconds
+      const track = document.getElementById('rcTrack');
+      const dots = document.querySelectorAll('.rc-carousel__dot');
+      const slides = document.querySelectorAll('.rc-carousel__slide');
+      const bar = document.getElementById('rcProgress');
+      const prevBtn = document.getElementById('rcPrev');
+      const nextBtn = document.getElementById('rcNext');
+
+      let current = 0;
+      let timer = null;
+      let isPaused = false;
+
+      function goTo(index) {
+        // Remove active state from old slide
+        slides[current].classList.remove('is-active');
+        dots[current].classList.remove('is-active');
+
+        // Reset image transform for old slide
+        const oldImg = slides[current].querySelector('.rc-carousel__img');
+        if (oldImg) oldImg.style.transform = 'scale(1)';
+
+        // Update index
+        current = ((index % TOTAL) + TOTAL) % TOTAL;
+
+        // Move track
+        track.style.transform = 'translateX(-' + (current * 25) + '%)';
+
+        // Activate new slide
+        slides[current].classList.add('is-active');
+        dots[current].classList.add('is-active');
+
+        // Restart progress bar
+        resetProgress();
+      }
+
+      function next() { goTo(current + 1); }
+      function prev() { goTo(current - 1); }
+
+      function resetProgress() {
+        bar.classList.remove('is-running');
+        // Force reflow to restart CSS transition
+        void bar.offsetWidth;
+        bar.style.width = '0%';
+        void bar.offsetWidth;
+        bar.classList.add('is-running');
+      }
+
+      function startAutoPlay() {
+        stopAutoPlay();
+        resetProgress();
+        timer = setInterval(function () {
+          if (!isPaused) next();
+        }, DELAY);
+      }
+
+      function stopAutoPlay() {
+        if (timer) { clearInterval(timer); timer = null; }
+        bar.classList.remove('is-running');
+        bar.style.width = '0%';
+      }
+
+      // Dot click
+      dots.forEach(function (dot) {
+        dot.addEventListener('click', function () {
+          goTo(parseInt(this.dataset.goto, 10));
+          startAutoPlay();
+        });
+      });
+
+      // Arrow click
+      prevBtn.addEventListener('click', function () { prev(); startAutoPlay(); });
+      nextBtn.addEventListener('click', function () { next(); startAutoPlay(); });
+
+      // Pause on hover
+      var carousel = document.querySelector('.rc-carousel');
+      carousel.addEventListener('mouseenter', function () { isPaused = true; });
+      carousel.addEventListener('mouseleave', function () { isPaused = false; });
+
+      // Touch / swipe support
+      let touchStartX = 0;
+      let touchEndX = 0;
+      carousel.addEventListener('touchstart', function (e) {
+        touchStartX = e.changedTouches[0].screenX;
+      }, { passive: true });
+      carousel.addEventListener('touchend', function (e) {
+        touchEndX = e.changedTouches[0].screenX;
+        const diff = touchStartX - touchEndX;
+        if (Math.abs(diff) > 50) {
+          if (diff > 0) next(); else prev();
+          startAutoPlay();
+        }
+      }, { passive: true });
+
+      // Keyboard navigation when carousel is in view
+      document.addEventListener('keydown', function (e) {
+        var rect = carousel.getBoundingClientRect();
+        var inView = rect.top < window.innerHeight && rect.bottom > 0;
+        if (!inView) return;
+        if (e.key === 'ArrowLeft') { prev(); startAutoPlay(); }
+        if (e.key === 'ArrowRight') { next(); startAutoPlay(); }
+      });
+
+      // Init
+      startAutoPlay();
+    })();
+  </script>
+
+  <div class="w-full px-4 sm:px-6 lg:px-10">
+    <div class="divider"></div>
   </div>
 
-  <!-- Progress Bar -->
-  <div class="rc-carousel__progress" id="rcProgress"></div>
-
-</section>
-
-<!-- Carousel JS (IIFE — fully encapsulated) -->
-<script>
-(function() {
-  'use strict';
-
-  const TOTAL   = 4;
-  const DELAY   = 5000;  // 5 seconds
-  const track   = document.getElementById('rcTrack');
-  const dots    = document.querySelectorAll('.rc-carousel__dot');
-  const slides  = document.querySelectorAll('.rc-carousel__slide');
-  const bar     = document.getElementById('rcProgress');
-  const prevBtn = document.getElementById('rcPrev');
-  const nextBtn = document.getElementById('rcNext');
-
-  let current   = 0;
-  let timer     = null;
-  let isPaused  = false;
-
-  function goTo(index) {
-    // Remove active state from old slide
-    slides[current].classList.remove('is-active');
-    dots[current].classList.remove('is-active');
-
-    // Reset image transform for old slide
-    const oldImg = slides[current].querySelector('.rc-carousel__img');
-    if (oldImg) oldImg.style.transform = 'scale(1)';
-
-    // Update index
-    current = ((index % TOTAL) + TOTAL) % TOTAL;
-
-    // Move track
-    track.style.transform = 'translateX(-' + (current * 25) + '%)';
-
-    // Activate new slide
-    slides[current].classList.add('is-active');
-    dots[current].classList.add('is-active');
-
-    // Restart progress bar
-    resetProgress();
-  }
-
-  function next() { goTo(current + 1); }
-  function prev() { goTo(current - 1); }
-
-  function resetProgress() {
-    bar.classList.remove('is-running');
-    // Force reflow to restart CSS transition
-    void bar.offsetWidth;
-    bar.style.width = '0%';
-    void bar.offsetWidth;
-    bar.classList.add('is-running');
-  }
-
-  function startAutoPlay() {
-    stopAutoPlay();
-    resetProgress();
-    timer = setInterval(function() {
-      if (!isPaused) next();
-    }, DELAY);
-  }
-
-  function stopAutoPlay() {
-    if (timer) { clearInterval(timer); timer = null; }
-    bar.classList.remove('is-running');
-    bar.style.width = '0%';
-  }
-
-  // Dot click
-  dots.forEach(function(dot) {
-    dot.addEventListener('click', function() {
-      goTo(parseInt(this.dataset.goto, 10));
-      startAutoPlay();
-    });
-  });
-
-  // Arrow click
-  prevBtn.addEventListener('click', function() { prev(); startAutoPlay(); });
-  nextBtn.addEventListener('click', function() { next(); startAutoPlay(); });
-
-  // Pause on hover
-  var carousel = document.querySelector('.rc-carousel');
-  carousel.addEventListener('mouseenter', function() { isPaused = true; });
-  carousel.addEventListener('mouseleave', function() { isPaused = false; });
-
-  // Touch / swipe support
-  let touchStartX = 0;
-  let touchEndX   = 0;
-  carousel.addEventListener('touchstart', function(e) {
-    touchStartX = e.changedTouches[0].screenX;
-  }, { passive: true });
-  carousel.addEventListener('touchend', function(e) {
-    touchEndX = e.changedTouches[0].screenX;
-    const diff = touchStartX - touchEndX;
-    if (Math.abs(diff) > 50) {
-      if (diff > 0) next(); else prev();
-      startAutoPlay();
-    }
-  }, { passive: true });
-
-  // Keyboard navigation when carousel is in view
-  document.addEventListener('keydown', function(e) {
-    var rect = carousel.getBoundingClientRect();
-    var inView = rect.top < window.innerHeight && rect.bottom > 0;
-    if (!inView) return;
-    if (e.key === 'ArrowLeft')  { prev(); startAutoPlay(); }
-    if (e.key === 'ArrowRight') { next(); startAutoPlay(); }
-  });
-
-  // Init
-  startAutoPlay();
-})();
-</script>
-
-<div class="w-full px-4 sm:px-6 lg:px-10"><div class="divider"></div></div>
-
-<!-- ============================================================
+  <!-- ============================================================
      ARTICLE GRID
      ============================================================ -->
-<section id="articles" class="w-full px-4 sm:px-6 lg:px-10 py-12">
-  <div class="flex items-center gap-3 mb-8">
-    <span class="text-xs font-sans font-semibold tracking-widest uppercase text-gray-500" data-id="Terbaru" data-en="Latest" data-zh="最新">Terbaru</span>
-    <span class="flex-1 divider"></span>
-    <a href="/articles" class="text-xs font-sans font-medium text-emerald-700 hover:underline tracking-wide" data-id="Lihat Semua Jurnal" data-en="Explore All Journals" data-zh="查看全部期刊">Lihat Semua Jurnal</a>
-  </div>
-  <div class="relative">
-    <button id="articles-prev" type="button" onclick="articlesCarousel(-1)" aria-label="Artikel sebelumnya"
-      class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-5 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-white border border-gray-200 shadow-sm hover:border-emerald-700 hover:text-emerald-700 transition-colors text-gray-500">
-      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
-    </button>
-    <button id="articles-next" type="button" onclick="articlesCarousel(1)" aria-label="Artikel berikutnya"
-      class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-5 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-white border border-gray-200 shadow-sm hover:border-emerald-700 hover:text-emerald-700 transition-colors text-gray-500">
-      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
-    </button>
-    <div class="overflow-hidden">
-      <div id="articles-track" class="flex transition-transform duration-400 ease-in-out" style="will-change:transform">
-
-    <article class="articles-slide flex flex-col gap-3 group shrink-0 px-4">
-      <a href="/articles" class="card-img-wrap rounded-md overflow-hidden bg-gray-100 aspect-[3/2]">
-        <img src="https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=700&q=75" alt="Kerajinan Rotan" class="w-full h-full object-cover" loading="lazy" />
-      </a>
-      <div class="flex flex-col gap-2 pt-1">
-        <span class="text-xs font-sans font-semibold tracking-widest uppercase text-emerald-700">Kerajinan</span>
-        <h3 class="font-serif text-xl font-semibold leading-snug text-gray-900 group-hover:text-emerald-800 transition-colors">
-          <a href="/articles" data-id="Anyaman Rotan Cirebon: Warisan yang Menemukan Pasar Global" data-en="Cirebon Rattan Weaving: A Heritage Reaching Global Markets" data-zh="井里汶藤编：走向全球市场的传统工艺">Anyaman Rotan Cirebon: Warisan yang Menemukan Pasar Global</a>
-        </h3>
-        <p class="font-sans text-sm leading-relaxed text-gray-500 line-clamp-3">
-          Para pengrajin rotan di Tegalwangi kini memasok ke butik-butik interior di Paris dan Tokyo, tanpa meninggalkan teknik turun-temurun yang menjadi kekuatan mereka.
-        </p>
-        <div class="flex items-center gap-2 pt-1">
-          <span class="text-xs font-sans text-gray-400">10 Juni 2025</span>
-          <span class="text-gray-300">·</span>
-          <span class="text-xs font-sans text-gray-400">5 menit baca</span>
-        </div>
-      </div>
-    </article>
-
-    <article class="articles-slide flex flex-col gap-3 group shrink-0 px-4">
-      <a href="/articles" class="card-img-wrap rounded-md overflow-hidden bg-gray-100 aspect-[3/2]">
-        <img src="https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=700&q=75" alt="Kopi Arabika" class="w-full h-full object-cover" loading="lazy" />
-      </a>
-      <div class="flex flex-col gap-2 pt-1">
-        <span class="text-xs font-sans font-semibold tracking-widest uppercase text-emerald-700">Kuliner</span>
-        <h3 class="font-serif text-xl font-semibold leading-snug text-gray-900 group-hover:text-emerald-800 transition-colors">
-          <a href="/articles" data-id="Kopi Gayo, Toraja, dan Flores: Satu Cangkir, Tiga Karakter" data-en="Gayo, Toraja &amp; Flores Coffee: One Cup, Three Characters" data-zh="加约、托拉查与弗洛勒斯咖啡：一杯三种风味">Kopi Gayo, Toraja, dan Flores: Satu Cangkir, Tiga Karakter</a>
-        </h3>
-        <p class="font-sans text-sm leading-relaxed text-gray-500 line-clamp-3">
-          Panduan menemukan single origin terbaik dari tiga penjuru nusantara, langsung dari tangan petani ke cangkir Anda.
-        </p>
-        <div class="flex items-center gap-2 pt-1">
-          <span class="text-xs font-sans text-gray-400">7 Juni 2025</span>
-          <span class="text-gray-300">·</span>
-          <span class="text-xs font-sans text-gray-400">7 menit baca</span>
-        </div>
-      </div>
-    </article>
-
-    <article class="articles-slide flex flex-col gap-3 group shrink-0 px-4">
-      <a href="/articles" class="card-img-wrap rounded-md overflow-hidden bg-gray-100 aspect-[3/2]">
-        <img src="https://images.unsplash.com/photo-1509099836639-18ba1795216d?w=700&q=75" alt="Gotong Royong" class="w-full h-full object-cover" loading="lazy" />
-      </a>
-      <div class="flex flex-col gap-2 pt-1">
-        <span class="text-xs font-sans font-semibold tracking-widest uppercase text-emerald-700">Sosial</span>
-        <h3 class="font-serif text-xl font-semibold leading-snug text-gray-900 group-hover:text-emerald-800 transition-colors">
-          <a href="/articles" data-id="Gotong Royong Digital: Komunitas Desa yang Mengubah Kebiasaan Belanja" data-en="Digital Community Cooperation: A Village Transforming Shopping Habits" data-zh="数字互助：改变购物习惯的乡村社区">Gotong Royong Digital: Komunitas Desa yang Mengubah Kebiasaan Belanja</a>
-        </h3>
-        <p class="font-sans text-sm leading-relaxed text-gray-500 line-clamp-3">
-          Di Kabupaten Blitar, sebuah komunitas WhatsApp sederhana berevolusi menjadi ekosistem belanja kolektif yang menggerakkan ekonomi warga dari dalam.
-        </p>
-        <div class="flex items-center gap-2 pt-1">
-          <span class="text-xs font-sans text-gray-400">3 Juni 2025</span>
-          <span class="text-gray-300">·</span>
-          <span class="text-xs font-sans text-gray-400">6 menit baca</span>
-        </div>
-      </div>
-    </article>
-
-    <article class="articles-slide flex flex-col gap-3 group shrink-0 px-4">
-      <a href="/articles" class="card-img-wrap rounded-md overflow-hidden bg-gray-100 aspect-[3/2]">
-        <img src="https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=700&q=75" alt="Petani Muda" class="w-full h-full object-cover" loading="lazy" />
-      </a>
-      <div class="flex flex-col gap-2 pt-1">
-        <span class="text-xs font-sans font-semibold tracking-widest uppercase text-emerald-700">Pertanian</span>
-        <h3 class="font-serif text-xl font-semibold leading-snug text-gray-900 group-hover:text-emerald-800 transition-colors">
-          <a href="/articles" data-id="Petani Muda Nusantara: Teknologi Presisi di Lahan Tradisional" data-en="Young Indonesian Farmers: Precision Technology on Traditional Land" data-zh="努山塔拉青年农民：传统土地上的精准农业技术">Petani Muda Nusantara: Teknologi Presisi di Lahan Tradisional</a>
-        </h3>
-        <p class="font-sans text-sm leading-relaxed text-gray-500 line-clamp-3">
-          Eksplorasi mendalam bagaimana generasi baru petani memadukan teknologi presisi dan kearifan lokal untuk menembus pasar modern.
-        </p>
-        <div class="flex items-center gap-2 pt-1">
-          <span class="text-xs font-sans text-gray-400">1 Juni 2025</span>
-          <span class="text-gray-300">·</span>
-          <span class="text-xs font-sans text-gray-400">8 menit baca</span>
-        </div>
-      </div>
-    </article>
-
-      </div>
+  <section id="articles" class="w-full px-4 sm:px-6 lg:px-10 py-12">
+    <div class="flex items-center gap-3 mb-8">
+      <span class="text-xs font-sans font-semibold tracking-widest uppercase text-gray-500" data-id="Terbaru"
+        data-en="Latest" data-zh="最新">Terbaru</span>
+      <span class="flex-1 divider"></span>
+      <a href="/articles" class="text-xs font-sans font-medium text-emerald-700 hover:underline tracking-wide"
+        data-id="Lihat Semua Jurnal" data-en="Explore All Journals" data-zh="查看全部期刊">Lihat Semua Jurnal</a>
     </div>
-    <div id="articles-dots" class="carousel-dots" role="group" aria-label="Pilih posisi artikel"></div>
-  </div>
-</section>
+    <div class="relative">
+      <button id="articles-prev" type="button" onclick="articlesCarousel(-1)" aria-label="Artikel sebelumnya"
+        class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-5 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-white border border-gray-200 shadow-sm hover:border-emerald-700 hover:text-emerald-700 transition-colors text-gray-500">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24"
+          stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+      <button id="articles-next" type="button" onclick="articlesCarousel(1)" aria-label="Artikel berikutnya"
+        class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-5 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-white border border-gray-200 shadow-sm hover:border-emerald-700 hover:text-emerald-700 transition-colors text-gray-500">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24"
+          stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
+      <div class="overflow-hidden">
+        <div id="articles-track" class="flex transition-transform duration-400 ease-in-out"
+          style="will-change:transform">
 
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    function createLoopingCarousel(config) {
-      var track = document.getElementById(config.trackId);
-      var dots = document.getElementById(config.dotsId);
-      var prev = document.getElementById(config.prevId);
-      var next = document.getElementById(config.nextId);
-      if (!track) return;
+          <article class="articles-slide flex flex-col gap-3 group shrink-0 px-4">
+            <a href="/articles" class="card-img-wrap rounded-md overflow-hidden bg-gray-100 aspect-[3/2]">
+              <img src="https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=700&q=75" alt="Kerajinan Rotan"
+                class="w-full h-full object-cover" loading="lazy" />
+            </a>
+            <div class="flex flex-col gap-2 pt-1">
+              <span class="text-xs font-sans font-semibold tracking-widest uppercase text-emerald-700">Kerajinan</span>
+              <h3
+                class="font-serif text-xl font-semibold leading-snug text-gray-900 group-hover:text-emerald-800 transition-colors">
+                <a href="/articles" data-id="Anyaman Rotan Cirebon: Warisan yang Menemukan Pasar Global"
+                  data-en="Cirebon Rattan Weaving: A Heritage Reaching Global Markets"
+                  data-zh="井里汶藤编：走向全球市场的传统工艺">Anyaman Rotan Cirebon: Warisan yang Menemukan Pasar Global</a>
+              </h3>
+              <p class="font-sans text-sm leading-relaxed text-gray-500 line-clamp-3">
+                Para pengrajin rotan di Tegalwangi kini memasok ke butik-butik interior di Paris dan Tokyo, tanpa
+                meninggalkan teknik turun-temurun yang menjadi kekuatan mereka.
+              </p>
+              <div class="flex items-center gap-2 pt-1">
+                <span class="text-xs font-sans text-gray-400">10 Juni 2025</span>
+                <span class="text-gray-300">·</span>
+                <span class="text-xs font-sans text-gray-400">5 menit baca</span>
+              </div>
+            </div>
+          </article>
 
-      var originals = Array.from(track.querySelectorAll(config.slideSelector));
-      var current = 0;
-      var visible = 1;
+          <article class="articles-slide flex flex-col gap-3 group shrink-0 px-4">
+            <a href="/articles" class="card-img-wrap rounded-md overflow-hidden bg-gray-100 aspect-[3/2]">
+              <img src="https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=700&q=75" alt="Kopi Arabika"
+                class="w-full h-full object-cover" loading="lazy" />
+            </a>
+            <div class="flex flex-col gap-2 pt-1">
+              <span class="text-xs font-sans font-semibold tracking-widest uppercase text-emerald-700">Kuliner</span>
+              <h3
+                class="font-serif text-xl font-semibold leading-snug text-gray-900 group-hover:text-emerald-800 transition-colors">
+                <a href="/articles" data-id="Kopi Gayo, Toraja, dan Flores: Satu Cangkir, Tiga Karakter"
+                  data-en="Gayo, Toraja &amp; Flores Coffee: One Cup, Three Characters"
+                  data-zh="加约、托拉查与弗洛勒斯咖啡：一杯三种风味">Kopi Gayo, Toraja, dan Flores: Satu Cangkir, Tiga Karakter</a>
+              </h3>
+              <p class="font-sans text-sm leading-relaxed text-gray-500 line-clamp-3">
+                Panduan menemukan single origin terbaik dari tiga penjuru nusantara, langsung dari tangan petani ke
+                cangkir Anda.
+              </p>
+              <div class="flex items-center gap-2 pt-1">
+                <span class="text-xs font-sans text-gray-400">7 Juni 2025</span>
+                <span class="text-gray-300">·</span>
+                <span class="text-xs font-sans text-gray-400">7 menit baca</span>
+              </div>
+            </div>
+          </article>
 
-      function normalize(index) {
-        return ((index % originals.length) + originals.length) % originals.length;
-      }
+          <article class="articles-slide flex flex-col gap-3 group shrink-0 px-4">
+            <a href="/articles" class="card-img-wrap rounded-md overflow-hidden bg-gray-100 aspect-[3/2]">
+              <img src="https://images.unsplash.com/photo-1509099836639-18ba1795216d?w=700&q=75" alt="Gotong Royong"
+                class="w-full h-full object-cover" loading="lazy" />
+            </a>
+            <div class="flex flex-col gap-2 pt-1">
+              <span class="text-xs font-sans font-semibold tracking-widest uppercase text-emerald-700">Sosial</span>
+              <h3
+                class="font-serif text-xl font-semibold leading-snug text-gray-900 group-hover:text-emerald-800 transition-colors">
+                <a href="/articles" data-id="Gotong Royong Digital: Komunitas Desa yang Mengubah Kebiasaan Belanja"
+                  data-en="Digital Community Cooperation: A Village Transforming Shopping Habits"
+                  data-zh="数字互助：改变购物习惯的乡村社区">Gotong Royong Digital: Komunitas Desa yang Mengubah Kebiasaan Belanja</a>
+              </h3>
+              <p class="font-sans text-sm leading-relaxed text-gray-500 line-clamp-3">
+                Di Kabupaten Blitar, sebuah komunitas WhatsApp sederhana berevolusi menjadi ekosistem belanja kolektif
+                yang menggerakkan ekonomi warga dari dalam.
+              </p>
+              <div class="flex items-center gap-2 pt-1">
+                <span class="text-xs font-sans text-gray-400">3 Juni 2025</span>
+                <span class="text-gray-300">·</span>
+                <span class="text-xs font-sans text-gray-400">6 menit baca</span>
+              </div>
+            </div>
+          </article>
 
-      function setPosition(animate) {
-        track.style.transition = animate ? '' : 'none';
-        var totalSlides = originals.length + (visible * 2);
-        track.style.transform = 'translateX(-' + ((visible + current) * 100 / totalSlides) + '%)';
-        if (!animate) {
-          void track.offsetWidth;
-          track.style.transition = '';
+          <article class="articles-slide flex flex-col gap-3 group shrink-0 px-4">
+            <a href="/articles" class="card-img-wrap rounded-md overflow-hidden bg-gray-100 aspect-[3/2]">
+              <img src="https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=700&q=75" alt="Petani Muda"
+                class="w-full h-full object-cover" loading="lazy" />
+            </a>
+            <div class="flex flex-col gap-2 pt-1">
+              <span class="text-xs font-sans font-semibold tracking-widest uppercase text-emerald-700">Pertanian</span>
+              <h3
+                class="font-serif text-xl font-semibold leading-snug text-gray-900 group-hover:text-emerald-800 transition-colors">
+                <a href="/articles" data-id="Petani Muda Nusantara: Teknologi Presisi di Lahan Tradisional"
+                  data-en="Young Indonesian Farmers: Precision Technology on Traditional Land"
+                  data-zh="努山塔拉青年农民：传统土地上的精准农业技术">Petani Muda Nusantara: Teknologi Presisi di Lahan Tradisional</a>
+              </h3>
+              <p class="font-sans text-sm leading-relaxed text-gray-500 line-clamp-3">
+                Eksplorasi mendalam bagaimana generasi baru petani memadukan teknologi presisi dan kearifan lokal untuk
+                menembus pasar modern.
+              </p>
+              <div class="flex items-center gap-2 pt-1">
+                <span class="text-xs font-sans text-gray-400">1 Juni 2025</span>
+                <span class="text-gray-300">·</span>
+                <span class="text-xs font-sans text-gray-400">8 menit baca</span>
+              </div>
+            </div>
+          </article>
+
+        </div>
+      </div>
+      <div id="articles-dots" class="carousel-dots" role="group" aria-label="Pilih posisi artikel"></div>
+    </div>
+  </section>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      function createLoopingCarousel(config) {
+        var track = document.getElementById(config.trackId);
+        var dots = document.getElementById(config.dotsId);
+        var prev = document.getElementById(config.prevId);
+        var next = document.getElementById(config.nextId);
+        if (!track) return;
+
+        var originals = Array.from(track.querySelectorAll(config.slideSelector));
+        var current = 0;
+        var visible = 1;
+
+        function normalize(index) {
+          return ((index % originals.length) + originals.length) % originals.length;
         }
-      }
 
-      function updateDots() {
-        if (!dots) return;
-        dots.replaceChildren();
-        originals.forEach(function (_, index) {
-          var dot = document.createElement('button');
-          dot.type = 'button';
-          dot.className = 'carousel-dot' + (index === normalize(current) ? ' is-active' : '');
-          dot.setAttribute('aria-label', config.dotLabel + ' ' + (index + 1));
-          dot.setAttribute('aria-pressed', index === normalize(current) ? 'true' : 'false');
-          dot.addEventListener('click', function () {
-            current = index;
-            setPosition(true);
-            updateDots();
+        function setPosition(animate) {
+          track.style.transition = animate ? '' : 'none';
+          var totalSlides = originals.length + (visible * 2);
+          track.style.transform = 'translateX(-' + ((visible + current) * 100 / totalSlides) + '%)';
+          if (!animate) {
+            void track.offsetWidth;
+            track.style.transition = '';
+          }
+        }
+
+        function updateDots() {
+          if (!dots) return;
+          dots.replaceChildren();
+          originals.forEach(function (_, index) {
+            var dot = document.createElement('button');
+            dot.type = 'button';
+            dot.className = 'carousel-dot' + (index === normalize(current) ? ' is-active' : '');
+            dot.setAttribute('aria-label', config.dotLabel + ' ' + (index + 1));
+            dot.setAttribute('aria-pressed', index === normalize(current) ? 'true' : 'false');
+            dot.addEventListener('click', function () {
+              current = index;
+              setPosition(true);
+              updateDots();
+            });
+            dots.appendChild(dot);
           });
-          dots.appendChild(dot);
-        });
-      }
+        }
 
-      function addClones() {
-        track.querySelectorAll('.carousel-clone').forEach(function (clone) {
-          clone.remove();
-        });
-        var slides = Array.from(track.querySelectorAll(config.slideSelector));
-        var totalSlides = slides.length + (visible * 2);
-        track.style.width = (totalSlides * 100 / visible) + '%';
-        slides.forEach(function (slide) {
-          slide.style.width = (100 / totalSlides) + '%';
-        });
-        var before = document.createDocumentFragment();
-        slides.slice(-visible).forEach(function (slide) {
-          var clone = slide.cloneNode(true);
-          clone.classList.add('carousel-clone');
-          clone.setAttribute('aria-hidden', 'true');
-          clone.querySelectorAll('a, button, input, [tabindex]').forEach(function (element) {
-            element.setAttribute('tabindex', '-1');
+        function addClones() {
+          track.querySelectorAll('.carousel-clone').forEach(function (clone) {
+            clone.remove();
           });
-          before.appendChild(clone);
-        });
-        track.insertBefore(before, track.firstChild);
-        slides.slice(0, visible).forEach(function (slide) {
-          var clone = slide.cloneNode(true);
-          clone.classList.add('carousel-clone');
-          clone.setAttribute('aria-hidden', 'true');
-          clone.querySelectorAll('a, button, input, [tabindex]').forEach(function (element) {
-            element.setAttribute('tabindex', '-1');
+          var slides = Array.from(track.querySelectorAll(config.slideSelector));
+          var totalSlides = slides.length + (visible * 2);
+          track.style.width = (totalSlides * 100 / visible) + '%';
+          slides.forEach(function (slide) {
+            slide.style.width = (100 / totalSlides) + '%';
           });
-          track.appendChild(clone);
-        });
-      }
+          var before = document.createDocumentFragment();
+          slides.slice(-visible).forEach(function (slide) {
+            var clone = slide.cloneNode(true);
+            clone.classList.add('carousel-clone');
+            clone.setAttribute('aria-hidden', 'true');
+            clone.querySelectorAll('a, button, input, [tabindex]').forEach(function (element) {
+              element.setAttribute('tabindex', '-1');
+            });
+            before.appendChild(clone);
+          });
+          track.insertBefore(before, track.firstChild);
+          slides.slice(0, visible).forEach(function (slide) {
+            var clone = slide.cloneNode(true);
+            clone.classList.add('carousel-clone');
+            clone.setAttribute('aria-hidden', 'true');
+            clone.querySelectorAll('a, button, input, [tabindex]').forEach(function (element) {
+              element.setAttribute('tabindex', '-1');
+            });
+            track.appendChild(clone);
+          });
+        }
 
-      function rebuild() {
-        if (!originals.length) return;
-        current = normalize(current);
-        visible = Math.min(config.visibleCount(), originals.length);
-        addClones();
-        setPosition(false);
-        updateDots();
-        if (prev) prev.disabled = originals.length <= visible;
-        if (next) next.disabled = originals.length <= visible;
-      }
-
-      function move(direction) {
-        if (originals.length <= visible) return;
-        current += direction;
-        setPosition(true);
-        updateDots();
-      }
-
-      track.addEventListener('transitionend', function (event) {
-        if (event.target !== track || event.propertyName !== 'transform') return;
-        if (current < 0 || current >= originals.length) {
+        function rebuild() {
+          if (!originals.length) return;
           current = normalize(current);
+          visible = Math.min(config.visibleCount(), originals.length);
+          addClones();
           setPosition(false);
+          updateDots();
+          if (prev) prev.disabled = originals.length <= visible;
+          if (next) next.disabled = originals.length <= visible;
+        }
+
+        function move(direction) {
+          if (originals.length <= visible) return;
+          current += direction;
+          setPosition(true);
+          updateDots();
+        }
+
+        track.addEventListener('transitionend', function (event) {
+          if (event.target !== track || event.propertyName !== 'transform') return;
+          if (current < 0 || current >= originals.length) {
+            current = normalize(current);
+            setPosition(false);
+          }
+        });
+
+        window[config.globalName] = move;
+        window.addEventListener('resize', rebuild);
+        rebuild();
+      }
+
+      createLoopingCarousel({
+        trackId: 'articles-track',
+        slideSelector: '.articles-slide',
+        dotsId: 'articles-dots',
+        prevId: 'articles-prev',
+        nextId: 'articles-next',
+        globalName: 'articlesCarousel',
+        dotLabel: 'Tampilkan kelompok artikel',
+        visibleCount: function () {
+          if (window.innerWidth < 640) return 1;
+          if (window.innerWidth < 1024) return 2;
+          return 3;
         }
       });
 
-      window[config.globalName] = move;
-      window.addEventListener('resize', rebuild);
-      rebuild();
-    }
+      /* ── Render Produk Pilihan dari BobProductsStore ── */
+      function renderFeaturedProducts() {
+        var track = document.getElementById('products-track');
+        if (!track || !window.BobProductsStore) return;
 
-    createLoopingCarousel({
-      trackId: 'articles-track',
-      slideSelector: '.articles-slide',
-      dotsId: 'articles-dots',
-      prevId: 'articles-prev',
-      nextId: 'articles-next',
-      globalName: 'articlesCarousel',
-      dotLabel: 'Tampilkan kelompok artikel',
-      visibleCount: function () {
-        if (window.innerWidth < 640) return 1;
-        if (window.innerWidth < 1024) return 2;
-        return 3;
-      }
-    });
+        // Hapus slide lama (termasuk clone)
+        track.innerHTML = '';
 
-    /* ── Render Produk Pilihan dari BobProductsStore ── */
-    function renderFeaturedProducts() {
-      var track = document.getElementById('products-track');
-      if (!track || !window.BobProductsStore) return;
+        var featured = window.BobProductsStore.getFeaturedProducts ? window.BobProductsStore.getFeaturedProducts() : window.BobProductsStore.getFeatured('produk');
+        var resolveUrl = window.BobProductsStore.resolveUrl;
 
-      // Hapus slide lama (termasuk clone)
-      track.innerHTML = '';
-
-      var featured = window.BobProductsStore.getFeaturedProducts ? window.BobProductsStore.getFeaturedProducts() : window.BobProductsStore.getFeatured('produk');
-      var resolveUrl = window.BobProductsStore.resolveUrl;
-
-      featured.forEach(function (item) {
-        var href = resolveUrl ? resolveUrl(item.detailUrl, 'root') : (item.detailUrl || '#');
-        var subcat = (item.subcat || item.badge || 'Produk').charAt(0).toUpperCase() + (item.subcat || item.badge || 'Produk').slice(1);
-        var slide = document.createElement('div');
-        slide.className = 'products-slide flex flex-col gap-2 group shrink-0 px-2 sm:px-3';
-        slide.style.width = '25%';
-        slide.innerHTML = ''
-          + '<a href="' + href + '" class="card-img-wrap rounded-md overflow-hidden bg-gray-100 aspect-square block">'
-          + '  <img src="' + (item.img || '').replace(/w=600/g, 'w=400') + '" alt="' + item.name + '" class="w-full h-full object-cover" loading="lazy" />'
-          + '</a>'
-          + '<div class="flex flex-col gap-1 pt-1">'
-          + '  <span class="text-xs font-sans text-gray-400 uppercase tracking-wide">' + subcat + '</span>'
-          + '  <a href="' + href + '" class="text-sm font-sans font-medium text-gray-800 leading-snug group-hover:text-emerald-700 transition-colors">' + item.name + '</a>'
-          + '  <p class="text-sm font-sans font-semibold text-gray-900">' + (item.priceStr || 'Rp ' + Number(item.price).toLocaleString('id-ID')) + '</p>'
-          + '</div>'
-          + '<a href="' + href + '" class="mt-auto text-xs font-sans font-semibold text-center py-2 border border-gray-300 rounded-full text-gray-700 hover:border-emerald-700 hover:text-emerald-700 transition-colors">Lihat Produk</a>';
-        track.appendChild(slide);
-      });
-    }
-
-    /* ── Render Layanan Jasa Pilihan dari BobProductsStore ── */
-    function renderFeaturedServices() {
-      var track = document.getElementById('services-track');
-      if (!track || !window.BobProductsStore) return;
-
-      track.innerHTML = '';
-
-      var featured = window.BobProductsStore.getFeaturedServices ? window.BobProductsStore.getFeaturedServices() : window.BobProductsStore.getFeatured('jasa');
-      var resolveUrl = window.BobProductsStore.resolveUrl;
-
-      featured.forEach(function (item) {
-        var href = resolveUrl ? resolveUrl(item.detailUrl, 'root') : (item.detailUrl || '#');
-        var subcat = (item.subcat || item.badge || 'Jasa').toUpperCase();
-        var slide = document.createElement('div');
-        slide.className = 'services-slide flex flex-col gap-2 group shrink-0 px-2 sm:px-3';
-        slide.style.width = '25%';
-        slide.innerHTML = ''
-          + '<a href="' + href + '" class="card-img-wrap rounded-md overflow-hidden bg-gray-100 aspect-square block">'
-          + '  <img src="' + (item.img || '').replace(/w=600/g, 'w=400') + '" alt="' + item.name + '" class="w-full h-full object-cover" loading="lazy" />'
-          + '</a>'
-          + '<div class="flex flex-col gap-1 pt-1">'
-          + '  <span class="text-xs font-sans text-gray-400 uppercase tracking-wide">' + subcat + '</span>'
-          + '  <a href="' + href + '" class="text-sm font-sans font-medium text-gray-800 leading-snug group-hover:text-emerald-700 transition-colors">' + item.name + '</a>'
-          + '  <p class="text-sm font-sans font-semibold text-gray-900">' + (item.priceStr || 'Rp ' + Number(item.price).toLocaleString('id-ID')) + '</p>'
-          + '</div>'
-          + '<a href="' + href + '" class="mt-auto text-xs font-sans font-semibold text-center py-2 border border-gray-300 rounded-full text-gray-700 hover:border-emerald-700 hover:text-emerald-700 transition-colors">Lihat Jasa</a>';
-        track.appendChild(slide);
-      });
-    }
-
-    renderFeaturedProducts();
-    renderFeaturedServices();
-
-    createLoopingCarousel({
-      trackId: 'products-track',
-      slideSelector: '.products-slide',
-      prevId: 'products-prev',
-      nextId: 'products-next',
-      globalName: 'productsCarousel',
-      dotLabel: 'Tampilkan kelompok produk',
-      visibleCount: function () {
-        if (window.innerWidth < 640) return 2;
-        if (window.innerWidth < 1024) return 3;
-        return 4;
-      }
-    });
-
-    createLoopingCarousel({
-      trackId: 'services-track',
-      slideSelector: '.services-slide',
-      prevId: 'services-prev',
-      nextId: 'services-next',
-      globalName: 'servicesCarousel',
-      dotLabel: 'Tampilkan kelompok layanan jasa',
-      visibleCount: function () {
-        if (window.innerWidth < 640) return 2;
-        if (window.innerWidth < 1024) return 3;
-        return 4;
-      }
-    });
-
-    /* Sinkronisasi antar-tab: jika Master Admin mengubah produk atau jasa unggulan */
-    window.addEventListener('storage', function (e) {
-      if (e.key === (window.BobProductsStore ? window.BobProductsStore.STORAGE_KEY : 'bob_catalog_and_featured_products')) {
-        renderFeaturedProducts();
-        createLoopingCarousel({
-          trackId: 'products-track',
-          slideSelector: '.products-slide',
-          prevId: 'products-prev',
-          nextId: 'products-next',
-          globalName: 'productsCarousel',
-          dotLabel: 'Tampilkan kelompok produk',
-          visibleCount: function () {
-            if (window.innerWidth < 640) return 2;
-            if (window.innerWidth < 1024) return 3;
-            return 4;
-          }
-        });
-
-        renderFeaturedServices();
-        createLoopingCarousel({
-          trackId: 'services-track',
-          slideSelector: '.services-slide',
-          prevId: 'services-prev',
-          nextId: 'services-next',
-          globalName: 'servicesCarousel',
-          dotLabel: 'Tampilkan kelompok layanan jasa',
-          visibleCount: function () {
-            if (window.innerWidth < 640) return 2;
-            if (window.innerWidth < 1024) return 3;
-            return 4;
-          }
+        featured.forEach(function (item) {
+          var href = resolveUrl ? resolveUrl(item.detailUrl, 'root') : (item.detailUrl || '#');
+          var subcat = (item.subcat || item.badge || 'Produk').charAt(0).toUpperCase() + (item.subcat || item.badge || 'Produk').slice(1);
+          var slide = document.createElement('div');
+          slide.className = 'products-slide flex flex-col gap-2 group shrink-0 px-2 sm:px-3';
+          slide.style.width = '25%';
+          slide.innerHTML = ''
+            + '<a href="' + href + '" class="card-img-wrap rounded-md overflow-hidden bg-gray-100 aspect-square block">'
+            + '  <img src="' + (item.img || '').replace(/w=600/g, 'w=400') + '" alt="' + item.name + '" class="w-full h-full object-cover" loading="lazy" />'
+            + '</a>'
+            + '<div class="flex flex-col gap-1 pt-1">'
+            + '  <span class="text-xs font-sans text-gray-400 uppercase tracking-wide">' + subcat + '</span>'
+            + '  <a href="' + href + '" class="text-sm font-sans font-medium text-gray-800 leading-snug group-hover:text-emerald-700 transition-colors">' + item.name + '</a>'
+            + '  <p class="text-sm font-sans font-semibold text-gray-900">' + (item.priceStr || 'Rp ' + Number(item.price).toLocaleString('id-ID')) + '</p>'
+            + '</div>'
+            + '<a href="' + href + '" class="mt-auto text-xs font-sans font-semibold text-center py-2 border border-gray-300 rounded-full text-gray-700 hover:border-emerald-700 hover:text-emerald-700 transition-colors">Lihat Produk</a>';
+          track.appendChild(slide);
         });
       }
+
+      /* ── Render Layanan Jasa Pilihan dari BobProductsStore ── */
+      function renderFeaturedServices() {
+        var track = document.getElementById('services-track');
+        if (!track || !window.BobProductsStore) return;
+
+        track.innerHTML = '';
+
+        var featured = window.BobProductsStore.getFeaturedServices ? window.BobProductsStore.getFeaturedServices() : window.BobProductsStore.getFeatured('jasa');
+        var resolveUrl = window.BobProductsStore.resolveUrl;
+
+        featured.forEach(function (item) {
+          var href = resolveUrl ? resolveUrl(item.detailUrl, 'root') : (item.detailUrl || '#');
+          var subcat = (item.subcat || item.badge || 'Jasa').toUpperCase();
+          var slide = document.createElement('div');
+          slide.className = 'services-slide flex flex-col gap-2 group shrink-0 px-2 sm:px-3';
+          slide.style.width = '25%';
+          slide.innerHTML = ''
+            + '<a href="' + href + '" class="card-img-wrap rounded-md overflow-hidden bg-gray-100 aspect-square block">'
+            + '  <img src="' + (item.img || '').replace(/w=600/g, 'w=400') + '" alt="' + item.name + '" class="w-full h-full object-cover" loading="lazy" />'
+            + '</a>'
+            + '<div class="flex flex-col gap-1 pt-1">'
+            + '  <span class="text-xs font-sans text-gray-400 uppercase tracking-wide">' + subcat + '</span>'
+            + '  <a href="' + href + '" class="text-sm font-sans font-medium text-gray-800 leading-snug group-hover:text-emerald-700 transition-colors">' + item.name + '</a>'
+            + '  <p class="text-sm font-sans font-semibold text-gray-900">' + (item.priceStr || 'Rp ' + Number(item.price).toLocaleString('id-ID')) + '</p>'
+            + '</div>'
+            + '<a href="' + href + '" class="mt-auto text-xs font-sans font-semibold text-center py-2 border border-gray-300 rounded-full text-gray-700 hover:border-emerald-700 hover:text-emerald-700 transition-colors">Lihat Jasa</a>';
+          track.appendChild(slide);
+        });
+      }
+
+      renderFeaturedProducts();
+      renderFeaturedServices();
+
+      createLoopingCarousel({
+        trackId: 'products-track',
+        slideSelector: '.products-slide',
+        prevId: 'products-prev',
+        nextId: 'products-next',
+        globalName: 'productsCarousel',
+        dotLabel: 'Tampilkan kelompok produk',
+        visibleCount: function () {
+          if (window.innerWidth < 640) return 2;
+          if (window.innerWidth < 1024) return 3;
+          return 4;
+        }
+      });
+
+      createLoopingCarousel({
+        trackId: 'services-track',
+        slideSelector: '.services-slide',
+        prevId: 'services-prev',
+        nextId: 'services-next',
+        globalName: 'servicesCarousel',
+        dotLabel: 'Tampilkan kelompok layanan jasa',
+        visibleCount: function () {
+          if (window.innerWidth < 640) return 2;
+          if (window.innerWidth < 1024) return 3;
+          return 4;
+        }
+      });
+
+      /* Sinkronisasi antar-tab: jika Master Admin mengubah produk atau jasa unggulan */
+      window.addEventListener('storage', function (e) {
+        if (e.key === (window.BobProductsStore ? window.BobProductsStore.STORAGE_KEY : 'bob_catalog_and_featured_products')) {
+          renderFeaturedProducts();
+          createLoopingCarousel({
+            trackId: 'products-track',
+            slideSelector: '.products-slide',
+            prevId: 'products-prev',
+            nextId: 'products-next',
+            globalName: 'productsCarousel',
+            dotLabel: 'Tampilkan kelompok produk',
+            visibleCount: function () {
+              if (window.innerWidth < 640) return 2;
+              if (window.innerWidth < 1024) return 3;
+              return 4;
+            }
+          });
+
+          renderFeaturedServices();
+          createLoopingCarousel({
+            trackId: 'services-track',
+            slideSelector: '.services-slide',
+            prevId: 'services-prev',
+            nextId: 'services-next',
+            globalName: 'servicesCarousel',
+            dotLabel: 'Tampilkan kelompok layanan jasa',
+            visibleCount: function () {
+              if (window.innerWidth < 640) return 2;
+              if (window.innerWidth < 1024) return 3;
+              return 4;
+            }
+          });
+        }
+      });
     });
+  </script>
+
+  <div class="w-full px-4 sm:px-6 lg:px-10">
+    <div class="divider"></div>
+  </div>
+
+  <!-- ============================================================
+     MARKETPLACE (PRODUK PILIHAN)
+     ============================================================ -->
+  <section id="marketplace" class="w-full px-4 sm:px-6 lg:px-10 py-12">
+    <div class="flex items-center gap-3 mb-8">
+      <span class="text-xs font-sans font-semibold tracking-widest uppercase text-gray-500" data-id="Produk Pilihan"
+        data-en="Featured Products" data-zh="精选产品">Produk Pilihan</span>
+      <span class="flex-1 divider"></span>
+      <a href="/etalase" class="text-xs font-sans font-medium text-emerald-700 hover:underline tracking-wide"
+        data-id="Jelajahi Etalase Produk &amp; Jasa →" data-en="Explore Products &amp; Services →"
+        data-zh="浏览产品与服务 →">Jelajahi Etalase Produk &amp; Jasa →</a>
+    </div>
+
+    <!-- Carousel wrapper -->
+    <div class="relative">
+
+      <!-- Left arrow -->
+      <button id="products-prev" onclick="productsCarousel(-1)" aria-label="Produk sebelumnya"
+        class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-5 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-white border border-gray-200 shadow-sm hover:border-emerald-700 hover:text-emerald-700 transition-colors text-gray-500"
+        style="margin-top:-24px">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24"
+          stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+
+      <!-- Right arrow -->
+      <button id="products-next" onclick="productsCarousel(1)" aria-label="Produk berikutnya"
+        class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-5 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-white border border-gray-200 shadow-sm hover:border-emerald-700 hover:text-emerald-700 transition-colors text-gray-500"
+        style="margin-top:-24px">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24"
+          stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
+
+      <!-- Slide track (overflow hidden) -->
+      <div class="overflow-hidden">
+        <div id="products-track" class="flex transition-transform duration-400 ease-in-out"
+          style="will-change:transform">
+          <!-- Produk dirender dinamis oleh renderFeaturedProducts() -->
+        </div><!-- /products-track -->
+      </div><!-- /overflow-hidden -->
+
+    </div><!-- /relative -->
+  </section>
+
+  <div class="w-full px-4 sm:px-6 lg:px-10">
+    <div class="divider"></div>
+  </div>
+
+  <!-- ============================================================
+     ETALASE JASA (LAYANAN JASA PILIHAN)
+     ============================================================ -->
+  <section id="services-showcase" class="w-full px-4 sm:px-6 lg:px-10 py-12">
+    <div class="flex items-center gap-3 mb-8">
+      <span class="text-xs font-sans font-semibold tracking-widest uppercase text-gray-500"
+        data-id="Layanan Jasa Pilihan" data-en="Featured Services" data-zh="精选服务">Layanan Jasa Pilihan</span>
+      <span class="flex-1 divider"></span>
+      <a href="/etalase?jenis=jasa" class="text-xs font-sans font-medium text-emerald-700 hover:underline tracking-wide"
+        data-id="Jelajahi Etalase Jasa →" data-en="Explore Services →" data-zh="浏览服务 →">Jelajahi Etalase Jasa →</a>
+    </div>
+
+    <!-- Carousel wrapper -->
+    <div class="relative">
+
+      <!-- Left arrow -->
+      <button id="services-prev" onclick="servicesCarousel(-1)" aria-label="Layanan jasa sebelumnya"
+        class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-5 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-white border border-gray-200 shadow-sm hover:border-emerald-700 hover:text-emerald-700 transition-colors text-gray-500"
+        style="margin-top:-24px">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24"
+          stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+
+      <!-- Right arrow -->
+      <button id="services-next" onclick="servicesCarousel(1)" aria-label="Layanan jasa berikutnya"
+        class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-5 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-white border border-gray-200 shadow-sm hover:border-emerald-700 hover:text-emerald-700 transition-colors text-gray-500"
+        style="margin-top:-24px">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24"
+          stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
+
+      <!-- Slide track (overflow hidden) -->
+      <div class="overflow-hidden">
+        <div id="services-track" class="flex transition-transform duration-400 ease-in-out"
+          style="will-change:transform">
+          <!-- Layanan jasa dirender dinamis oleh renderFeaturedServices() -->
+        </div><!-- /services-track -->
+      </div><!-- /overflow-hidden -->
+
+    </div><!-- /relative -->
+  </section>
+
+  <div class="w-full px-4 sm:px-6 lg:px-10">
+    <div class="divider"></div>
+  </div>
+
+  <!-- ============================================================
+     SECONDARY ARTICLES
+     ============================================================ -->
+  <section id="more-stories" class="w-full px-4 sm:px-6 lg:px-10 py-12">
+    <div class="flex items-center gap-3 mb-8">
+      <span class="text-xs font-sans font-semibold tracking-widest uppercase text-gray-500">Lebih Banyak Cerita</span>
+      <span class="flex-1 divider"></span>
+    </div>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+      <article class="lg:col-span-2 flex flex-col sm:flex-row gap-6 group">
+        <div
+          class="card-img-wrap rounded-md overflow-hidden bg-gray-100 w-full sm:w-56 shrink-0 aspect-[4/3] sm:aspect-auto sm:h-44">
+          <img src="https://images.unsplash.com/photo-1444858291040-58f756a3bdd6?w=700&q=75" alt="Tenun NTT"
+            class="w-full h-full object-cover" loading="lazy" />
+        </div>
+        <div class="flex flex-col gap-2 justify-center">
+          <span class="text-xs font-sans font-semibold tracking-widest uppercase text-emerald-700">Budaya</span>
+          <h3
+            class="font-serif text-xl sm:text-2xl font-semibold leading-snug text-gray-900 group-hover:text-emerald-800 transition-colors">
+            <a href="#">Tenun Ikat NTT: Motif Leluhur yang Kini Dikenakan di Panggung Dunia</a>
+          </h3>
+          <p class="font-sans text-sm leading-relaxed text-gray-500 line-clamp-2">Desainer muda lokal berkolaborasi
+            dengan penenun lansia di Flores untuk menjaga motif adat tetap hidup dan relevan bagi generasi berikutnya.
+          </p>
+          <div class="flex items-center gap-2 pt-1">
+            <span class="text-xs font-sans text-gray-400">1 Juni 2025</span>
+            <span class="text-gray-300">·</span>
+            <span class="text-xs font-sans text-gray-400">8 menit baca</span>
+          </div>
+        </div>
+      </article>
+
+      <div class="flex flex-col gap-6">
+        <article class="flex gap-4 group">
+          <div class="card-img-wrap rounded-md overflow-hidden bg-gray-100 w-24 h-20 shrink-0">
+            <img src="https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=300&q=75" alt="Sampah Plastik"
+              class="w-full h-full object-cover" loading="lazy" />
+          </div>
+          <div class="flex flex-col gap-1 justify-center">
+            <span class="text-xs font-sans font-semibold tracking-widest uppercase text-emerald-700">Lingkungan</span>
+            <h4
+              class="font-serif text-base font-semibold leading-snug text-gray-900 group-hover:text-emerald-800 transition-colors">
+              <a href="#">Desa Bebas Plastik: Kisah dari Bali yang Menginspirasi Dunia</a>
+            </h4>
+            <span class="text-xs font-sans text-gray-400">28 Mei 2025</span>
+          </div>
+        </article>
+        <div class="divider"></div>
+        <article class="flex gap-4 group">
+          <div class="card-img-wrap rounded-md overflow-hidden bg-gray-100 w-24 h-20 shrink-0">
+            <img src="https://images.unsplash.com/photo-1508193638397-1c4234db14d8?w=300&q=75" alt="Ekowisata"
+              class="w-full h-full object-cover" loading="lazy" />
+          </div>
+          <div class="flex flex-col gap-1 justify-center">
+            <span class="text-xs font-sans font-semibold tracking-widest uppercase text-emerald-700">Wisata</span>
+            <h4
+              class="font-serif text-base font-semibold leading-snug text-gray-900 group-hover:text-emerald-800 transition-colors">
+              <a href="#">Ekowisata Hutan Mangrove: Alternatif Penghasilan Nelayan Pesisir</a>
+            </h4>
+            <span class="text-xs font-sans text-gray-400">25 Mei 2025</span>
+          </div>
+        </article>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="w-full px-4 sm:px-6 lg:px-10">
+    <div class="divider"></div>
+  </div>
+
+  <!-- ============================================================
+     NEWSLETTER
+     ============================================================ -->
+  <section class="bg-gray-50 border-t border-b border-gray-100 py-14">
+    <div class="max-w-2xl mx-auto px-4 text-center flex flex-col gap-4">
+      <span class="text-xs font-sans font-semibold tracking-widest uppercase text-emerald-700">Newsletter</span>
+      <h2 class="font-serif text-2xl sm:text-3xl font-bold text-gray-900">
+        Cerita terbaik, langsung ke kotak masuk Anda
+      </h2>
+      <p class="font-sans text-sm text-gray-500 leading-relaxed">
+        Bergabunglah dengan ribuan pembaca yang menerima kurasi artikel pilihan dan penawaran produk eksklusif setiap
+        bulan.
+      </p>
+      <form id="newsletter-form" class="flex flex-col items-center gap-3 justify-center mt-2">
+        <input id="newsletter-email" name="email" type="email" autocomplete="email" maxlength="254" required
+          aria-label="Alamat email" data-aria-id="Alamat email" data-aria-en="Email address"
+          data-ph-id="alamat@email.com" data-ph-en="email@example.com" placeholder="alamat@email.com"
+          class="flex-1 max-w-xs px-4 py-2.5 text-sm font-sans border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-transparent" />
+        <label class="flex items-start gap-2 max-w-md text-left text-xs font-sans text-gray-600">
+          <input id="newsletter-consent" name="consent" type="checkbox" required class="mt-0.5 accent-emerald-700" />
+          <span
+            data-id="Saya bersedia menerima kurasi artikel dan penawaran produk Racik Media melalui email setiap bulan."
+            data-en="I agree to receive Racik Media's monthly article curation and product offers by email.">
+            Saya bersedia menerima kurasi artikel dan penawaran produk Racik Media melalui email setiap bulan.
+          </span>
+        </label>
+        <button id="newsletter-submit" type="submit"
+          class="px-6 py-2.5 text-sm font-sans font-semibold bg-emerald-700 text-white rounded-full hover:bg-emerald-800 transition-colors">
+          Langganan Gratis
+        </button>
+        <p id="newsletter-status" class="min-h-5 text-sm font-sans text-gray-600" role="status" aria-live="polite"></p>
+      </form>
+      <p class="text-xs font-sans text-gray-400"
+        data-id="Email Anda digunakan untuk menyiapkan dan mengirim informasi tabloid bulanan Racik Media."
+        data-en="Your email will be used to prepare and send Racik Media's monthly tabloid updates.">
+        Email Anda digunakan untuk menyiapkan dan mengirim informasi tabloid bulanan Racik Media.
+      </p>
+    </div>
+  </section>
+
+  <div id="rm-footer-root"></div>
+
+  <!-- Scripts -->
+  <script src="./assets/js/lang.js"></script>
+  <script src="./assets/js/layout.js"></script>
+  <script src="./assets/js/public-layout.js"></script>
+  <script src="./assets/js/newsletter.js"></script>
+
+  <div id="cookie-consent" class="cookie-consent" role="region" aria-label="Pemberitahuan cookie" hidden>
+    <div class="cookie-consent__copy">
+      <h2 data-id="Privasi Anda penting" data-en="Your privacy matters" data-zh="您的隐私很重要">Privasi Anda penting</h2>
+      <p data-id="Kami menggunakan cookie yang diperlukan agar situs berfungsi. Dengan persetujuan Anda, cookie opsional juga dapat digunakan untuk meningkatkan pengalaman."
+        data-en="We use essential cookies to make this site work. With your permission, optional cookies may also be used to improve your experience."
+        data-zh="我们使用必要的 Cookie 来确保网站正常运行。经您同意，也可能使用可选 Cookie 来改善您的体验。">Kami menggunakan cookie yang diperlukan agar
+        situs berfungsi. Dengan persetujuan Anda, cookie opsional juga dapat digunakan untuk meningkatkan pengalaman.
+      </p>
+    </div>
+    <div class="cookie-consent__actions">
+      <button id="cookie-settings-open" class="cookie-consent__button cookie-consent__button--secondary" type="button"
+        data-id="Pengaturan Cookie" data-en="Cookies Settings" data-zh="Cookie 设置">Cookies Settings</button>
+      <button id="cookie-reject-all" class="cookie-consent__button cookie-consent__button--secondary" type="button"
+        data-id="Tolak Semua" data-en="Reject All" data-zh="全部拒绝">Reject All</button>
+      <button id="cookie-accept-all" class="cookie-consent__button cookie-consent__button--primary" type="button"
+        data-id="Terima Semua Cookie" data-en="Accept All Cookies" data-zh="接受所有 Cookie">Accept All Cookies</button>
+    </div>
+    <p id="cookie-consent-error" class="cookie-consent__error" role="status" aria-live="polite" hidden
+      data-id="Pilihan belum tersimpan. Periksa pengaturan penyimpanan browser Anda."
+      data-en="Your choice was not saved. Check your browser storage settings." data-zh="您的选择尚未保存。请检查浏览器存储设置。">Pilihan
+      belum tersimpan. Periksa pengaturan penyimpanan browser Anda.</p>
+  </div>
+
+  <div id="cookie-settings" class="cookie-settings" hidden>
+    <div class="cookie-settings__backdrop" data-cookie-settings-close></div>
+    <section class="cookie-settings__dialog" role="dialog" aria-modal="true" aria-labelledby="cookie-settings-title"
+      aria-describedby="cookie-settings-description">
+      <button class="cookie-settings__close" type="button" aria-label="Tutup pengaturan cookie"
+        data-cookie-settings-close>×</button>
+      <h2 id="cookie-settings-title" data-id="Pengaturan Cookie" data-en="Cookie Settings" data-zh="Cookie 设置">Cookie
+        Settings</h2>
+      <p id="cookie-settings-description"
+        data-id="Pilih cookie opsional yang Anda izinkan. Cookie yang diperlukan selalu aktif agar fungsi dasar situs berjalan."
+        data-en="Choose which optional cookies you allow. Essential cookies are always on for core site functionality."
+        data-zh="选择您允许使用的可选 Cookie。必要 Cookie 始终启用，以确保网站基本功能正常运行。">Pilih cookie opsional yang Anda izinkan. Cookie yang
+        diperlukan selalu aktif agar fungsi dasar situs berjalan.</p>
+      <div class="cookie-settings__option">
+        <div>
+          <strong data-id="Cookie yang diperlukan" data-en="Essential cookies" data-zh="必要 Cookie">Essential
+            cookies</strong>
+          <p data-id="Diperlukan untuk keamanan dan fungsi inti situs."
+            data-en="Required for security and core site functionality." data-zh="网站安全和核心功能所必需。">Diperlukan untuk
+            keamanan dan fungsi inti situs.</p>
+        </div>
+        <input type="checkbox" checked disabled aria-label="Cookie yang diperlukan selalu aktif" />
+      </div>
+      <label class="cookie-settings__option" for="cookie-analytics">
+        <span>
+          <strong data-id="Cookie analitik opsional" data-en="Optional analytics cookies" data-zh="可选分析 Cookie">Optional
+            analytics cookies</strong>
+          <span class="cookie-settings__option-description"
+            data-id="Izinkan pengukuran penggunaan situs untuk membantu peningkatan layanan."
+            data-en="Allow site-usage measurement to help improve the service." data-zh="允许衡量网站使用情况，以帮助改进服务。">Izinkan
+            pengukuran penggunaan situs untuk membantu peningkatan layanan.</span>
+        </span>
+        <input id="cookie-analytics" type="checkbox" />
+      </label>
+      <p class="cookie-settings__note"
+        data-id="Preferensi ini disimpan di browser ini. Komponen ini menyimpan pilihan Anda; layanan analitik baru harus dihubungkan secara terpisah."
+        data-en="These preferences are stored in this browser. This component saves your choice; analytics services must be connected separately."
+        data-zh="这些偏好设置保存在此浏览器中。此组件会保存您的选择；分析服务需要单独接入。">Preferensi ini disimpan di browser ini. Komponen ini menyimpan
+        pilihan Anda; layanan analitik baru harus dihubungkan secara terpisah.</p>
+      <p id="cookie-settings-error" class="cookie-consent__error" role="status" aria-live="polite" hidden
+        data-id="Preferensi belum tersimpan. Periksa pengaturan penyimpanan browser Anda."
+        data-en="Your preferences were not saved. Check your browser storage settings."
+        data-zh="您的偏好设置尚未保存。请检查浏览器存储设置。">Preferensi belum tersimpan. Periksa pengaturan penyimpanan browser Anda.</p>
+      <div class="cookie-settings__actions">
+        <button id="cookie-settings-save" class="cookie-consent__button cookie-consent__button--primary" type="button"
+          data-id="Simpan Preferensi" data-en="Save Preferences" data-zh="保存偏好设置">Simpan Preferensi</button>
+        <button id="cookie-settings-reject" class="cookie-consent__button cookie-consent__button--secondary"
+          type="button" data-id="Tolak Cookie Opsional" data-en="Reject Optional Cookies" data-zh="拒绝可选 Cookie">Tolak
+          Cookie Opsional</button>
+      </div>
+    </section>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+<!-- ========================================================================= -->
+<!-- LOGIKA DINAMIS FITUR SINKRONISASI TEMA GLOBAL -->
+<!-- ========================================================================= -->
+<script>
+  function terapkanWarnaKeTampilan(namaTema) {
+    const elemenBody = document.body;
+    elemenBody.classList.remove('bg-white', 'bg-pink-50', 'bg-red-50');
+
+    if (namaTema === 'tema-kartini') {
+      elemenBody.classList.add('bg-pink-50');
+    } else if (namaTema === 'tema-17agustus') {
+      elemenBody.classList.add('bg-red-50');
+    } else {
+      elemenBody.classList.add('bg-white');
+    }
+  }
+
+  async function setTemaEventGlobal(namaTema) {
+    try {
+      const response = await fetch('/api/theme', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ temaBaru: namaTema })
+      });
+
+      if (response.ok) {
+        terapkanWarnaKeTampilan(namaTema);
+        alert(`Sukses! Tema global berhasil disinkronkan ke: ${namaTema}`);
+      } else {
+        alert("Gagal menyinkronkan tema ke server backend.");
+      }
+    } catch (error) {
+      console.error("Terjadi kesalahan koneksi ke API:", error);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", async () => {
+    try {
+      const respon = await fetch('/api/theme');
+      const data = await respon.json();
+      terapkanWarnaKeTampilan(data.temaEvent);
+    } catch (error) {
+      console.error("Gagal memuat tema dari server:", error);
+      terapkanWarnaKeTampilan('tema-standar');
+    }
   });
 </script>
 
-<div class="w-full px-4 sm:px-6 lg:px-10"><div class="divider"></div></div>
-
-<!-- ============================================================
-     MARKETPLACE (PRODUK PILIHAN)
-     ============================================================ -->
-<section id="marketplace" class="w-full px-4 sm:px-6 lg:px-10 py-12">
-  <div class="flex items-center gap-3 mb-8">
-    <span class="text-xs font-sans font-semibold tracking-widest uppercase text-gray-500" data-id="Produk Pilihan" data-en="Featured Products" data-zh="精选产品">Produk Pilihan</span>
-    <span class="flex-1 divider"></span>
-    <a href="/etalase" class="text-xs font-sans font-medium text-emerald-700 hover:underline tracking-wide" data-id="Jelajahi Etalase Produk &amp; Jasa →" data-en="Explore Products &amp; Services →" data-zh="浏览产品与服务 →">Jelajahi Etalase Produk &amp; Jasa →</a>
-  </div>
-
-  <!-- Carousel wrapper -->
-  <div class="relative">
-
-    <!-- Left arrow -->
-    <button id="products-prev"
-      onclick="productsCarousel(-1)"
-      aria-label="Produk sebelumnya"
-      class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-5 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-white border border-gray-200 shadow-sm hover:border-emerald-700 hover:text-emerald-700 transition-colors text-gray-500"
-      style="margin-top:-24px">
-      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
-    </button>
-
-    <!-- Right arrow -->
-    <button id="products-next"
-      onclick="productsCarousel(1)"
-      aria-label="Produk berikutnya"
-      class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-5 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-white border border-gray-200 shadow-sm hover:border-emerald-700 hover:text-emerald-700 transition-colors text-gray-500"
-      style="margin-top:-24px">
-      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
-    </button>
-
-    <!-- Slide track (overflow hidden) -->
-    <div class="overflow-hidden">
-      <div id="products-track" class="flex transition-transform duration-400 ease-in-out" style="will-change:transform">
-        <!-- Produk dirender dinamis oleh renderFeaturedProducts() -->
-      </div><!-- /products-track -->
-    </div><!-- /overflow-hidden -->
-
-  </div><!-- /relative -->
-</section>
-
-<div class="w-full px-4 sm:px-6 lg:px-10"><div class="divider"></div></div>
-
-<!-- ============================================================
-     ETALASE JASA (LAYANAN JASA PILIHAN)
-     ============================================================ -->
-<section id="services-showcase" class="w-full px-4 sm:px-6 lg:px-10 py-12">
-  <div class="flex items-center gap-3 mb-8">
-    <span class="text-xs font-sans font-semibold tracking-widest uppercase text-gray-500" data-id="Layanan Jasa Pilihan" data-en="Featured Services" data-zh="精选服务">Layanan Jasa Pilihan</span>
-    <span class="flex-1 divider"></span>
-    <a href="/etalase?jenis=jasa" class="text-xs font-sans font-medium text-emerald-700 hover:underline tracking-wide" data-id="Jelajahi Etalase Jasa →" data-en="Explore Services →" data-zh="浏览服务 →">Jelajahi Etalase Jasa →</a>
-  </div>
-
-  <!-- Carousel wrapper -->
-  <div class="relative">
-
-    <!-- Left arrow -->
-    <button id="services-prev"
-      onclick="servicesCarousel(-1)"
-      aria-label="Layanan jasa sebelumnya"
-      class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-5 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-white border border-gray-200 shadow-sm hover:border-emerald-700 hover:text-emerald-700 transition-colors text-gray-500"
-      style="margin-top:-24px">
-      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
-    </button>
-
-    <!-- Right arrow -->
-    <button id="services-next"
-      onclick="servicesCarousel(1)"
-      aria-label="Layanan jasa berikutnya"
-      class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-5 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-white border border-gray-200 shadow-sm hover:border-emerald-700 hover:text-emerald-700 transition-colors text-gray-500"
-      style="margin-top:-24px">
-      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
-    </button>
-
-    <!-- Slide track (overflow hidden) -->
-    <div class="overflow-hidden">
-      <div id="services-track" class="flex transition-transform duration-400 ease-in-out" style="will-change:transform">
-        <!-- Layanan jasa dirender dinamis oleh renderFeaturedServices() -->
-      </div><!-- /services-track -->
-    </div><!-- /overflow-hidden -->
-
-  </div><!-- /relative -->
-</section>
-
-<div class="w-full px-4 sm:px-6 lg:px-10"><div class="divider"></div></div>
-
-<!-- ============================================================
-     SECONDARY ARTICLES
-     ============================================================ -->
-<section id="more-stories" class="w-full px-4 sm:px-6 lg:px-10 py-12">
-  <div class="flex items-center gap-3 mb-8">
-    <span class="text-xs font-sans font-semibold tracking-widest uppercase text-gray-500">Lebih Banyak Cerita</span>
-    <span class="flex-1 divider"></span>
-  </div>
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
-    <article class="lg:col-span-2 flex flex-col sm:flex-row gap-6 group">
-      <div class="card-img-wrap rounded-md overflow-hidden bg-gray-100 w-full sm:w-56 shrink-0 aspect-[4/3] sm:aspect-auto sm:h-44">
-        <img src="https://images.unsplash.com/photo-1444858291040-58f756a3bdd6?w=700&q=75" alt="Tenun NTT" class="w-full h-full object-cover" loading="lazy" />
-      </div>
-      <div class="flex flex-col gap-2 justify-center">
-        <span class="text-xs font-sans font-semibold tracking-widest uppercase text-emerald-700">Budaya</span>
-        <h3 class="font-serif text-xl sm:text-2xl font-semibold leading-snug text-gray-900 group-hover:text-emerald-800 transition-colors">
-          <a href="#">Tenun Ikat NTT: Motif Leluhur yang Kini Dikenakan di Panggung Dunia</a>
-        </h3>
-        <p class="font-sans text-sm leading-relaxed text-gray-500 line-clamp-2">Desainer muda lokal berkolaborasi dengan penenun lansia di Flores untuk menjaga motif adat tetap hidup dan relevan bagi generasi berikutnya.</p>
-        <div class="flex items-center gap-2 pt-1">
-          <span class="text-xs font-sans text-gray-400">1 Juni 2025</span>
-          <span class="text-gray-300">·</span>
-          <span class="text-xs font-sans text-gray-400">8 menit baca</span>
-        </div>
-      </div>
-    </article>
-
-    <div class="flex flex-col gap-6">
-      <article class="flex gap-4 group">
-        <div class="card-img-wrap rounded-md overflow-hidden bg-gray-100 w-24 h-20 shrink-0">
-          <img src="https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=300&q=75" alt="Sampah Plastik" class="w-full h-full object-cover" loading="lazy" />
-        </div>
-        <div class="flex flex-col gap-1 justify-center">
-          <span class="text-xs font-sans font-semibold tracking-widest uppercase text-emerald-700">Lingkungan</span>
-          <h4 class="font-serif text-base font-semibold leading-snug text-gray-900 group-hover:text-emerald-800 transition-colors">
-            <a href="#">Desa Bebas Plastik: Kisah dari Bali yang Menginspirasi Dunia</a>
-          </h4>
-          <span class="text-xs font-sans text-gray-400">28 Mei 2025</span>
-        </div>
-      </article>
-      <div class="divider"></div>
-      <article class="flex gap-4 group">
-        <div class="card-img-wrap rounded-md overflow-hidden bg-gray-100 w-24 h-20 shrink-0">
-          <img src="https://images.unsplash.com/photo-1508193638397-1c4234db14d8?w=300&q=75" alt="Ekowisata" class="w-full h-full object-cover" loading="lazy" />
-        </div>
-        <div class="flex flex-col gap-1 justify-center">
-          <span class="text-xs font-sans font-semibold tracking-widest uppercase text-emerald-700">Wisata</span>
-          <h4 class="font-serif text-base font-semibold leading-snug text-gray-900 group-hover:text-emerald-800 transition-colors">
-            <a href="#">Ekowisata Hutan Mangrove: Alternatif Penghasilan Nelayan Pesisir</a>
-          </h4>
-          <span class="text-xs font-sans text-gray-400">25 Mei 2025</span>
-        </div>
-      </article>
-    </div>
-
-  </div>
-</section>
-
-<div class="w-full px-4 sm:px-6 lg:px-10"><div class="divider"></div></div>
-
-<!-- ============================================================
-     NEWSLETTER
-     ============================================================ -->
-<section class="bg-gray-50 border-t border-b border-gray-100 py-14">
-  <div class="max-w-2xl mx-auto px-4 text-center flex flex-col gap-4">
-    <span class="text-xs font-sans font-semibold tracking-widest uppercase text-emerald-700">Newsletter</span>
-    <h2 class="font-serif text-2xl sm:text-3xl font-bold text-gray-900">
-      Cerita terbaik, langsung ke kotak masuk Anda
-    </h2>
-    <p class="font-sans text-sm text-gray-500 leading-relaxed">
-      Bergabunglah dengan ribuan pembaca yang menerima kurasi artikel pilihan dan penawaran produk eksklusif setiap bulan.
-    </p>
-    <form id="newsletter-form" class="flex flex-col items-center gap-3 justify-center mt-2">
-      <input
-        id="newsletter-email"
-        name="email"
-        type="email"
-        autocomplete="email"
-        maxlength="254"
-        required
-        aria-label="Alamat email"
-        data-aria-id="Alamat email"
-        data-aria-en="Email address"
-        data-ph-id="alamat@email.com"
-        data-ph-en="email@example.com"
-        placeholder="alamat@email.com"
-        class="flex-1 max-w-xs px-4 py-2.5 text-sm font-sans border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-transparent"
-      />
-      <label class="flex items-start gap-2 max-w-md text-left text-xs font-sans text-gray-600">
-        <input id="newsletter-consent" name="consent" type="checkbox" required class="mt-0.5 accent-emerald-700" />
-        <span data-id="Saya bersedia menerima kurasi artikel dan penawaran produk Racik Media melalui email setiap bulan."
-              data-en="I agree to receive Racik Media's monthly article curation and product offers by email.">
-          Saya bersedia menerima kurasi artikel dan penawaran produk Racik Media melalui email setiap bulan.
-        </span>
-      </label>
-      <button id="newsletter-submit" type="submit"
-        class="px-6 py-2.5 text-sm font-sans font-semibold bg-emerald-700 text-white rounded-full hover:bg-emerald-800 transition-colors">
-        Langganan Gratis
-      </button>
-      <p id="newsletter-status" class="min-h-5 text-sm font-sans text-gray-600" role="status" aria-live="polite"></p>
-    </form>
-    <p class="text-xs font-sans text-gray-400"
-       data-id="Email Anda digunakan untuk menyiapkan dan mengirim informasi tabloid bulanan Racik Media."
-       data-en="Your email will be used to prepare and send Racik Media's monthly tabloid updates.">
-      Email Anda digunakan untuk menyiapkan dan mengirim informasi tabloid bulanan Racik Media.
-    </p>
-  </div>
-</section>
-
-<div id="rm-footer-root"></div>
-
-<!-- Scripts -->
-<script src="./assets/js/lang.js"></script>
-<script src="./assets/js/layout.js"></script>
-<script src="./assets/js/public-layout.js"></script>
-<script src="./assets/js/newsletter.js"></script>
-
-<div id="cookie-consent" class="cookie-consent" role="region" aria-label="Pemberitahuan cookie" hidden>
-  <div class="cookie-consent__copy">
-    <h2 data-id="Privasi Anda penting" data-en="Your privacy matters" data-zh="您的隐私很重要">Privasi Anda penting</h2>
-    <p data-id="Kami menggunakan cookie yang diperlukan agar situs berfungsi. Dengan persetujuan Anda, cookie opsional juga dapat digunakan untuk meningkatkan pengalaman." data-en="We use essential cookies to make this site work. With your permission, optional cookies may also be used to improve your experience." data-zh="我们使用必要的 Cookie 来确保网站正常运行。经您同意，也可能使用可选 Cookie 来改善您的体验。">Kami menggunakan cookie yang diperlukan agar situs berfungsi. Dengan persetujuan Anda, cookie opsional juga dapat digunakan untuk meningkatkan pengalaman.</p>
-  </div>
-  <div class="cookie-consent__actions">
-    <button id="cookie-settings-open" class="cookie-consent__button cookie-consent__button--secondary" type="button" data-id="Pengaturan Cookie" data-en="Cookies Settings" data-zh="Cookie 设置">Cookies Settings</button>
-    <button id="cookie-reject-all" class="cookie-consent__button cookie-consent__button--secondary" type="button" data-id="Tolak Semua" data-en="Reject All" data-zh="全部拒绝">Reject All</button>
-    <button id="cookie-accept-all" class="cookie-consent__button cookie-consent__button--primary" type="button" data-id="Terima Semua Cookie" data-en="Accept All Cookies" data-zh="接受所有 Cookie">Accept All Cookies</button>
-  </div>
-  <p id="cookie-consent-error" class="cookie-consent__error" role="status" aria-live="polite" hidden data-id="Pilihan belum tersimpan. Periksa pengaturan penyimpanan browser Anda." data-en="Your choice was not saved. Check your browser storage settings." data-zh="您的选择尚未保存。请检查浏览器存储设置。">Pilihan belum tersimpan. Periksa pengaturan penyimpanan browser Anda.</p>
-</div>
-
-<div id="cookie-settings" class="cookie-settings" hidden>
-  <div class="cookie-settings__backdrop" data-cookie-settings-close></div>
-  <section class="cookie-settings__dialog" role="dialog" aria-modal="true" aria-labelledby="cookie-settings-title" aria-describedby="cookie-settings-description">
-    <button class="cookie-settings__close" type="button" aria-label="Tutup pengaturan cookie" data-cookie-settings-close>×</button>
-    <h2 id="cookie-settings-title" data-id="Pengaturan Cookie" data-en="Cookie Settings" data-zh="Cookie 设置">Cookie Settings</h2>
-    <p id="cookie-settings-description" data-id="Pilih cookie opsional yang Anda izinkan. Cookie yang diperlukan selalu aktif agar fungsi dasar situs berjalan." data-en="Choose which optional cookies you allow. Essential cookies are always on for core site functionality." data-zh="选择您允许使用的可选 Cookie。必要 Cookie 始终启用，以确保网站基本功能正常运行。">Pilih cookie opsional yang Anda izinkan. Cookie yang diperlukan selalu aktif agar fungsi dasar situs berjalan.</p>
-    <div class="cookie-settings__option">
-      <div>
-        <strong data-id="Cookie yang diperlukan" data-en="Essential cookies" data-zh="必要 Cookie">Essential cookies</strong>
-        <p data-id="Diperlukan untuk keamanan dan fungsi inti situs." data-en="Required for security and core site functionality." data-zh="网站安全和核心功能所必需。">Diperlukan untuk keamanan dan fungsi inti situs.</p>
-      </div>
-      <input type="checkbox" checked disabled aria-label="Cookie yang diperlukan selalu aktif" />
-    </div>
-    <label class="cookie-settings__option" for="cookie-analytics">
-      <span>
-        <strong data-id="Cookie analitik opsional" data-en="Optional analytics cookies" data-zh="可选分析 Cookie">Optional analytics cookies</strong>
-        <span class="cookie-settings__option-description" data-id="Izinkan pengukuran penggunaan situs untuk membantu peningkatan layanan." data-en="Allow site-usage measurement to help improve the service." data-zh="允许衡量网站使用情况，以帮助改进服务。">Izinkan pengukuran penggunaan situs untuk membantu peningkatan layanan.</span>
-      </span>
-      <input id="cookie-analytics" type="checkbox" />
-    </label>
-    <p class="cookie-settings__note" data-id="Preferensi ini disimpan di browser ini. Komponen ini menyimpan pilihan Anda; layanan analitik baru harus dihubungkan secara terpisah." data-en="These preferences are stored in this browser. This component saves your choice; analytics services must be connected separately." data-zh="这些偏好设置保存在此浏览器中。此组件会保存您的选择；分析服务需要单独接入。">Preferensi ini disimpan di browser ini. Komponen ini menyimpan pilihan Anda; layanan analitik baru harus dihubungkan secara terpisah.</p>
-    <p id="cookie-settings-error" class="cookie-consent__error" role="status" aria-live="polite" hidden data-id="Preferensi belum tersimpan. Periksa pengaturan penyimpanan browser Anda." data-en="Your preferences were not saved. Check your browser storage settings." data-zh="您的偏好设置尚未保存。请检查浏览器存储设置。">Preferensi belum tersimpan. Periksa pengaturan penyimpanan browser Anda.</p>
-    <div class="cookie-settings__actions">
-      <button id="cookie-settings-save" class="cookie-consent__button cookie-consent__button--primary" type="button" data-id="Simpan Preferensi" data-en="Save Preferences" data-zh="保存偏好设置">Simpan Preferensi</button>
-      <button id="cookie-settings-reject" class="cookie-consent__button cookie-consent__button--secondary" type="button" data-id="Tolak Cookie Opsional" data-en="Reject Optional Cookies" data-zh="拒绝可选 Cookie">Tolak Cookie Opsional</button>
-    </div>
-  </section>
-</div>
-
-<script src="script.js"></script>
-</body>
 </html>

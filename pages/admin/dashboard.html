@@ -1,5 +1,6 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="id" class="scroll-smooth">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -17,7 +18,9 @@
   <link rel="stylesheet" href="../../assets/css/shared.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
 
   <style>
     body {
@@ -28,450 +31,617 @@
 
     /* ── Sidebar ── */
     .sidebar {
-      position: fixed; top: 0; left: 0; bottom: 0;
-      width: 240px; background: #0f172a;
-      display: flex; flex-direction: column;
-      z-index: 50; overflow-y: auto;
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 240px;
+      background: #0f172a;
+      display: flex;
+      flex-direction: column;
+      z-index: 50;
+      overflow-y: auto;
       transition: transform .25s ease-in-out;
     }
+
     .sidebar-logo {
       padding: 20px 20px 18px;
-      border-bottom: 1px solid rgba(255,255,255,.08);
-      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, .08);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
+
     .sidebar-logo-badge {
-      font-size: 10px; font-weight: 700; letter-spacing: .06em;
-      background: #059669; color: #fff;
-      padding: 2px 8px; border-radius: 99px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      background: #059669;
+      color: #fff;
+      padding: 2px 8px;
+      border-radius: 99px;
     }
+
     .sidebar-section {
-      font-size: 10px; font-weight: 700; color: rgba(255,255,255,.35);
-      letter-spacing: .08em; text-transform: uppercase;
+      font-size: 10px;
+      font-weight: 700;
+      color: rgba(255, 255, 255, .35);
+      letter-spacing: .08em;
+      text-transform: uppercase;
       padding: 16px 20px 6px;
     }
+
     .sidebar-item {
-      display: flex; align-items: center; gap: 11px;
-      padding: 10px 20px; font-size: 13px; color: rgba(255,255,255,.65);
-      text-decoration: none; border-left: 3px solid transparent;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 10px 20px;
+      font-size: 13px;
+      color: rgba(255, 255, 255, .65);
+      text-decoration: none;
+      border-left: 3px solid transparent;
       transition: all .15s ease;
     }
-    .sidebar-item:hover { color: #fff; background: rgba(255,255,255,.06); }
-    .sidebar-item.active { color: #fff; background: rgba(255,255,255,.1); border-left-color: #10b981; font-weight: 600; }
-    .sidebar-item svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+    .sidebar-item:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, .06);
+    }
+
+    .sidebar-item.active {
+      color: #fff;
+      background: rgba(255, 255, 255, .1);
+      border-left-color: #10b981;
+      font-weight: 600;
+    }
+
+    .sidebar-item svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
     .sidebar-badge {
-      margin-left: auto; font-size: 10px; font-weight: 700;
-      background: #ef4444; color: #fff;
-      padding: 1px 7px; border-radius: 99px;
+      margin-left: auto;
+      font-size: 10px;
+      font-weight: 700;
+      background: #ef4444;
+      color: #fff;
+      padding: 1px 7px;
+      border-radius: 99px;
     }
 
     /* ── Topbar ── */
     .topbar {
-      position: fixed; top: 0; left: 240px; right: 0; height: 56px;
-      background: #ffffff; border-bottom: 1px solid #e2e8f0;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0 28px; z-index: 30;
+      position: fixed;
+      top: 0;
+      left: 240px;
+      right: 0;
+      height: 56px;
+      background: #ffffff;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      z-index: 30;
       transition: left .25s ease-in-out;
     }
 
     /* ── Main content layout ── */
-    .main-wrap { margin-left: 240px; padding-top: 56px; min-height: 100vh; transition: margin-left .25s ease-in-out; }
-    .content   { padding: 28px 32px 60px; }
+    .main-wrap {
+      margin-left: 240px;
+      padding-top: 56px;
+      min-height: 100vh;
+      transition: margin-left .25s ease-in-out;
+    }
+
+    .content {
+      padding: 28px 32px 60px;
+    }
 
     /* ── Cards & Tables ── */
-    .dash-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
-    .tab-btn {
-      padding: 8px 16px; font-size: 13px; font-weight: 600; color: #64748b;
-      border-bottom: 2px solid transparent; transition: all .15s ease; cursor: pointer;
+    .dash-card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
     }
-    .tab-btn.active { color: #047857; border-bottom-color: #047857; }
+
+    .tab-btn {
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #64748b;
+      border-bottom: 2px solid transparent;
+      transition: all .15s ease;
+      cursor: pointer;
+    }
+
+    .tab-btn.active {
+      color: #047857;
+      border-bottom-color: #047857;
+    }
 
     /* ── Mobile Sidebar Backdrop ── */
     .sidebar-backdrop {
       display: none;
-      position: fixed; inset: 0;
+      position: fixed;
+      inset: 0;
       background: rgba(15, 23, 42, 0.6);
       z-index: 45;
       backdrop-filter: blur(2px);
     }
-    .sidebar-backdrop.active { display: block; }
+
+    .sidebar-backdrop.active {
+      display: block;
+    }
 
     /* ── Responsive Breakpoints ── */
     @media (max-width: 768px) {
-      .sidebar { transform: translateX(-100%); }
-      .sidebar.open { transform: translateX(0); }
-      .topbar { left: 0; padding: 0 16px; }
-      .main-wrap { margin-left: 0; }
-      .content { padding: 16px 16px 40px; }
+      .sidebar {
+        transform: translateX(-100%);
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .topbar {
+        left: 0;
+        padding: 0 16px;
+      }
+
+      .main-wrap {
+        margin-left: 0;
+      }
+
+      .content {
+        padding: 16px 16px 40px;
+      }
     }
   </style>
   <link rel="stylesheet" href="/assets/css/public-layout.css" />
 </head>
+
 <body data-chat-context="admin_dashboard">
   <div id="rm-navbar-root"></div>
 
-<!-- ══════════════════════════════════════
+  <!-- ══════════════════════════════════════
      SIDEBAR ADMIN
      ══════════════════════════════════════ -->
-<aside class="sidebar">
-  <div class="sidebar-logo">
-    <div class="flex items-center gap-2">
-      <span class="font-serif text-xl font-bold text-white tracking-tight">BOB</span>
-      <span class="text-xs text-emerald-400 font-semibold">Racik Media</span>
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="flex items-center gap-2">
+        <span class="font-serif text-xl font-bold text-white tracking-tight">BOB</span>
+        <span class="text-xs text-emerald-400 font-semibold">Racik Media</span>
+      </div>
+      <span class="sidebar-logo-badge">ADMIN</span>
     </div>
-    <span class="sidebar-logo-badge">ADMIN</span>
-  </div>
 
-  <div class="sidebar-section">Operasional Utama</div>
-  <a href="dashboard.html" class="sidebar-item active">
-    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0h6"/></svg>
-    Dasbor Ringkasan
-  </a>
-  <a href="moderation.html" class="sidebar-item">
-    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-    Moderasi Artikel
-    <span class="sidebar-badge" id="badge-art">3</span>
-  </a>
-  <a href="b2b-management.html" class="sidebar-item">
-    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M5 3h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2zm3 8h8m-8 4h5"/></svg>
-    Operasional B2B
-  </a>
-  <a href="financial-report.html" class="sidebar-item">
-    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-    Laporan Transaksi
-  </a>
-  <a href="moderation-audit.html" class="sidebar-item">
-    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 12h6m-6 4h6"/></svg>
-    Audit Moderasi
-  </a>
+    <div class="sidebar-section">Operasional Utama</div>
+    <a href="dashboard.html" class="sidebar-item active">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0h6" />
+      </svg>
+      Dasbor Ringkasan
+    </a>
+    <a href="moderation.html" class="sidebar-item">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+      </svg>
+      Moderasi Artikel
+      <span class="sidebar-badge" id="badge-art">3</span>
+    </a>
+    <a href="b2b-management.html" class="sidebar-item">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M3 7h18M5 3h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2zm3 8h8m-8 4h5" />
+      </svg>
+      Operasional B2B
+    </a>
+    <a href="financial-report.html" class="sidebar-item">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      Laporan Transaksi
+    </a>
+    <a href="moderation-audit.html" class="sidebar-item">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 12h6m-6 4h6" />
+      </svg>
+      Audit Moderasi
+    </a>
 
-  <div class="sidebar-section">Verifikasi &amp; KYC</div>
-  <a href="seller-verification.html" class="sidebar-item">
-    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
-    Review Pengajuan Seller
-    <span class="sidebar-badge" style="background:#f59e0b;" id="badge-toko">0</span>
-  </a>
-  <a href="#verif-toko" onclick="switchAdminTab('tab-toko')" class="sidebar-item">
-    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
-    Verifikasi Toko Retail
-    <span class="sidebar-badge" style="background:#f59e0b;" id="badge-toko-legacy">2</span>
-  </a>
-  <a href="#verif-jasa" onclick="switchAdminTab('tab-jasa')" class="sidebar-item">
-    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-    Verifikasi Penyedia Jasa
-    <span class="sidebar-badge" style="background:#3b82f6;" id="badge-jasa">1</span>
-  </a>
+    <div class="sidebar-section">Verifikasi &amp; KYC</div>
+    <a href="seller-verification.html" class="sidebar-item">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+      </svg>
+      Review Pengajuan Seller
+      <span class="sidebar-badge" style="background:#f59e0b;" id="badge-toko">0</span>
+    </a>
+    <a href="#verif-toko" onclick="switchAdminTab('tab-toko')" class="sidebar-item">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+      </svg>
+      Verifikasi Toko Retail
+      <span class="sidebar-badge" style="background:#f59e0b;" id="badge-toko-legacy">2</span>
+    </a>
+    <a href="#verif-jasa" onclick="switchAdminTab('tab-jasa')" class="sidebar-item">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+      </svg>
+      Verifikasi Penyedia Jasa
+      <span class="sidebar-badge" style="background:#3b82f6;" id="badge-jasa">1</span>
+    </a>
 
-  <div class="sidebar-section">Bantuan &amp; Event</div>
-  <a href="#tab-events" onclick="switchAdminTab('tab-events')" class="sidebar-item">
-    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-    Kegiatan &amp; Event
-  </a>
-  <div class="mt-auto p-4 border-t border-slate-800">
-    <button onclick="BobAuth.logout()" class="w-full flex items-center justify-center gap-2 py-2 px-3 text-xs font-semibold text-rose-400 hover:text-white hover:bg-rose-900/40 rounded-lg transition-colors">
-      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-      Keluar Sesi Admin
-    </button>
-  </div>
-</aside>
-<div id="sidebar-backdrop" class="sidebar-backdrop"></div>
+    <div class="sidebar-section">Bantuan &amp; Event</div>
+    <a href="#tab-events" onclick="switchAdminTab('tab-events')" class="sidebar-item">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+      </svg>
+      Kegiatan &amp; Event
+    </a>
+    <div class="mt-auto p-4 border-t border-slate-800">
+      <button onclick="BobAuth.logout()"
+        class="w-full flex items-center justify-center gap-2 py-2 px-3 text-xs font-semibold text-rose-400 hover:text-white hover:bg-rose-900/40 rounded-lg transition-colors">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+        </svg>
+        Keluar Sesi Admin
+      </button>
+    </div>
+  </aside>
+  <div id="sidebar-backdrop" class="sidebar-backdrop"></div>
 
-<!-- ══════════════════════════════════════
+  <!-- ══════════════════════════════════════
      TOPBAR
      ══════════════════════════════════════ -->
-<header class="topbar">
-  <div class="flex items-center gap-3">
-    <button id="sidebar-toggle-btn" class="md:hidden p-1.5 text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-100 focus:outline-none" aria-label="Buka Menu Sidebar">
-      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
-    </button>
-    <span class="text-xs font-medium text-slate-500 hidden sm:inline">Mode Kerja:</span>
-    <span class="px-2.5 py-1 text-xs font-bold bg-emerald-100 text-emerald-800 rounded-full">Moderator Harian Aktif</span>
-  </div>
-
-  <div class="flex items-center gap-4">
-    <div class="text-right">
-      <p class="text-xs font-semibold text-slate-800" id="admin-user-name">Admin BOB</p>
-      <p class="text-[11px] text-slate-400" id="admin-user-email">admin@bob.id</p>
+  <header class="topbar">
+    <div class="flex items-center gap-3">
+      <button id="sidebar-toggle-btn"
+        class="md:hidden p-1.5 text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-100 focus:outline-none"
+        aria-label="Buka Menu Sidebar">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+      <span class="text-xs font-medium text-slate-500 hidden sm:inline">Mode Kerja:</span>
+      <span class="px-2.5 py-1 text-xs font-bold bg-emerald-100 text-emerald-800 rounded-full">Moderator Harian
+        Aktif</span>
     </div>
-    <div class="w-8 h-8 rounded-full bg-emerald-700 text-white flex items-center justify-center font-bold text-xs">
-      AD
-    </div>
-  </div>
-</header>
 
-<!-- ══════════════════════════════════════
+    <div class="flex items-center gap-4">
+      <div class="text-right">
+        <p class="text-xs font-semibold text-slate-800" id="admin-user-name">Admin BOB</p>
+        <p class="text-[11px] text-slate-400" id="admin-user-email">admin@bob.id</p>
+      </div>
+      <div class="w-8 h-8 rounded-full bg-emerald-700 text-white flex items-center justify-center font-bold text-xs">
+        AD
+      </div>
+    </div>
+  </header>
+
+  <!-- ══════════════════════════════════════
      MAIN CONTENT WRAPPER
      ══════════════════════════════════════ -->
-<main class="main-wrap">
-  <div class="content">
+  <main class="main-wrap">
+    <div class="content">
 
-    <!-- Header Judul -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-      <div>
-        <h1 class="text-2xl font-bold text-slate-900">Dasbor Moderasi &amp; Operasional</h1>
-        <p class="text-sm text-slate-500 mt-1">Saring artikel penulis dan verifikasi berkas calon penjual/jasa.</p>
+      <!-- Header Judul -->
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+        <div>
+          <h1 class="text-2xl font-bold text-slate-900">Dasbor Moderasi &amp; Operasional</h1>
+          <p class="text-sm text-slate-500 mt-1">Saring artikel penulis dan verifikasi berkas calon penjual/jasa.</p>
+        </div>
+        <div class="flex gap-2">
+          <a href="../main/dashboard.html"
+            class="px-3.5 py-2 text-xs font-semibold bg-white border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors">Lihat
+            Mode Publik</a>
+          <a href="moderation.html"
+            class="px-3.5 py-2 text-xs font-semibold bg-emerald-700 text-white rounded-lg hover:bg-emerald-800 transition-colors">Buka
+            Meja Redaksi →</a>
+        </div>
       </div>
-      <div class="flex gap-2">
-        <a href="../main/dashboard.html" class="px-3.5 py-2 text-xs font-semibold bg-white border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors">Lihat Mode Publik</a>
-        <a href="moderation.html" class="px-3.5 py-2 text-xs font-semibold bg-emerald-700 text-white rounded-lg hover:bg-emerald-800 transition-colors">Buka Meja Redaksi →</a>
-      </div>
-    </div>
 
-    <!-- ── STATS STRIP ── -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-7">
-      <div class="dash-card p-5 border-l-4 border-l-amber-500">
-        <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Verifikasi Toko</p>
-        <p class="text-2xl font-bold text-slate-900 mt-1">2 <span class="text-xs font-normal text-slate-500">Menunggu Review</span></p>
-        <p class="text-xs text-amber-600 font-medium mt-2">Perlu verifikasi berkas &amp; lokasi</p>
+      <!-- ── STATS STRIP ── -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-7">
+        <div class="dash-card p-5 border-l-4 border-l-amber-500">
+          <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Verifikasi Toko</p>
+          <p class="text-2xl font-bold text-slate-900 mt-1">2 <span class="text-xs font-normal text-slate-500">Menunggu
+              Review</span></p>
+          <p class="text-xs text-amber-600 font-medium mt-2">Perlu verifikasi berkas &amp; lokasi</p>
+        </div>
+        <div class="dash-card p-5 border-l-4 border-l-blue-500">
+          <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Verifikasi Jasa</p>
+          <p class="text-2xl font-bold text-slate-900 mt-1">1 <span class="text-xs font-normal text-slate-500">Calon
+              Mitra</span></p>
+          <p class="text-xs text-blue-600 font-medium mt-2">1 Bengkel / Teknisi Terdaftar</p>
+        </div>
+        <div class="dash-card p-5 border-l-4 border-l-emerald-500">
+          <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Antrean Artikel</p>
+          <p class="text-2xl font-bold text-slate-900 mt-1">3 <span class="text-xs font-normal text-slate-500">Draf
+              Masuk</span></p>
+          <p class="text-xs text-emerald-600 font-medium mt-2">Kesiapan tata letak &amp; layout</p>
+        </div>
+        <div class="dash-card p-5 border-l-4 border-l-purple-500">
+          <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Event Berjalan</p>
+          <p class="text-2xl font-bold text-slate-900 mt-1">4 <span class="text-xs font-normal text-slate-500">Kegiatan
+              Aktif</span></p>
+          <p class="text-xs text-purple-600 font-medium mt-2">Panen Raya &amp; Pasar Kreatif</p>
+        </div>
       </div>
-      <div class="dash-card p-5 border-l-4 border-l-blue-500">
-        <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Verifikasi Jasa</p>
-        <p class="text-2xl font-bold text-slate-900 mt-1">1 <span class="text-xs font-normal text-slate-500">Calon Mitra</span></p>
-        <p class="text-xs text-blue-600 font-medium mt-2">1 Bengkel / Teknisi Terdaftar</p>
-      </div>
-      <div class="dash-card p-5 border-l-4 border-l-emerald-500">
-        <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Antrean Artikel</p>
-        <p class="text-2xl font-bold text-slate-900 mt-1">3 <span class="text-xs font-normal text-slate-500">Draf Masuk</span></p>
-        <p class="text-xs text-emerald-600 font-medium mt-2">Kesiapan tata letak &amp; layout</p>
-      </div>
-      <div class="dash-card p-5 border-l-4 border-l-purple-500">
-        <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Event Berjalan</p>
-        <p class="text-2xl font-bold text-slate-900 mt-1">4 <span class="text-xs font-normal text-slate-500">Kegiatan Aktif</span></p>
-        <p class="text-xs text-purple-600 font-medium mt-2">Panen Raya &amp; Pasar Kreatif</p>
-      </div>
-    </div>
 
-    <!-- ── TAB BAR ── -->
-    <div class="flex items-center gap-2 border-b border-slate-200 mb-6">
-      <button class="tab-btn active" id="btn-tab-toko" onclick="switchAdminTab('tab-toko')">Verifikasi Toko Retail (2)</button>
-      <button class="tab-btn" id="btn-tab-jasa" onclick="switchAdminTab('tab-jasa')">Verifikasi Penyedia Jasa (1)</button>
-      <button class="tab-btn" id="btn-tab-events" onclick="switchAdminTab('tab-events')">Event &amp; Kegiatan</button>
-    </div>
+      <!-- ── TAB BAR ── -->
+      <div class="flex items-center gap-2 border-b border-slate-200 mb-6">
+        <button class="tab-btn active" id="btn-tab-toko" onclick="switchAdminTab('tab-toko')">Verifikasi Toko Retail
+          (2)</button>
+        <button class="tab-btn" id="btn-tab-jasa" onclick="switchAdminTab('tab-jasa')">Verifikasi Penyedia Jasa
+          (1)</button>
+        <button class="tab-btn" id="btn-tab-events" onclick="switchAdminTab('tab-events')">Event &amp; Kegiatan</button>
+      </div>
 
-    <!-- ══════════════════════════════════════
+      <!-- ══════════════════════════════════════
          PANEL 1: VERIFIKASI TOKO RETAIL
          ══════════════════════════════════════ -->
-    <div id="tab-toko" class="tab-content">
-      <div class="dash-card overflow-hidden">
-        <div class="p-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
-          <h2 class="font-semibold text-slate-800 text-sm">Permohonan Buka Toko Online Baru</h2>
-          <span class="text-xs text-slate-500">Standar KYC: Dokumen KTP, Foto Lokasi &amp; Komitmen Mutu</span>
-        </div>
-        <div class="overflow-x-auto">
-          <table class="w-full text-left text-xs">
-            <thead class="bg-slate-100/80 text-slate-600 uppercase font-semibold border-b border-slate-200">
-              <tr>
-                <th class="p-3.5">Nama Toko &amp; Pemilik</th>
-                <th class="p-3.5">Kategori Utama</th>
-                <th class="p-3.5">Lokasi / Alamat</th>
-                <th class="p-3.5">Berkas Terlampir</th>
-                <th class="p-3.5">Status Audit</th>
-                <th class="p-3.5 text-right">Aksi Admin</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-slate-100" id="table-toko-body">
-              <tr class="hover:bg-slate-50">
-                <td class="p-3.5">
-                  <p class="font-bold text-slate-900">Kopi Gayo Mandiri</p>
-                  <p class="text-slate-400">Tengku Firmansyah (tengku@email.com)</p>
-                </td>
-                <td class="p-3.5"><span class="px-2 py-0.5 bg-amber-100 text-amber-800 rounded">Kuliner &amp; Kopi</span></td>
-                <td class="p-3.5 text-slate-600">Takengon, Aceh Tengah</td>
-                <td class="p-3.5">
-                  <span class="text-emerald-700 font-medium underline cursor-pointer">📄 KTP &amp; SKU.pdf</span>
-                </td>
-                <td class="p-3.5"><span class="px-2 py-0.5 bg-amber-50 text-amber-700 border border-amber-200 rounded-full font-semibold">Menunggu Cek Fisik</span></td>
-                <td class="p-3.5 text-right space-x-2">
-                  <button onclick="approveStore('Kopi Gayo Mandiri', this)" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded font-semibold transition-colors">Buka Toko</button>
-                  <button onclick="rejectStore('Kopi Gayo Mandiri', this)" class="px-3 py-1.5 bg-slate-100 hover:bg-rose-50 text-rose-600 rounded font-semibold transition-colors">Tolak</button>
-                </td>
-              </tr>
-              <tr class="hover:bg-slate-50">
-                <td class="p-3.5">
-                  <p class="font-bold text-slate-900">Tenun Ikat Sumba Indah</p>
-                  <p class="text-slate-400">Rambu Maramba (rambu@sumba.id)</p>
-                </td>
-                <td class="p-3.5"><span class="px-2 py-0.5 bg-indigo-100 text-indigo-800 rounded">Kerajinan &amp; Tekstil</span></td>
-                <td class="p-3.5 text-slate-600">Waingapu, Sumba Timur</td>
-                <td class="p-3.5">
-                  <span class="text-emerald-700 font-medium underline cursor-pointer">📄 FotoWorkshop.jpg</span>
-                </td>
-                <td class="p-3.5"><span class="px-2 py-0.5 bg-amber-50 text-amber-700 border border-amber-200 rounded-full font-semibold">Menunggu Cek Berkas</span></td>
-                <td class="p-3.5 text-right space-x-2">
-                  <button onclick="approveStore('Tenun Ikat Sumba Indah', this)" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded font-semibold transition-colors">Buka Toko</button>
-                  <button onclick="rejectStore('Tenun Ikat Sumba Indah', this)" class="px-3 py-1.5 bg-slate-100 hover:bg-rose-50 text-rose-600 rounded font-semibold transition-colors">Tolak</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+      <div id="tab-toko" class="tab-content">
+        <div class="dash-card overflow-hidden">
+          <div class="p-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
+            <h2 class="font-semibold text-slate-800 text-sm">Permohonan Buka Toko Online Baru</h2>
+            <span class="text-xs text-slate-500">Standar KYC: Dokumen KTP, Foto Lokasi &amp; Komitmen Mutu</span>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-100/80 text-slate-600 uppercase font-semibold border-b border-slate-200">
+                <tr>
+                  <th class="p-3.5">Nama Toko &amp; Pemilik</th>
+                  <th class="p-3.5">Kategori Utama</th>
+                  <th class="p-3.5">Lokasi / Alamat</th>
+                  <th class="p-3.5">Berkas Terlampir</th>
+                  <th class="p-3.5">Status Audit</th>
+                  <th class="p-3.5 text-right">Aksi Admin</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100" id="table-toko-body">
+                <tr class="hover:bg-slate-50">
+                  <td class="p-3.5">
+                    <p class="font-bold text-slate-900">Kopi Gayo Mandiri</p>
+                    <p class="text-slate-400">Tengku Firmansyah (tengku@email.com)</p>
+                  </td>
+                  <td class="p-3.5"><span class="px-2 py-0.5 bg-amber-100 text-amber-800 rounded">Kuliner &amp;
+                      Kopi</span></td>
+                  <td class="p-3.5 text-slate-600">Takengon, Aceh Tengah</td>
+                  <td class="p-3.5">
+                    <span class="text-emerald-700 font-medium underline cursor-pointer">📄 KTP &amp; SKU.pdf</span>
+                  </td>
+                  <td class="p-3.5"><span
+                      class="px-2 py-0.5 bg-amber-50 text-amber-700 border border-amber-200 rounded-full font-semibold">Menunggu
+                      Cek Fisik</span></td>
+                  <td class="p-3.5 text-right space-x-2">
+                    <button onclick="approveStore('Kopi Gayo Mandiri', this)"
+                      class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded font-semibold transition-colors">Buka
+                      Toko</button>
+                    <button onclick="rejectStore('Kopi Gayo Mandiri', this)"
+                      class="px-3 py-1.5 bg-slate-100 hover:bg-rose-50 text-rose-600 rounded font-semibold transition-colors">Tolak</button>
+                  </td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                  <td class="p-3.5">
+                    <p class="font-bold text-slate-900">Tenun Ikat Sumba Indah</p>
+                    <p class="text-slate-400">Rambu Maramba (rambu@sumba.id)</p>
+                  </td>
+                  <td class="p-3.5"><span class="px-2 py-0.5 bg-indigo-100 text-indigo-800 rounded">Kerajinan &amp;
+                      Tekstil</span></td>
+                  <td class="p-3.5 text-slate-600">Waingapu, Sumba Timur</td>
+                  <td class="p-3.5">
+                    <span class="text-emerald-700 font-medium underline cursor-pointer">📄 FotoWorkshop.jpg</span>
+                  </td>
+                  <td class="p-3.5"><span
+                      class="px-2 py-0.5 bg-amber-50 text-amber-700 border border-amber-200 rounded-full font-semibold">Menunggu
+                      Cek Berkas</span></td>
+                  <td class="p-3.5 text-right space-x-2">
+                    <button onclick="approveStore('Tenun Ikat Sumba Indah', this)"
+                      class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded font-semibold transition-colors">Buka
+                      Toko</button>
+                    <button onclick="rejectStore('Tenun Ikat Sumba Indah', this)"
+                      class="px-3 py-1.5 bg-slate-100 hover:bg-rose-50 text-rose-600 rounded font-semibold transition-colors">Tolak</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- ══════════════════════════════════════
+      <!-- ══════════════════════════════════════
          PANEL 2: VERIFIKASI PENYEDIA JASA
          ══════════════════════════════════════ -->
-    <div id="tab-jasa" class="tab-content hidden">
-      <div class="dash-card overflow-hidden">
-        <div class="p-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
-          <h2 class="font-semibold text-slate-800 text-sm">Pendaftaran Profil Penyedia Jasa Keahlian</h2>
-          <span class="text-xs text-slate-500">Cek Portofolio &amp; Standar Sertifikasi</span>
-        </div>
-        <div class="overflow-x-auto">
-          <table class="w-full text-left text-xs">
-            <thead class="bg-slate-100/80 text-slate-600 uppercase font-semibold border-b border-slate-200">
-              <tr>
-                <th class="p-3.5">Penyedia Jasa &amp; Penanggung Jawab</th>
-                <th class="p-3.5">Spesialisasi Keahlian</th>
-                <th class="p-3.5">Wilayah Layanan</th>
-                <th class="p-3.5">Portofolio / Sertifikat</th>
-                <th class="p-3.5 text-right">Aksi Admin</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-slate-100">
-              <tr class="hover:bg-slate-50">
-                <td class="p-3.5">
-                  <p class="font-bold text-slate-900">Bengkel Restorasi Kayu Jati</p>
-                  <p class="text-slate-400">Hendro Utomo (hendro@ukirjati.id)</p>
-                </td>
-                <td class="p-3.5"><span class="px-2 py-0.5 bg-teal-100 text-teal-800 rounded font-medium">Restorasi &amp; Finishing Mebel</span></td>
-                <td class="p-3.5 text-slate-600">Jepara &amp; Semarang</td>
-                <td class="p-3.5">
-                  <span class="text-blue-600 underline cursor-pointer">📁 12 Hasil Restorasi.pdf</span>
-                </td>
-                <td class="p-3.5 text-right space-x-2">
-                  <button onclick="approveService('Bengkel Restorasi Kayu Jati', this)" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded font-semibold transition-colors">Setujui Jasa</button>
-                  <button onclick="rejectService('Bengkel Restorasi Kayu Jati', this)" class="px-3 py-1.5 bg-slate-100 hover:bg-rose-50 text-rose-600 rounded font-semibold transition-colors">Minta Revisi</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+      <div id="tab-jasa" class="tab-content hidden">
+        <div class="dash-card overflow-hidden">
+          <div class="p-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
+            <h2 class="font-semibold text-slate-800 text-sm">Pendaftaran Profil Penyedia Jasa Keahlian</h2>
+            <span class="text-xs text-slate-500">Cek Portofolio &amp; Standar Sertifikasi</span>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-100/80 text-slate-600 uppercase font-semibold border-b border-slate-200">
+                <tr>
+                  <th class="p-3.5">Penyedia Jasa &amp; Penanggung Jawab</th>
+                  <th class="p-3.5">Spesialisasi Keahlian</th>
+                  <th class="p-3.5">Wilayah Layanan</th>
+                  <th class="p-3.5">Portofolio / Sertifikat</th>
+                  <th class="p-3.5 text-right">Aksi Admin</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100">
+                <tr class="hover:bg-slate-50">
+                  <td class="p-3.5">
+                    <p class="font-bold text-slate-900">Bengkel Restorasi Kayu Jati</p>
+                    <p class="text-slate-400">Hendro Utomo (hendro@ukirjati.id)</p>
+                  </td>
+                  <td class="p-3.5"><span class="px-2 py-0.5 bg-teal-100 text-teal-800 rounded font-medium">Restorasi
+                      &amp; Finishing Mebel</span></td>
+                  <td class="p-3.5 text-slate-600">Jepara &amp; Semarang</td>
+                  <td class="p-3.5">
+                    <span class="text-blue-600 underline cursor-pointer">📁 12 Hasil Restorasi.pdf</span>
+                  </td>
+                  <td class="p-3.5 text-right space-x-2">
+                    <button onclick="approveService('Bengkel Restorasi Kayu Jati', this)"
+                      class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded font-semibold transition-colors">Setujui
+                      Jasa</button>
+                    <button onclick="rejectService('Bengkel Restorasi Kayu Jati', this)"
+                      class="px-3 py-1.5 bg-slate-100 hover:bg-rose-50 text-rose-600 rounded font-semibold transition-colors">Minta
+                      Revisi</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- ══════════════════════════════════════
+      <!-- ══════════════════════════════════════
          PANEL 4: EVENT & KEGIATAN
          ══════════════════════════════════════ -->
-    <div id="tab-events" class="tab-content hidden">
-      <div class="dash-card p-6">
-        <div class="flex justify-between items-center mb-4">
-          <div>
-            <h2 class="text-base font-bold text-slate-900">Manajemen Event &amp; Pameran Komunitas</h2>
-            <p class="text-xs text-slate-500 mt-0.5">Atur jadwal workshop, bazar produk lokal, dan webinar literasi nusantara.</p>
-          </div>
-          <button class="px-3.5 py-2 bg-emerald-700 text-white text-xs font-semibold rounded-lg hover:bg-emerald-800 transition-colors">+ Buat Jadwal Event</button>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="p-4 border border-slate-200 rounded-xl bg-white flex flex-col justify-between">
+      <div id="tab-events" class="tab-content hidden">
+        <div class="dash-card p-6">
+          <div class="flex justify-between items-center mb-4">
             <div>
-              <span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] font-bold rounded-full">Webinar &amp; Diskusi</span>
-              <h3 class="font-serif text-base font-bold text-slate-900 mt-2">Workshop Kurasi Cerita &amp; Esai Budaya Lokal</h3>
-              <p class="text-xs text-slate-500 mt-1">15 Oktober 2026 · Online Zoom · Gratis untuk Penulis Terdaftar</p>
+              <h2 class="text-base font-bold text-slate-900">Manajemen Event &amp; Pameran Komunitas</h2>
+              <p class="text-xs text-slate-500 mt-0.5">Atur jadwal workshop, bazar produk lokal, dan webinar literasi
+                nusantara.</p>
             </div>
-            <div class="flex items-center justify-between mt-4 pt-3 border-t border-slate-100">
-              <span class="text-xs font-bold text-emerald-700">42 Peserta Terdaftar</span>
-              <button class="text-xs font-semibold text-slate-600 hover:text-slate-900">Kelola Event →</button>
-            </div>
+            <button
+              class="px-3.5 py-2 bg-emerald-700 text-white text-xs font-semibold rounded-lg hover:bg-emerald-800 transition-colors">+
+              Buat Jadwal Event</button>
           </div>
 
-          <div class="p-4 border border-slate-200 rounded-xl bg-white flex flex-col justify-between">
-            <div>
-              <span class="px-2 py-0.5 bg-purple-100 text-purple-800 text-[10px] font-bold rounded-full">Bazar &amp; Pameran</span>
-              <h3 class="font-serif text-base font-bold text-slate-900 mt-2">Festival Rempah &amp; Produk Pangan Nusantara 2026</h3>
-              <p class="text-xs text-slate-500 mt-1">28-30 Oktober 2026 · Lapangan Banteng, Jakarta Pusat</p>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="p-4 border border-slate-200 rounded-xl bg-white flex flex-col justify-between">
+              <div>
+                <span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] font-bold rounded-full">Webinar
+                  &amp; Diskusi</span>
+                <h3 class="font-serif text-base font-bold text-slate-900 mt-2">Workshop Kurasi Cerita &amp; Esai Budaya
+                  Lokal</h3>
+                <p class="text-xs text-slate-500 mt-1">15 Oktober 2026 · Online Zoom · Gratis untuk Penulis Terdaftar
+                </p>
+              </div>
+              <div class="flex items-center justify-between mt-4 pt-3 border-t border-slate-100">
+                <span class="text-xs font-bold text-emerald-700">42 Peserta Terdaftar</span>
+                <button class="text-xs font-semibold text-slate-600 hover:text-slate-900">Kelola Event →</button>
+              </div>
             </div>
-            <div class="flex items-center justify-between mt-4 pt-3 border-t border-slate-100">
-              <span class="text-xs font-bold text-purple-700">18 Mitra Toko Berpartisipasi</span>
-              <button class="text-xs font-semibold text-slate-600 hover:text-slate-900">Kelola Event →</button>
+
+            <div class="p-4 border border-slate-200 rounded-xl bg-white flex flex-col justify-between">
+              <div>
+                <span class="px-2 py-0.5 bg-purple-100 text-purple-800 text-[10px] font-bold rounded-full">Bazar &amp;
+                  Pameran</span>
+                <h3 class="font-serif text-base font-bold text-slate-900 mt-2">Festival Rempah &amp; Produk Pangan
+                  Nusantara 2026</h3>
+                <p class="text-xs text-slate-500 mt-1">28-30 Oktober 2026 · Lapangan Banteng, Jakarta Pusat</p>
+              </div>
+              <div class="flex items-center justify-between mt-4 pt-3 border-t border-slate-100">
+                <span class="text-xs font-bold text-purple-700">18 Mitra Toko Berpartisipasi</span>
+                <button class="text-xs font-semibold text-slate-600 hover:text-slate-900">Kelola Event →</button>
+              </div>
             </div>
           </div>
         </div>
       </div>
+
     </div>
+  </main>
 
-  </div>
-</main>
+  <script>
+    // ── Tab Switcher Logic ──
+    function switchAdminTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
 
-<script>
-  // ── Tab Switcher Logic ──
-  function switchAdminTab(tabId) {
-    document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+      const target = document.getElementById(tabId);
+      if (target) target.classList.remove('hidden');
 
-    const target = document.getElementById(tabId);
-    if (target) target.classList.remove('hidden');
+      const btn = document.getElementById('btn-' + tabId);
+      if (btn) btn.classList.add('active');
+    }
 
-    const btn = document.getElementById('btn-' + tabId);
-    if (btn) btn.classList.add('active');
-  }
-
-  // ── Mock Actions ──
-  function approveStore(name, btn) {
-    const row = btn.closest('tr');
-    row.style.opacity = '0.5';
-    btn.parentElement.innerHTML = '<span class="text-emerald-700 font-bold text-xs">✓ Toko Diaktifkan</span>';
-    alert(`Toko "${name}" telah berhasil diverifikasi dan aktif untuk berjualan di BOB!`);
-  }
-
-  function rejectStore(name, btn) {
-    const reason = prompt(`Masukkan alasan penolakan berkas untuk toko "${name}":`, 'Foto izin usaha belum jelas');
-    if (reason) {
+    // ── Mock Actions ──
+    function approveStore(name, btn) {
       const row = btn.closest('tr');
-      row.style.opacity = '0.4';
-      btn.parentElement.innerHTML = '<span class="text-rose-600 font-bold text-xs">✕ Berkas Ditolak</span>';
-    }
-  }
-
-  function approveService(name, btn) {
-    btn.parentElement.innerHTML = '<span class="text-emerald-700 font-bold text-xs">✓ Jasa Disetujui</span>';
-    alert(`Layanan "${name}" disetujui untuk menerima pesanan konsumen.`);
-  }
-
-  // Sync user info from session
-  document.addEventListener('DOMContentLoaded', () => {
-    const session = BobAuth.getSession();
-    if (session) {
-      if (document.getElementById('admin-user-name'))  document.getElementById('admin-user-name').textContent  = session.name;
-      if (document.getElementById('admin-user-email')) document.getElementById('admin-user-email').textContent = session.email;
+      row.style.opacity = '0.5';
+      btn.parentElement.innerHTML = '<span class="text-emerald-700 font-bold text-xs">✓ Toko Diaktifkan</span>';
+      alert(`Toko "${name}" telah berhasil diverifikasi dan aktif untuk berjualan di BOB!`);
     }
 
-    // ── Load badge count pengajuan seller pending dari Supabase ──
-    BobAuth.getClient().then(function(client) {
-      return client.from('seller_verifications').select('id', { count: 'exact', head: true }).eq('status', 'pending');
-    }).then(function(res) {
-      var count = res.count || 0;
-      var badge = document.getElementById('badge-toko');
-      if (badge) {
-        badge.textContent = count;
-        badge.style.display = count > 0 ? '' : 'none';
+    function rejectStore(name, btn) {
+      const reason = prompt(`Masukkan alasan penolakan berkas untuk toko "${name}":`, 'Foto izin usaha belum jelas');
+      if (reason) {
+        const row = btn.closest('tr');
+        row.style.opacity = '0.4';
+        btn.parentElement.innerHTML = '<span class="text-rose-600 font-bold text-xs">✕ Berkas Ditolak</span>';
       }
-      // Update stat card juga
-      var statCard = document.querySelector('.dash-card .text-2xl.font-bold');
-      if (statCard && statCard.closest('.dash-card').textContent.includes('Verifikasi Toko')) {
-        statCard.textContent = count + ' ';
-      }
-    }).catch(function() { /* silent fail */ });
-
-    // ── Mobile Sidebar Toggle Logic ──
-    const sidebarToggle = document.getElementById('sidebar-toggle-btn');
-    const sidebarEl = document.querySelector('.sidebar');
-    const backdropEl = document.getElementById('sidebar-backdrop');
-    if (sidebarToggle && sidebarEl && backdropEl) {
-      sidebarToggle.addEventListener('click', () => {
-        sidebarEl.classList.toggle('open');
-        backdropEl.classList.toggle('active');
-      });
-      backdropEl.addEventListener('click', () => {
-        sidebarEl.classList.remove('open');
-        backdropEl.classList.remove('active');
-      });
     }
-  });
-</script>
+
+    function approveService(name, btn) {
+      btn.parentElement.innerHTML = '<span class="text-emerald-700 font-bold text-xs">✓ Jasa Disetujui</span>';
+      alert(`Layanan "${name}" disetujui untuk menerima pesanan konsumen.`);
+    }
+
+    // Sync user info from session
+    document.addEventListener('DOMContentLoaded', () => {
+      const session = BobAuth.getSession();
+      if (session) {
+        if (document.getElementById('admin-user-name')) document.getElementById('admin-user-name').textContent = session.name;
+        if (document.getElementById('admin-user-email')) document.getElementById('admin-user-email').textContent = session.email;
+      }
+
+      // ── Load badge count pengajuan seller pending dari Supabase ──
+      BobAuth.getClient().then(function (client) {
+        return client.from('seller_verifications').select('id', { count: 'exact', head: true }).eq('status', 'pending');
+      }).then(function (res) {
+        var count = res.count || 0;
+        var badge = document.getElementById('badge-toko');
+        if (badge) {
+          badge.textContent = count;
+          badge.style.display = count > 0 ? '' : 'none';
+        }
+        // Update stat card juga
+        var statCard = document.querySelector('.dash-card .text-2xl.font-bold');
+        if (statCard && statCard.closest('.dash-card').textContent.includes('Verifikasi Toko')) {
+          statCard.textContent = count + ' ';
+        }
+      }).catch(function () { /* silent fail */ });
+
+      // ── Mobile Sidebar Toggle Logic ──
+      const sidebarToggle = document.getElementById('sidebar-toggle-btn');
+      const sidebarEl = document.querySelector('.sidebar');
+      const backdropEl = document.getElementById('sidebar-backdrop');
+      if (sidebarToggle && sidebarEl && backdropEl) {
+        sidebarToggle.addEventListener('click', () => {
+          sidebarEl.classList.toggle('open');
+          backdropEl.classList.toggle('active');
+        });
+        backdropEl.addEventListener('click', () => {
+          sidebarEl.classList.remove('open');
+          backdropEl.classList.remove('active');
+        });
+      }
+    });
+  </script>
 
   <script src="../../assets/js/lang.js"></script>
   <script src="/assets/js/layout.js"></script>
   <script src="/assets/js/public-layout.js"></script>
 </body>
+
 </html>

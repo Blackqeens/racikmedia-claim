@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Master Admin Control Center — BOB Racik Media Nusantara</title>
+  <!-- Supabase SDK & Konfigurasi -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../../assets/js/supabase-config.js"></script>
   <!-- ROUTE GUARD: Hanya Master Admin yang berhak mengakses -->
   <script src="../../api/auth.js"></script>
   <script>BobAuth.requireRole('master_admin');</script>
@@ -117,6 +120,10 @@
   <a onclick="switchMasterTab('tab-admin-mgmt')" class="m-item" id="menu-admin-mgmt">
     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
     Kelola Akun Admin
+  </a>
+  <a onclick="switchMasterTab('tab-role-mgmt')" class="m-item" id="menu-role-mgmt">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+    Kelola Role Pengguna
   </a>
   <a href="kurasi-headline.html" class="m-item" id="menu-headline">
     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
@@ -233,6 +240,7 @@
     <div class="flex items-center gap-2 border-b border-slate-700 mb-6">
       <button class="tab-btn-master active" id="btn-master-overview" onclick="switchMasterTab('tab-overview')">Overview Sistem</button>
       <button class="tab-btn-master" id="btn-master-admin-mgmt" onclick="switchMasterTab('tab-admin-mgmt')">Manajemen Akun Admin (2)</button>
+      <button class="tab-btn-master" id="btn-master-role-mgmt" onclick="switchMasterTab('tab-role-mgmt')">Kelola Role Pengguna</button>
       <button class="tab-btn-master" id="btn-master-headline" onclick="switchMasterTab('tab-headline-curation')">Kurasi Headline Halaman Depan</button>
       <button class="tab-btn-master" id="btn-master-b2b-verification" onclick="switchMasterTab('tab-b2b-verification')">Verifikasi B2B</button>
       <button class="tab-btn-master" id="btn-master-tax-monitor" onclick="switchMasterTab('tab-tax-monitor')">Pajak & Pencairan</button>
@@ -382,6 +390,45 @@
           </table>
         </div>
 
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         PANEL: MANAJEMEN ROLE PENGGUNA (MASTER ADMIN)
+         ══════════════════════════════════════ -->
+    <div id="tab-role-mgmt" class="master-tab-content hidden">
+      <div class="m-card p-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+          <div>
+            <h2 class="text-base font-bold text-white">Kelola Role &amp; Hak Akses Pengguna</h2>
+            <p class="text-xs text-slate-400 mt-0.5">Otoritas Master Admin untuk menaikkan/menurunkan role pengguna (member, seller, penyedia_jasa, mekanik, admin, master_admin).</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <input type="text" id="role-search-input" onkeyup="filterUserRoles()" placeholder="Cari nama atau email…" class="bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-purple-500 w-52" />
+            <button onclick="loadUserProfiles()" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-lg border border-slate-700 transition-colors">🔄 Muat Ulang</button>
+          </div>
+        </div>
+
+        <div id="role-mgmt-alert" class="hidden mb-4 p-3 rounded-lg text-xs font-semibold"></div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-900/60 text-slate-400 uppercase font-semibold border-b border-slate-700">
+              <tr>
+                <th class="p-3">Pengguna</th>
+                <th class="p-3">Kota / Domisili</th>
+                <th class="p-3">Role Saat Ini</th>
+                <th class="p-3">Ubah Role</th>
+                <th class="p-3 text-right">Aksi</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-800" id="role-user-table-body">
+              <tr>
+                <td colspan="5" class="p-4 text-center text-slate-400">Memuat data pengguna dari database…</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
 
@@ -727,6 +774,136 @@
     }
   }
 
+  // ── Manajemen Role Pengguna (Master Admin) ──
+  let allLoadedProfiles = [];
+
+  async function loadUserProfiles() {
+    const tbody = document.getElementById('role-user-table-body');
+    if (!tbody) return;
+    tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-slate-400">Mengambil data pengguna…</td></tr>';
+
+    try {
+      const client = await BobAuth.getClient();
+      const { data, error } = await client.from('profiles')
+        .select('id, display_name, role, city, created_at')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      allLoadedProfiles = data || [];
+      renderRoleUserTable(allLoadedProfiles);
+    } catch (err) {
+      console.error('Gagal mengambil daftar pengguna:', err);
+      tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-rose-400">Gagal memuat: ${err.message}</td></tr>`;
+    }
+  }
+
+  function renderRoleUserTable(profiles) {
+    const tbody = document.getElementById('role-user-table-body');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+
+    if (!profiles.length) {
+      tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-slate-400">Tidak ada pengguna ditemukan.</td></tr>';
+      return;
+    }
+
+    const availableRoles = [
+      { key: 'member', label: 'Member / Pengguna' },
+      { key: 'seller', label: 'Mitra Penjual (Seller)' },
+      { key: 'penyedia_jasa', label: 'Penyedia Jasa' },
+      { key: 'mekanik', label: 'Mekanik / Servis' },
+      { key: 'admin', label: 'Admin (Moderator)' },
+      { key: 'master_admin', label: 'Master Admin 👑' }
+    ];
+
+    profiles.forEach(p => {
+      const tr = document.createElement('tr');
+      tr.className = 'hover:bg-slate-800/40 transition-colors';
+
+      let roleBadgeColor = 'bg-slate-800 text-slate-300 border-slate-700';
+      if (p.role === 'master_admin') roleBadgeColor = 'bg-purple-950 text-purple-300 border-purple-800';
+      else if (p.role === 'admin') roleBadgeColor = 'bg-indigo-950 text-indigo-300 border-indigo-800';
+      else if (p.role === 'seller') roleBadgeColor = 'bg-emerald-950 text-emerald-300 border-emerald-800';
+      else if (p.role === 'penyedia_jasa' || p.role === 'mekanik') roleBadgeColor = 'bg-amber-950 text-amber-300 border-amber-800';
+
+      const optionsHtml = availableRoles.map(r => `
+        <option value="${r.key}" ${r.key === p.role ? 'selected' : ''}>${r.label}</option>
+      `).join('');
+
+      tr.innerHTML = `
+        <td class="p-3">
+          <p class="font-bold text-white">${p.display_name || 'Tanpa Nama'}</p>
+          <p class="text-[10px] text-slate-500 font-mono">${p.id}</p>
+        </td>
+        <td class="p-3 text-slate-400">${p.city || '-'}</td>
+        <td class="p-3">
+          <span class="px-2 py-0.5 rounded text-[11px] font-bold border ${roleBadgeColor}">
+            ${p.role}
+          </span>
+        </td>
+        <td class="p-3">
+          <select id="role-select-${p.id}" class="bg-slate-900 border border-slate-700 rounded px-2.5 py-1 text-xs text-white focus:outline-none focus:border-purple-500">
+            ${optionsHtml}
+          </select>
+        </td>
+        <td class="p-3 text-right">
+          <button onclick="handleUpdateUserRole('${p.id}', '${p.display_name || 'Pengguna'}')" class="px-3 py-1 bg-purple-600 hover:bg-purple-500 text-white rounded text-xs font-bold transition-colors">
+            Simpan Role
+          </button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function filterUserRoles() {
+    const q = (document.getElementById('role-search-input')?.value || '').toLowerCase().trim();
+    if (!q) {
+      renderRoleUserTable(allLoadedProfiles);
+      return;
+    }
+    const filtered = allLoadedProfiles.filter(p => {
+      const name = (p.display_name || '').toLowerCase();
+      const id = (p.id || '').toLowerCase();
+      const role = (p.role || '').toLowerCase();
+      return name.includes(q) || id.includes(q) || role.includes(q);
+    });
+    renderRoleUserTable(filtered);
+  }
+
+  async function handleUpdateUserRole(userId, userName) {
+    const select = document.getElementById(`role-select-${userId}`);
+    if (!select) return;
+    const newRole = select.value;
+
+    if (!confirm(`Ubah role "${userName}" menjadi "${newRole}"?`)) return;
+
+    const alertBox = document.getElementById('role-mgmt-alert');
+    try {
+      const client = await BobAuth.getClient();
+      const { error } = await client.from('profiles')
+        .update({ role: newRole })
+        .eq('id', userId);
+
+      if (error) throw error;
+
+      if (alertBox) {
+        alertBox.className = 'mb-4 p-3 rounded-lg text-xs font-semibold bg-emerald-950 border border-emerald-800 text-emerald-300';
+        alertBox.textContent = `✓ Role "${userName}" berhasil diperbarui menjadi "${newRole}".`;
+        alertBox.classList.remove('hidden');
+        setTimeout(() => alertBox.classList.add('hidden'), 4000);
+      }
+      loadUserProfiles();
+    } catch (err) {
+      console.error('Gagal memperbarui role:', err);
+      if (alertBox) {
+        alertBox.className = 'mb-4 p-3 rounded-lg text-xs font-semibold bg-rose-950 border border-rose-800 text-rose-300';
+        alertBox.textContent = `Gagal mengubah role: ${err.message}`;
+        alertBox.classList.remove('hidden');
+      }
+    }
+  }
+
   // Sync session
   document.addEventListener('DOMContentLoaded', () => {
     const session = BobAuth.getSession();
@@ -734,6 +911,7 @@
       if (document.getElementById('master-user-name')) document.getElementById('master-user-name').textContent = session.name + ' (Master)';
       if (document.getElementById('master-user-email')) document.getElementById('master-user-email').textContent = session.email;
     }
+    loadUserProfiles();
   });
 </script>
 

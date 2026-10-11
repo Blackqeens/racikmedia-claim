@@ -4,7 +4,7 @@
   var SESSION_KEY = 'bob_profile_hint';
   var ACCOUNT_HISTORY_KEY = 'bob_account_history';
   var PENDING_SWITCH_KEY = 'bob_pending_switch_email';
-  var LOGIN_PAGE = 'pages/auth/login.html';
+  var LOGIN_PAGE = 'login.html';
   var clientPromise = null;
   var REDIRECT_MAP = {
     member: 'pages/main/dashboard.html',
@@ -275,7 +275,7 @@
           password: password,
           options: {
             data: { display_name: name, city: city },
-            emailRedirectTo: authRedirect('email-confirmed.html')
+            emailRedirectTo: new URL(rootPrefix() + 'login.html?confirmed=1', global.location.href).href
           }
         });
         if (result.error) throw result.error;
@@ -370,7 +370,7 @@
         return { success: true };
       }
 
-      var targetPage = provider === 'register' ? 'pages/auth/register.html' : LOGIN_PAGE;
+      var targetPage = provider === 'register' ? 'login.html?mode=register' : LOGIN_PAGE;
       var loginUrl = new URL(rootPrefix() + targetPage, global.location.href);
       loginUrl.searchParams.set('switchAccount', '1');
       if (email) loginUrl.searchParams.set('email', email);

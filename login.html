@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Masuk / Daftar Member — Racik Media Nusantara</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/assets/css/shared.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/assets/js/supabase-config.js"></script>
+  <script src="/api/auth.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    h1, h2, .font-serif { font-family: 'Lora', Georgia, serif; }
+    .gradient-bg {
+      background: linear-gradient(135deg, #ecfdf5 0%, #e0f2fe 50%, #f0fdf4 100%);
+      min-height: 100vh;
+    }
+    .card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 24px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.07);
+    }
+    .input-field {
+      width: 100%;
+      padding: 11px 16px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 14px;
+      font-size: 14px;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s, background-color .2s;
+      background: #fafafa;
+    }
+    .input-field:focus {
+      border-color: #10b981;
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, .15);
+      background: #ffffff;
+    }
+    .input-field.input-mismatch {
+      background-color: #1e293b !important;
+      color: #f8fafc !important;
+      border-color: #ef4444 !important;
+    }
+    .btn-primary {
+      width: 100%;
+      padding: 13px 20px;
+      border-radius: 99px;
+      background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      transition: opacity .2s, transform .1s, box-shadow .2s;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.25);
+    }
+    .btn-primary:hover {
+      opacity: .95;
+      transform: translateY(-1px);
+    }
+    .btn-primary:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 9px 12px;
+      border-radius: 99px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      color: #64748b;
+      transition: all .2s ease;
+    }
+    .tab-btn.active {
+      background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
+    }
+    .social-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      padding: 11px 16px;
+      border-radius: 99px;
+      font-size: 13px;
+      font-weight: 600;
+      border: 1.5px solid #e2e8f0;
+      background: #ffffff;
+      color: #334155;
+      cursor: pointer;
+      transition: all .2s ease;
+    }
+    .social-btn:hover {
+      background: #f8fafc;
+      border-color: #cbd5e1;
+      transform: translateY(-1px);
+    }
+    .social-btn.google:hover {
+      border-color: #4285F4;
+      background: #eff6ff;
+    }
+    .social-btn.facebook:hover {
+      border-color: #1877F2;
+      background: #f0f7ff;
+    }
+    .social-btn.instagram:hover {
+      border-color: #E1306C;
+      background: #fdf2f8;
+    }
+    .rule-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 11px;
+      color: #64748b;
+      transition: color .2s;
+    }
+    .rule-item.valid {
+      color: #059669;
+      font-weight: 600;
+    }
+    .rule-item.valid .rule-icon {
+      color: #10b981;
+    }
+    .rule-item.invalid {
+      color: #64748b;
+    }
+  </style>
+  <link rel="stylesheet" href="/assets/css/public-layout.css" />
+</head>
+<body class="gradient-bg flex items-center justify-center px-4 py-12">
+  <div id="rm-navbar-root"></div>
+
+  <div class="w-full max-w-lg flex flex-col gap-5 my-6">
+    <!-- Header Brand -->
+    <div class="text-center">
+      <h1 class="font-serif text-3xl font-bold tracking-tight text-slate-900">Racik Media Nusantara</h1>
+      <p class="text-xs text-slate-500 mt-1 font-medium">Platform Editorial, Budaya &amp; Commerce Indonesia</p>
+    </div>
+
+    <!-- Dynamic Auth Card -->
+    <div class="card p-7 sm:p-9 flex flex-col gap-6">
+      
+      <!-- Switch Tabs -->
+      <div class="flex items-center gap-1 bg-slate-100/90 rounded-full p-1 border border-slate-200">
+        <button type="button" id="tab-login" class="tab-btn active" onclick="switchAuthMode('login')">Masuk</button>
+        <button type="button" id="tab-register" class="tab-btn" onclick="switchAuthMode('register')">Daftar Member</button>
+      </div>
+
+      <!-- Respon Notifikasi / Error di atas form -->
+      <div id="auth-notification" class="hidden rounded-xl p-3.5 text-xs font-medium border" role="alert"></div>
+
+      <!-- ═══════════════════════════════════════════
+           PANEL MASUK (LOGIN)
+           ═══════════════════════════════════════════ -->
+      <div id="panel-login" class="flex flex-col gap-5">
+        <div>
+          <h2 class="font-serif text-xl font-bold text-slate-900">Selamat datang kembali 👋</h2>
+          <p class="text-xs text-slate-500 mt-1">Masuk untuk melanjutkan pengalaman Anda di Racik media.</p>
+        </div>
+
+        <!-- Social Logins (Google, IG, FB) -->
+        <div class="flex flex-col gap-2.5">
+          <button type="button" onclick="handleSocialAuth('google')" class="social-btn google">
+            <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
+              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+            </svg>
+            Masuk dengan Akun Google
+          </button>
+
+          <div class="grid grid-cols-2 gap-2.5">
+            <button type="button" onclick="handleSocialAuth('facebook')" class="social-btn facebook text-xs">
+              <svg class="w-4 h-4 shrink-0 text-[#1877F2]" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+              </svg>
+              Facebook
+            </button>
+            <button type="button" onclick="handleSocialAuth('instagram')" class="social-btn instagram text-xs">
+              <svg class="w-4 h-4 shrink-0 text-[#E1306C]" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+              </svg>
+              Instagram
+            </button>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <div class="flex-1 border-t border-slate-200"></div>
+          <span class="text-[11px] text-slate-400 font-medium uppercase">atau email</span>
+          <div class="flex-1 border-t border-slate-200"></div>
+        </div>
+
+        <!-- Form Login -->
+        <form id="form-login" onsubmit="handleEmailLogin(event)" class="flex flex-col gap-3.5">
+          <div>
+            <label for="login-email" class="block text-xs font-semibold text-slate-700 mb-1">Email</label>
+            <input type="email" id="login-email" placeholder="Alamat email Anda" class="input-field" required />
+          </div>
+
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label for="login-password" class="block text-xs font-semibold text-slate-700">Kata Sandi</label>
+              <a href="forgot-password.html" class="text-xs font-semibold text-emerald-700 hover:underline">Lupa kata sandi?</a>
+            </div>
+            <input type="password" id="login-password" placeholder="Kata sandi" class="input-field" required />
+          </div>
+
+          <button type="submit" id="btn-submit-login" class="btn-primary mt-1">Masuk ke Akun</button>
+        </form>
+
+        <div class="text-center text-xs text-slate-500 pt-1 space-y-1.5">
+          <p>Belum menerima email konfirmasi? <a href="verify-email.html" class="font-semibold text-emerald-700 hover:underline">Kirim ulang</a></p>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════
+           PANEL DAFTAR MEMBER (REGISTER)
+           ═══════════════════════════════════════════ -->
+      <div id="panel-register" class="hidden flex flex-col gap-5">
+        <div>
+          <h2 class="font-serif text-xl font-bold text-slate-900">Mari Bergabung Bersama Kami ✨</h2>
+          <p class="text-xs text-slate-500 mt-1">Buat akun Anda untuk mulai menjelajah Racik media.</p>
+        </div>
+
+        <!-- Social Logins (Google, IG, FB) -->
+        <div class="flex flex-col gap-2.5">
+          <button type="button" onclick="handleSocialAuth('google')" class="social-btn google">
+            <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
+              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+            </svg>
+            Daftar dengan Akun Google
+          </button>
+
+          <div class="grid grid-cols-2 gap-2.5">
+            <button type="button" onclick="handleSocialAuth('facebook')" class="social-btn facebook text-xs">
+              <svg class="w-4 h-4 shrink-0 text-[#1877F2]" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+              </svg>
+              Facebook
+            </button>
+            <button type="button" onclick="handleSocialAuth('instagram')" class="social-btn instagram text-xs">
+              <svg class="w-4 h-4 shrink-0 text-[#E1306C]" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+              </svg>
+              Instagram
+            </button>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <div class="flex-1 border-t border-slate-200"></div>
+          <span class="text-[11px] text-slate-400 font-medium uppercase">atau isi formulir</span>
+          <div class="flex-1 border-t border-slate-200"></div>
+        </div>
+
+        <!-- 4 Kolom Formulir Pendaftaran -->
+        <form id="form-register" onsubmit="handleManualSignUp(event)" class="flex flex-col gap-3.5">
+          <!-- Kolom 1: Nama Lengkap -->
+          <div>
+            <label for="reg-name" class="block text-xs font-semibold text-slate-700 mb-1">Nama Lengkap</label>
+            <input type="text" id="reg-name" required placeholder="Nama lengkap Anda" class="input-field" />
+          </div>
+
+          <!-- Kolom 2: Alamat Email Aktif -->
+          <div>
+            <label for="reg-email" class="block text-xs font-semibold text-slate-700 mb-1">Alamat Email Aktif</label>
+            <input type="email" id="reg-email" required placeholder="nama@email.com" class="input-field" />
+          </div>
+
+          <!-- Kolom 3: Kata Sandi (Password) -->
+          <div>
+            <label for="reg-pass" class="block text-xs font-semibold text-slate-700 mb-1">Kata Sandi (Password)</label>
+            <input type="password" id="reg-pass" required placeholder="Masukkan kata sandi" class="input-field" autocomplete="new-password" />
+            
+            <!-- Box Aturan Kata Sandi (Muncul saat mulai diisi) -->
+            <div id="password-rules-box" class="hidden mt-2 p-3 bg-slate-50 border border-slate-200 rounded-xl">
+              <p class="text-[11px] font-bold text-slate-700 mb-2">Aturan Kriteria &amp; Batasan Kata Sandi:</p>
+              <div class="space-y-1.5">
+                <div id="rule-length" class="rule-item invalid">
+                  <span class="rule-icon font-bold">✕</span>
+                  <span><strong>Panjang Karakter:</strong> Minimal 8 karakter (sangat disarankan menahan bot pencuri data).</span>
+                </div>
+                <div id="rule-combo" class="rule-item invalid">
+                  <span class="rule-icon font-bold">✕</span>
+                  <span><strong>Kombinasi Karakter:</strong> Harus mengandung Huruf Besar (A-Z), Huruf Kecil (a-z), dan Angka (0-9).</span>
+                </div>
+                <div id="rule-special" class="rule-item text-slate-500">
+                  <span class="rule-icon text-slate-400 font-bold">•</span>
+                  <span><strong>Karakter Spesifik:</strong> Boleh menggunakan simbol (@, #, $, %, *) sebagai proteksi ekstra (opsional).</span>
+                </div>
+              </div>
+              <div id="rule-feedback" class="mt-2 text-[11px] text-amber-700 font-medium">Lengkapi kriteria kata sandi di atas.</div>
+            </div>
+          </div>
+
+          <!-- Kolom 4: Kata Sandi ulang (Password) -->
+          <div>
+            <label for="reg-pass-confirm" class="block text-xs font-semibold text-slate-700 mb-1">Kata Sandi ulang (Password)</label>
+            <input type="password" id="reg-pass-confirm" required placeholder="Ulangi kata sandi" class="input-field" autocomplete="new-password" />
+            <!-- Notifikasi bila password tidak sama -->
+            <p id="password-match-error" class="hidden text-xs text-red-600 font-semibold mt-1.5">
+              ⚠️ Password tidak sama
+            </p>
+          </div>
+
+          <!-- Tombol Daftar Sekarang (Hanya muncul bila semua aturan terpenuhi dan password sama) -->
+          <div id="register-btn-container" class="hidden pt-2">
+            <button type="submit" id="btn-submit-register" class="btn-primary">
+              Daftar Sekarang →
+            </button>
+          </div>
+        </form>
+
+        <p class="text-center text-xs text-slate-500">
+          Setiap pengguna baru akan otomatis mendapatkan role <strong>pengguna/member</strong>.
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // ── Tab Switching Logic ──
+    function switchAuthMode(mode) {
+      clearNotification();
+      const tabLogin = document.getElementById('tab-login');
+      const tabRegister = document.getElementById('tab-register');
+      const panelLogin = document.getElementById('panel-login');
+      const panelRegister = document.getElementById('panel-register');
+
+      if (mode === 'register') {
+        tabLogin.classList.remove('active');
+        tabRegister.classList.add('active');
+        panelLogin.classList.add('hidden');
+        panelRegister.classList.remove('hidden');
+        history.replaceState(null, '', '?mode=register' + (window.location.search.includes('next=') ? '&' + new URLSearchParams(window.location.search).get('next') : ''));
+      } else {
+        tabRegister.classList.remove('active');
+        tabLogin.classList.add('active');
+        panelRegister.classList.add('hidden');
+        panelLogin.classList.remove('hidden');
+        history.replaceState(null, '', window.location.pathname + (window.location.search.includes('next=') ? '?next=' + encodeURIComponent(new URLSearchParams(window.location.search).get('next')) : ''));
+      }
+    }
+
+    // ── Notification Helpers ──
+    function showNotification(message, type) {
+      const box = document.getElementById('auth-notification');
+      box.classList.remove('hidden', 'bg-red-50', 'text-red-800', 'border-red-200', 'bg-emerald-50', 'text-emerald-800', 'border-emerald-200');
+      
+      if (type === 'success') {
+        box.classList.add('bg-emerald-50', 'text-emerald-800', 'border-emerald-200');
+      } else {
+        box.classList.add('bg-red-50', 'text-red-800', 'border-red-200');
+      }
+      box.textContent = message;
+      box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function clearNotification() {
+      const box = document.getElementById('auth-notification');
+      box.classList.add('hidden');
+      box.textContent = '';
+    }
+
+    // ── Password Validation State & Matching ──
+    const passInput = document.getElementById('reg-pass');
+    const confirmInput = document.getElementById('reg-pass-confirm');
+    const rulesBox = document.getElementById('password-rules-box');
+    const ruleLength = document.getElementById('rule-length');
+    const ruleCombo = document.getElementById('rule-combo');
+    const ruleFeedback = document.getElementById('rule-feedback');
+    const matchError = document.getElementById('password-match-error');
+    const regBtnContainer = document.getElementById('register-btn-container');
+
+    function checkPasswordRules() {
+      const val = passInput.value;
+      const confirmVal = confirmInput.value;
+
+      if (val.length > 0) {
+        rulesBox.classList.remove('hidden');
+      } else {
+        rulesBox.classList.add('hidden');
+      }
+
+      // 1. Min 8 Karakter
+      const hasLength = val.length >= 8;
+      // 2. Huruf Besar, Huruf Kecil, dan Angka
+      const hasUpper = /[A-Z]/.test(val);
+      const hasLower = /[a-z]/.test(val);
+      const hasNumber = /[0-9]/.test(val);
+      const hasCombo = hasUpper && hasLower && hasNumber;
+
+      // Update UI Rule 1
+      if (hasLength) {
+        ruleLength.className = 'rule-item valid';
+        ruleLength.querySelector('.rule-icon').textContent = '✓';
+      } else {
+        ruleLength.className = 'rule-item invalid';
+        ruleLength.querySelector('.rule-icon').textContent = '✕';
+      }
+
+      // Update UI Rule 2
+      if (hasCombo) {
+        ruleCombo.className = 'rule-item valid';
+        ruleCombo.querySelector('.rule-icon').textContent = '✓';
+      } else {
+        ruleCombo.className = 'rule-item invalid';
+        ruleCombo.querySelector('.rule-icon').textContent = '✕';
+      }
+
+      const isRulesMet = hasLength && hasCombo;
+      if (isRulesMet) {
+        ruleFeedback.textContent = '✓ Kriteria kata sandi memenuhi standar keamanan.';
+        ruleFeedback.className = 'mt-2 text-[11px] text-emerald-700 font-semibold';
+      } else {
+        ruleFeedback.textContent = 'Lengkapi kriteria kata sandi di atas.';
+        ruleFeedback.className = 'mt-2 text-[11px] text-amber-700 font-medium';
+      }
+
+      // Check Password Match & Efek Gelap
+      let isMatched = false;
+      if (confirmVal.length > 0) {
+        if (confirmVal !== val) {
+          matchError.classList.remove('hidden');
+          confirmInput.classList.add('input-mismatch');
+          isMatched = false;
+        } else {
+          matchError.classList.add('hidden');
+          confirmInput.classList.remove('input-mismatch');
+          isMatched = true;
+        }
+      } else {
+        matchError.classList.add('hidden');
+        confirmInput.classList.remove('input-mismatch');
+        isMatched = false;
+      }
+
+      // Tampilkan tombol "Daftar Sekarang" HANYA bila aturan diterapkan & password cocok
+      if (isRulesMet && isMatched) {
+        regBtnContainer.classList.remove('hidden');
+      } else {
+        regBtnContainer.classList.add('hidden');
+      }
+    }
+
+    passInput.addEventListener('input', checkPasswordRules);
+    confirmInput.addEventListener('input', checkPasswordRules);
+
+    // ── Login Handler ──
+    async function handleEmailLogin(event) {
+      event.preventDefault();
+      clearNotification();
+
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+      const btn = document.getElementById('btn-submit-login');
+
+      btn.disabled = true;
+      btn.textContent = 'Memverifikasi…';
+
+      const hasil = await BobAuth.login(email, password);
+
+      if (!hasil.success) {
+        btn.disabled = false;
+        btn.textContent = 'Masuk ke Akun';
+        
+        // Error custom sesuai instruksi:
+        // "Akun dan/atau password Anda salah, silakan coba lagi"
+        showNotification('Akun dan/atau password Anda salah, silakan coba lagi.', 'error');
+      }
+      return false;
+    }
+
+    // ── Register Handler ──
+    async function handleManualSignUp(event) {
+      event.preventDefault();
+      clearNotification();
+
+      const name = document.getElementById('reg-name').value.trim();
+      const email = document.getElementById('reg-email').value.trim();
+      const password = passInput.value;
+      const confirmPassword = confirmInput.value;
+      const btn = document.getElementById('btn-submit-register');
+
+      if (password !== confirmPassword) {
+        showNotification('Password tidak sama. Silakan periksa kembali.', 'error');
+        return false;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Mendaftarkan akun…';
+
+      const result = await BobAuth.register(name, email, password, '');
+
+      btn.disabled = false;
+      btn.textContent = 'Daftar Sekarang →';
+
+      if (!result.success) {
+        const errText = String(result.error || '').toLowerCase();
+        if (errText.includes('already registered') || errText.includes('user already exists') || errText.includes('sudah terdaftar')) {
+          showNotification('Akun anda sudah terdaftar, silakan dengan yang email/ telepon yang lain.', 'error');
+        } else {
+          showNotification(result.error || 'Pendaftaran belum berhasil. Silakan coba lagi.', 'error');
+        }
+      } else if (result.needsEmailConfirmation) {
+        showNotification(result.message || 'Pendaftaran berhasil. Silakan periksa email Anda untuk konfirmasi.', 'success');
+      }
+      return false;
+    }
+
+    // ── Social Auth Handler (Google, Facebook, Instagram) ──
+    async function handleSocialAuth(provider) {
+      clearNotification();
+      const result = await BobAuth.loginSocial(provider);
+      if (!result.success) {
+        showNotification('Gagal menghubungkan autentikasi dengan ' + provider + ': ' + result.error, 'error');
+      }
+    }
+
+    // ── Initial Page Loader ──
+    (async function init() {
+      const params = new URLSearchParams(window.location.search);
+      const requestedEmail = params.get('email');
+      if (requestedEmail) {
+        const loginEmail = document.getElementById('login-email');
+        if (loginEmail) loginEmail.value = requestedEmail;
+      }
+
+      if (params.get('mode') === 'register') {
+        switchAuthMode('register');
+      }
+
+      // Check if user authenticated
+      await BobAuth.redirectIfAuthenticated();
+
+      if (params.get('switchError') === 'account_mismatch') {
+        showNotification('Akun yang dipilih berbeda dari akun tujuan. Pilih akun yang sesuai lalu coba lagi.', 'error');
+      }
+    })();
+  </script>
+
+  <script src="/assets/js/lang.js"></script>
+  <script src="/assets/js/layout.js"></script>
+  <script src="/assets/js/public-layout.js"></script>
+</body>
+</html>

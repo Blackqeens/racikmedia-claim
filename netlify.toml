@@ -21,6 +21,16 @@
   force = true
 
 [[redirects]]
+  from = "/pages/auth/login.html"
+  to = "/login.html"
+  status = 301
+
+[[redirects]]
+  from = "/pages/auth/register.html"
+  to = "/login.html?mode=register"
+  status = 301
+
+[[redirects]]
   from = "/pages/main/articles.html"
   to = "/articles"
   status = 301
