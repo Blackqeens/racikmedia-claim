@@ -5,7 +5,11 @@ const path = require('node:path');
 
 const projectRoot = path.resolve(__dirname, '..');
 const outputDirectory = path.resolve(projectRoot, 'dist');
+<<<<<<< HEAD
 const publicFiles = ['index.html', 'login.html', 'script.js', 'style.css'];
+=======
+const publicFiles = ['index.html', 'script.js', 'style.css'];
+>>>>>>> d19f01dd6bf34101acb004d32d061b0d1ce04dbd
 const publicDirectories = ['api', 'assets', 'layouts', 'pages', 'articles', 'etalase', 'cerita-kami', 'events', 'kebijakan'];
 const excludedFiles = new Set(['google-maps-config.js']);
 
