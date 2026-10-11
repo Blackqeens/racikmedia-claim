@@ -94,3 +94,8 @@
   from = "/events"
   to = "/events/index.html"
   status = 200
+
+[[redirects]]
+  from = "/kebijakan"
+  to = "/kebijakan/index.html"
+  status = 200
