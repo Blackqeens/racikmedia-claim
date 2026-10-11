@@ -8,21 +8,6 @@
 [functions]
   directory = "netlify/functions"
 
-# --- ATURAN KHUSUS MENGHILANGKAN TRAILING SLASH ---
-[[redirects]]
-  from = "/events/"
-  to = "/events"
-  status = 301
-  force = true
-
-[[redirects]]
-  from = "/cerita-kami/"
-  to = "/cerita-kami"
-  status = 301
-  force = true
-
-# --- END ATURAN TRAILING SLASH ---
-
 [[redirects]]
   from = "/api/shipping"
   to = "/.netlify/functions/shipping"
