@@ -59,4 +59,4 @@ for (const file of requiredOutput) {
   }
 }
 
-console.log(`Netlify package ready: ${requiredOutput.length} required paths verified in dist.`);
+console.log(`Netlify package ready: ${requiredOutput.length} required paths verified in dist (includes cerita-kami and events).`);
