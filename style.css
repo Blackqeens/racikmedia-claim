@@ -1,22 +1,44 @@
 /* ============================================================
    Base Typography
    ============================================================ */
-html, body { overflow-x: clip; }
+html,
+body {
+  overflow-x: clip;
+}
 
-body { font-family: 'Inter', system-ui, sans-serif; }
-h1, h2, h3, h4, .font-serif { font-family: 'Lora', Georgia, serif; }
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+.font-serif {
+  font-family: 'Lora', Georgia, serif;
+}
 
 /* ============================================================
    Hairline Divider Helper
    ============================================================ */
-.divider { border-top: 1px solid #e5e7eb; }
+.divider {
+  border-top: 1px solid #e5e7eb;
+}
 
 /* ============================================================
    Card Image Zoom on Hover
    ============================================================ */
-.card-img-wrap { overflow: hidden; }
-.card-img-wrap img { transition: transform 0.5s ease; }
-.card-img-wrap:hover img { transform: scale(1.04); }
+.card-img-wrap {
+  overflow: hidden;
+}
+
+.card-img-wrap img {
+  transition: transform 0.5s ease;
+}
+
+.card-img-wrap:hover img {
+  transform: scale(1.04);
+}
 
 /* ============================================================
    Racik Media Header
@@ -27,10 +49,12 @@ h1, h2, h3, h4, .font-serif { font-family: 'Lora', Georgia, serif; }
   gap: clamp(0.5rem, 1.4vw, 1.25rem);
   min-height: 4rem;
 }
+
 .site-header__logo img {
   display: block;
   max-width: clamp(6rem, 10vw, 9rem);
 }
+
 .site-header__nav {
   position: relative;
   flex: 0 0 auto;
@@ -38,6 +62,7 @@ h1, h2, h3, h4, .font-serif { font-family: 'Lora', Georgia, serif; }
   align-self: stretch;
   padding-bottom: 8px;
 }
+
 .site-header__nav::after {
   content: "";
   position: absolute;
@@ -48,25 +73,44 @@ h1, h2, h3, h4, .font-serif { font-family: 'Lora', Georgia, serif; }
   border-radius: 999px;
   background: #111827;
 }
-.site-header__actions { gap: 0.5rem; }
+
+.site-header__actions {
+  gap: 0.5rem;
+}
+
 #lang-trigger {
   border-color: #0f766e;
   border-radius: 999px;
   color: #0f766e;
 }
+
 #lang-trigger:hover {
   border-color: #047857;
   color: #065f46;
 }
+
 #lang-trigger:focus-visible {
   outline-color: #0f766e;
 }
-.site-header__language-label { color: #0f766e; }
-@keyframes loginGradientFlow {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+
+.site-header__language-label {
+  color: #0f766e;
 }
+
+@keyframes loginGradientFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
 .site-header__login {
   border: 1px solid transparent;
   background: linear-gradient(110deg, #059669 0%, #10b981 35%, #0ea5e9 70%, #059669 100%);
@@ -75,23 +119,32 @@ h1, h2, h3, h4, .font-serif { font-family: 'Lora', Georgia, serif; }
   animation: loginGradientFlow 4s ease infinite;
   transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
+
 .site-header__login:hover {
   border-color: transparent;
   box-shadow: 0 4px 14px rgba(14, 165, 233, 0.28);
   transform: translateY(-1px);
 }
+
 .site-header__login:focus-visible {
   outline: 2px solid #0f766e;
   outline-offset: 2px;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .site-header__login { animation: none; }
+  .site-header__login {
+    animation: none;
+  }
 }
 
 @media (max-width: 767px) {
-  .site-header__inner { gap: 0.5rem; }
-  .site-header__actions { gap: 0.375rem; }
+  .site-header__inner {
+    gap: 0.5rem;
+  }
+
+  .site-header__actions {
+    gap: 0.375rem;
+  }
 }
 
 /* ============================================================
@@ -101,6 +154,7 @@ h1, h2, h3, h4, .font-serif { font-family: 'Lora', Georgia, serif; }
 #products-track {
   transition: transform 400ms ease;
 }
+
 .carousel-dots {
   display: flex;
   align-items: center;
@@ -109,6 +163,7 @@ h1, h2, h3, h4, .font-serif { font-family: 'Lora', Georgia, serif; }
   min-height: 1rem;
   margin-top: 1.25rem;
 }
+
 .carousel-dot {
   width: 0.55rem;
   height: 0.55rem;
@@ -119,11 +174,16 @@ h1, h2, h3, h4, .font-serif { font-family: 'Lora', Georgia, serif; }
   cursor: pointer;
   transition: width 180ms ease, background-color 180ms ease;
 }
-.carousel-dot:hover { background: #6b7280; }
+
+.carousel-dot:hover {
+  background: #6b7280;
+}
+
 .carousel-dot.is-active {
   width: 1.35rem;
   background: #047857;
 }
+
 .carousel-dot:focus-visible {
   outline: 2px solid #0f766e;
   outline-offset: 3px;
@@ -132,13 +192,20 @@ h1, h2, h3, h4, .font-serif { font-family: 'Lora', Georgia, serif; }
 /* ============================================================
    Racik Media Sidebar Stat
    ============================================================ */
-.rm-stat { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.rm-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
 
 /* ============================================================
    Homepage Mobile Layout
    ============================================================ */
 @media (max-width: 767px) {
-  #hero .rc-carousel__slide { min-height: 460px; }
+  #hero .rc-carousel__slide {
+    min-height: 460px;
+  }
 
   #hero .rc-carousel__content {
     align-items: center;
@@ -176,7 +243,11 @@ h1, h2, h3, h4, .font-serif { font-family: 'Lora', Georgia, serif; }
     font-size: 0.875rem;
   }
 
-  #hero .rc-carousel__dots { bottom: 0.5rem; gap: 0.25rem; }
+  #hero .rc-carousel__dots {
+    bottom: 0.5rem;
+    gap: 0.25rem;
+  }
+
   #hero .rc-carousel__dot {
     display: grid;
     width: 28px;
@@ -184,6 +255,7 @@ h1, h2, h3, h4, .font-serif { font-family: 'Lora', Georgia, serif; }
     place-items: center;
     border: 0;
   }
+
   #hero .rc-carousel__dot::before {
     width: 9px;
     height: 9px;
@@ -192,10 +264,77 @@ h1, h2, h3, h4, .font-serif { font-family: 'Lora', Georgia, serif; }
     content: "";
     transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
   }
+
   #hero .rc-carousel__dot.is-active::before {
     transform: scale(1.2);
     border-color: #fff;
     background: #fff;
   }
 
+}
+
+/* ==========================================================================
+   Sistem Kontrol Navbar Dinamis (Dashboard vs Publik)
+   ========================================================================== */
+
+/* 1. Sembunyikan header bawaan publik jika user terdeteksi sudah login */
+body.dashboard-page .site-header {
+  display: none !important;
+}
+
+/* 2. Mengatur tampilan Toolbar Dashboard baru Anda */
+.dashboard-toolbar {
+  background: #ffffff;
+  padding: 12px 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-bottom: 1px solid #e5e7eb;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.dashboard-toolbar__controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+}
+
+.dashboard-toolbar__controls .nav-brand {
+  font-weight: bold;
+  color: #111827;
+  font-size: 1.1rem;
+}
+
+.dashboard-toolbar__controls .nav-brand-logo {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.dashboard-toolbar__controls .search-bar input {
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  padding: 6px 12px;
+  border-radius: 6px;
+  width: 200px;
+  outline: none;
+}
+
+.dashboard-toolbar__controls .nav-links a,
+.dashboard-toolbar__controls .nav-links button {
+  margin-left: 12px;
+  text-decoration: none;
+  color: #4b5563;
+  font-size: 0.95rem;
+}
+
+.dashboard-toolbar__controls .nav-links button.btn-logout {
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
 }

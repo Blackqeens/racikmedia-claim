@@ -7,12 +7,12 @@
   <title>BOB Seller — Dashboard Toko</title>
   <!-- Route guard: dashboard pengelolaan penjualan hanya untuk seller -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../../assets/js/supabase-config.js"></script>
+  <script src="/assets/js/supabase-config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
-  <script src="../../api/auth.js"></script>
+  <script src="/api/auth.js"></script>
   <script>window.sellerRoleReady = BobAuth.requireRole(['seller', 'penjual', 'penyedia_jasa']);</script>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="../../assets/css/shared.css" />
+  <link rel="stylesheet" href="/assets/css/shared.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
@@ -664,7 +664,8 @@
 
     <!-- Logo -->
     <div class="sidebar-logo">
-      <a href="../main/dashboard.html">
+      <a href="seller-dashboard.html" data-racik-logo="true" aria-label="Racik Media — Dashboard Seller"
+        title="Dashboard Seller">
         <img src="../../assets/brand/1.png" alt="Racik Media" style="height:32px;width:auto;" />
       </a>
     </div>
@@ -1399,19 +1400,24 @@
     <div id="tab-layout-toko" class="tab-panel">
 
       <!-- Header Modul -->
-      <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div
+        class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <div class="flex items-center gap-2 mb-1">
             <span class="text-lg">🔀</span>
             <h2 class="text-lg font-bold text-slate-900">Pengaturan Layout Toko &amp; Visual Merchandising</h2>
           </div>
           <p class="text-xs text-slate-500 max-w-2xl leading-relaxed">
-            Geser dan atur urutan posisi produk secara visual (drag &amp; drop). Setiap perubahan susunan akan otomatis tersimpan ke tabel database <code class="bg-slate-100 text-emerald-800 px-1 py-0.5 rounded font-mono text-[11px]">seller_products</code> di Supabase dan tampil terbarui secara real-time di halaman depan toko pembeli.
+            Geser dan atur urutan posisi produk secara visual (drag &amp; drop). Setiap perubahan susunan akan otomatis
+            tersimpan ke tabel database <code
+              class="bg-slate-100 text-emerald-800 px-1 py-0.5 rounded font-mono text-[11px]">seller_products</code> di
+            Supabase dan tampil terbarui secara real-time di halaman depan toko pembeli.
           </p>
         </div>
 
         <div class="flex items-center gap-2.5 shrink-0">
-          <div id="layout-sync-badge" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
+          <div id="layout-sync-badge"
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
             <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
             <span id="layout-sync-text">Tersinkronisasi Real-Time</span>
           </div>
@@ -1427,7 +1433,10 @@
       <div class="p-4 rounded-xl border border-blue-200 bg-blue-50/70 mb-6 flex items-start gap-3">
         <span class="text-blue-600 text-lg">💡</span>
         <div class="text-xs text-blue-900 leading-relaxed">
-          <strong class="font-bold">Tips Pengaturan Layout:</strong> Produk di urutan <strong>#1</strong> dan <strong>#2</strong> akan menjadi produk sorotan utama di bagian teratas etalase tokomu. Klik dan tahan ikon pegangan <span class="font-mono bg-blue-100 px-1 rounded">⠿</span> pada kartu produk untuk menggeser posisinya.
+          <strong class="font-bold">Tips Pengaturan Layout:</strong> Produk di urutan <strong>#1</strong> dan
+          <strong>#2</strong> akan menjadi produk sorotan utama di bagian teratas etalase tokomu. Klik dan tahan ikon
+          pegangan <span class="font-mono bg-blue-100 px-1 rounded">⠿</span> pada kartu produk untuk menggeser
+          posisinya.
         </div>
       </div>
 
@@ -1444,21 +1453,26 @@
         <div id="sortable-store-products" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
 
           <!-- Product Item 1 -->
-          <div class="sortable-product-card bg-white rounded-xl p-4 border border-slate-200 shadow-xs hover:shadow-md transition cursor-grab active:cursor-grabbing relative select-none flex flex-col justify-between"
+          <div
+            class="sortable-product-card bg-white rounded-xl p-4 border border-slate-200 shadow-xs hover:shadow-md transition cursor-grab active:cursor-grabbing relative select-none flex flex-col justify-between"
             data-product-id="prd-kopi-gayo" data-position="1">
             <div>
               <div class="flex items-center justify-between mb-3">
-                <span class="pos-badge px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-emerald-100 text-emerald-800">
+                <span
+                  class="pos-badge px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-emerald-100 text-emerald-800">
                   Posisi #1
                 </span>
-                <span class="drag-handle text-slate-400 hover:text-slate-700 text-lg px-1 cursor-grab" title="Tahan dan geser posisi">
+                <span class="drag-handle text-slate-400 hover:text-slate-700 text-lg px-1 cursor-grab"
+                  title="Tahan dan geser posisi">
                   ⠿
                 </span>
               </div>
               <div class="rounded-lg overflow-hidden aspect-square bg-slate-100 mb-3 border border-slate-100">
-                <img src="https://images.unsplash.com/photo-1610889556528-9a770e32642f?w=300&q=75" alt="Kopi Gayo" class="w-full h-full object-cover pointer-events-none" />
+                <img src="https://images.unsplash.com/photo-1610889556528-9a770e32642f?w=300&q=75" alt="Kopi Gayo"
+                  class="w-full h-full object-cover pointer-events-none" />
               </div>
-              <span class="text-[10px] font-bold uppercase tracking-wide text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">Kopi</span>
+              <span
+                class="text-[10px] font-bold uppercase tracking-wide text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">Kopi</span>
               <h4 class="font-bold text-xs text-slate-900 mt-1.5 line-clamp-2">Kopi Gayo Premium 100g</h4>
             </div>
             <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between">
@@ -1468,21 +1482,26 @@
           </div>
 
           <!-- Product Item 2 -->
-          <div class="sortable-product-card bg-white rounded-xl p-4 border border-slate-200 shadow-xs hover:shadow-md transition cursor-grab active:cursor-grabbing relative select-none flex flex-col justify-between"
+          <div
+            class="sortable-product-card bg-white rounded-xl p-4 border border-slate-200 shadow-xs hover:shadow-md transition cursor-grab active:cursor-grabbing relative select-none flex flex-col justify-between"
             data-product-id="prd-baju-tenun" data-position="2">
             <div>
               <div class="flex items-center justify-between mb-3">
                 <span class="pos-badge px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-purple-100 text-purple-800">
                   Posisi #2
                 </span>
-                <span class="drag-handle text-slate-400 hover:text-slate-700 text-lg px-1 cursor-grab" title="Tahan dan geser posisi">
+                <span class="drag-handle text-slate-400 hover:text-slate-700 text-lg px-1 cursor-grab"
+                  title="Tahan dan geser posisi">
                   ⠿
                 </span>
               </div>
               <div class="rounded-lg overflow-hidden aspect-square bg-slate-100 mb-3 border border-slate-100">
-                <img src="https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?w=300&q=75" alt="Kemeja Tenun" class="w-full h-full object-cover pointer-events-none" />
+                <img src="https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?w=300&q=75" alt="Kemeja Tenun"
+                  class="w-full h-full object-cover pointer-events-none" />
               </div>
-              <span class="text-[10px] font-bold uppercase tracking-wide text-purple-700 bg-purple-50 px-2 py-0.5 rounded">Baju / Tenun</span>
+              <span
+                class="text-[10px] font-bold uppercase tracking-wide text-purple-700 bg-purple-50 px-2 py-0.5 rounded">Baju
+                / Tenun</span>
               <h4 class="font-bold text-xs text-slate-900 mt-1.5 line-clamp-2">Kemeja Tenun Ikat Wastra</h4>
             </div>
             <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between">
@@ -1492,21 +1511,25 @@
           </div>
 
           <!-- Product Item 3 -->
-          <div class="sortable-product-card bg-white rounded-xl p-4 border border-slate-200 shadow-xs hover:shadow-md transition cursor-grab active:cursor-grabbing relative select-none flex flex-col justify-between"
+          <div
+            class="sortable-product-card bg-white rounded-xl p-4 border border-slate-200 shadow-xs hover:shadow-md transition cursor-grab active:cursor-grabbing relative select-none flex flex-col justify-between"
             data-product-id="prd-madu-hutan" data-position="3">
             <div>
               <div class="flex items-center justify-between mb-3">
                 <span class="pos-badge px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-amber-100 text-amber-800">
                   Posisi #3
                 </span>
-                <span class="drag-handle text-slate-400 hover:text-slate-700 text-lg px-1 cursor-grab" title="Tahan dan geser posisi">
+                <span class="drag-handle text-slate-400 hover:text-slate-700 text-lg px-1 cursor-grab"
+                  title="Tahan dan geser posisi">
                   ⠿
                 </span>
               </div>
               <div class="rounded-lg overflow-hidden aspect-square bg-slate-100 mb-3 border border-slate-100">
-                <img src="https://images.unsplash.com/photo-1571115177098-24ec42ed204d?w=300&q=75" alt="Madu Hutan" class="w-full h-full object-cover pointer-events-none" />
+                <img src="https://images.unsplash.com/photo-1571115177098-24ec42ed204d?w=300&q=75" alt="Madu Hutan"
+                  class="w-full h-full object-cover pointer-events-none" />
               </div>
-              <span class="text-[10px] font-bold uppercase tracking-wide text-amber-700 bg-amber-50 px-2 py-0.5 rounded">Herbal</span>
+              <span
+                class="text-[10px] font-bold uppercase tracking-wide text-amber-700 bg-amber-50 px-2 py-0.5 rounded">Herbal</span>
               <h4 class="font-bold text-xs text-slate-900 mt-1.5 line-clamp-2">Madu Hutan Kalimantan 250ml</h4>
             </div>
             <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between">
@@ -1516,21 +1539,25 @@
           </div>
 
           <!-- Product Item 4 -->
-          <div class="sortable-product-card bg-white rounded-xl p-4 border border-slate-200 shadow-xs hover:shadow-md transition cursor-grab active:cursor-grabbing relative select-none flex flex-col justify-between"
+          <div
+            class="sortable-product-card bg-white rounded-xl p-4 border border-slate-200 shadow-xs hover:shadow-md transition cursor-grab active:cursor-grabbing relative select-none flex flex-col justify-between"
             data-product-id="prd-beras-organik" data-position="4">
             <div>
               <div class="flex items-center justify-between mb-3">
                 <span class="pos-badge px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-slate-200 text-slate-800">
                   Posisi #4
                 </span>
-                <span class="drag-handle text-slate-400 hover:text-slate-700 text-lg px-1 cursor-grab" title="Tahan dan geser posisi">
+                <span class="drag-handle text-slate-400 hover:text-slate-700 text-lg px-1 cursor-grab"
+                  title="Tahan dan geser posisi">
                   ⠿
                 </span>
               </div>
               <div class="rounded-lg overflow-hidden aspect-square bg-slate-100 mb-3 border border-slate-100">
-                <img src="https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=300&q=75" alt="Beras Organik" class="w-full h-full object-cover pointer-events-none" />
+                <img src="https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=300&q=75" alt="Beras Organik"
+                  class="w-full h-full object-cover pointer-events-none" />
               </div>
-              <span class="text-[10px] font-bold uppercase tracking-wide text-slate-700 bg-slate-100 px-2 py-0.5 rounded">Pangan</span>
+              <span
+                class="text-[10px] font-bold uppercase tracking-wide text-slate-700 bg-slate-100 px-2 py-0.5 rounded">Pangan</span>
               <h4 class="font-bold text-xs text-slate-900 mt-1.5 line-clamp-2">Beras Organik Merah 1kg</h4>
             </div>
             <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between">
@@ -1573,8 +1600,7 @@
           <h2 class="text-lg font-bold text-slate-900">Kelola Jasa</h2>
           <p class="text-xs text-slate-500 mt-1">Kelola layanan dan pantau pesanan atau booking yang masuk.</p>
         </div>
-        <button type="button"
-          onclick="openServiceForm()"
+        <button type="button" onclick="openServiceForm()"
           class="px-4 py-2 text-xs font-bold text-white bg-emerald-700 hover:bg-emerald-800 rounded-xl shadow-sm transition flex items-center gap-1.5">
           <span>+</span>
           <span>Tambah Jasa Baru</span>
@@ -1689,7 +1715,8 @@
                 Spesifikasi Khusus Kopi (Disimpan ke Kolom JSONB attributes)
               </h4>
             </div>
-            <span class="text-[10px] font-bold bg-emerald-200 text-emerald-900 px-2 py-0.5 rounded-full">Kategori Kopi Aktif</span>
+            <span class="text-[10px] font-bold bg-emerald-200 text-emerald-900 px-2 py-0.5 rounded-full">Kategori Kopi
+              Aktif</span>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1699,23 +1726,28 @@
                 Pilihan Gramasi Berat Produk:
               </label>
               <div class="flex flex-wrap gap-2 text-xs text-slate-700" id="coffee-weights-group">
-                <label class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-emerald-200 cursor-pointer select-none">
+                <label
+                  class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-emerald-200 cursor-pointer select-none">
                   <input type="checkbox" name="coffee_weights" value="100g" checked class="accent-emerald-700" />
                   <span>100g</span>
                 </label>
-                <label class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-emerald-200 cursor-pointer select-none">
+                <label
+                  class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-emerald-200 cursor-pointer select-none">
                   <input type="checkbox" name="coffee_weights" value="200g" checked class="accent-emerald-700" />
                   <span>200g</span>
                 </label>
-                <label class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-emerald-200 cursor-pointer select-none">
+                <label
+                  class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-emerald-200 cursor-pointer select-none">
                   <input type="checkbox" name="coffee_weights" value="250g" class="accent-emerald-700" />
                   <span>250g</span>
                 </label>
-                <label class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-emerald-200 cursor-pointer select-none">
+                <label
+                  class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-emerald-200 cursor-pointer select-none">
                   <input type="checkbox" name="coffee_weights" value="500g" checked class="accent-emerald-700" />
                   <span>500g</span>
                 </label>
-                <label class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-emerald-200 cursor-pointer select-none">
+                <label
+                  class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-emerald-200 cursor-pointer select-none">
                   <input type="checkbox" name="coffee_weights" value="1kg" checked class="accent-emerald-700" />
                   <span>1kg</span>
                 </label>
@@ -1728,20 +1760,28 @@
                 Pilihan Jenis Gilingan (Grind Size):
               </label>
               <div class="grid grid-cols-2 gap-2 text-xs text-slate-700" id="coffee-grinds-group">
-                <label class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-emerald-200 cursor-pointer select-none">
-                  <input type="checkbox" name="coffee_grinds" value="Biji Utuh (Whole Bean)" checked class="accent-emerald-700" />
+                <label
+                  class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-emerald-200 cursor-pointer select-none">
+                  <input type="checkbox" name="coffee_grinds" value="Biji Utuh (Whole Bean)" checked
+                    class="accent-emerald-700" />
                   <span>Biji Utuh</span>
                 </label>
-                <label class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-emerald-200 cursor-pointer select-none">
-                  <input type="checkbox" name="coffee_grinds" value="Giling Kasar (Coarse)" checked class="accent-emerald-700" />
+                <label
+                  class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-emerald-200 cursor-pointer select-none">
+                  <input type="checkbox" name="coffee_grinds" value="Giling Kasar (Coarse)" checked
+                    class="accent-emerald-700" />
                   <span>Giling Kasar</span>
                 </label>
-                <label class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-emerald-200 cursor-pointer select-none">
-                  <input type="checkbox" name="coffee_grinds" value="Giling Sedang (Medium)" checked class="accent-emerald-700" />
+                <label
+                  class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-emerald-200 cursor-pointer select-none">
+                  <input type="checkbox" name="coffee_grinds" value="Giling Sedang (Medium)" checked
+                    class="accent-emerald-700" />
                   <span>Giling Sedang</span>
                 </label>
-                <label class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-emerald-200 cursor-pointer select-none">
-                  <input type="checkbox" name="coffee_grinds" value="Giling Halus (Fine)" checked class="accent-emerald-700" />
+                <label
+                  class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-emerald-200 cursor-pointer select-none">
+                  <input type="checkbox" name="coffee_grinds" value="Giling Halus (Fine)" checked
+                    class="accent-emerald-700" />
                   <span>Giling Halus</span>
                 </label>
               </div>
@@ -1750,7 +1790,8 @@
             <!-- Level Sangrai & Origin -->
             <div>
               <label class="block text-xs font-bold text-emerald-900 mb-1">Profil Sangrai (Roast Level)</label>
-              <select id="coffee-roast-level" class="w-full px-3 py-2 text-xs rounded-xl border border-emerald-200 bg-white focus:ring-2 focus:ring-emerald-500 outline-none">
+              <select id="coffee-roast-level"
+                class="w-full px-3 py-2 text-xs rounded-xl border border-emerald-200 bg-white focus:ring-2 focus:ring-emerald-500 outline-none">
                 <option value="Light Roast">Light Roast (Cita rasa asam buah cerah)</option>
                 <option value="Medium Roast" selected>Medium Roast (Seimbang, karamel manis)</option>
                 <option value="Medium Dark Roast">Medium Dark Roast (Body tebal, cokelat pekat)</option>
@@ -1775,7 +1816,8 @@
                 Spesifikasi Khusus Baju (Disimpan ke Kolom JSONB attributes)
               </h4>
             </div>
-            <span class="text-[10px] font-bold bg-purple-200 text-purple-900 px-2 py-0.5 rounded-full">Kategori Baju Aktif</span>
+            <span class="text-[10px] font-bold bg-purple-200 text-purple-900 px-2 py-0.5 rounded-full">Kategori Baju
+              Aktif</span>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1785,23 +1827,28 @@
                 Varian Warna Pakaian (Kolor):
               </label>
               <div class="flex flex-wrap gap-2 text-xs text-slate-700" id="clothes-colors-group">
-                <label class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-purple-200 cursor-pointer select-none">
+                <label
+                  class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-purple-200 cursor-pointer select-none">
                   <input type="checkbox" name="cloth_colors" value="Hitam" checked class="accent-purple-700" />
                   <span>Hitam</span>
                 </label>
-                <label class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-purple-200 cursor-pointer select-none">
+                <label
+                  class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-purple-200 cursor-pointer select-none">
                   <input type="checkbox" name="cloth_colors" value="Putih" checked class="accent-purple-700" />
                   <span>Putih</span>
                 </label>
-                <label class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-purple-200 cursor-pointer select-none">
+                <label
+                  class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-purple-200 cursor-pointer select-none">
                   <input type="checkbox" name="cloth_colors" value="Navy Blue" checked class="accent-purple-700" />
                   <span>Navy</span>
                 </label>
-                <label class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-purple-200 cursor-pointer select-none">
+                <label
+                  class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-purple-200 cursor-pointer select-none">
                   <input type="checkbox" name="cloth_colors" value="Terracotta" checked class="accent-purple-700" />
                   <span>Terracotta</span>
                 </label>
-                <label class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-purple-200 cursor-pointer select-none">
+                <label
+                  class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-purple-200 cursor-pointer select-none">
                   <input type="checkbox" name="cloth_colors" value="Hijau Botol" class="accent-purple-700" />
                   <span>Hijau Botol</span>
                 </label>
@@ -1816,27 +1863,33 @@
                 Pilihan Ukuran Pakaian (Size):
               </label>
               <div class="flex flex-wrap gap-2 text-xs text-slate-700" id="clothes-sizes-group">
-                <label class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-purple-200 cursor-pointer select-none">
+                <label
+                  class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-purple-200 cursor-pointer select-none">
                   <input type="checkbox" name="cloth_sizes" value="S" checked class="accent-purple-700" />
                   <span>S</span>
                 </label>
-                <label class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-purple-200 cursor-pointer select-none">
+                <label
+                  class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-purple-200 cursor-pointer select-none">
                   <input type="checkbox" name="cloth_sizes" value="M" checked class="accent-purple-700" />
                   <span>M</span>
                 </label>
-                <label class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-purple-200 cursor-pointer select-none">
+                <label
+                  class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-purple-200 cursor-pointer select-none">
                   <input type="checkbox" name="cloth_sizes" value="L" checked class="accent-purple-700" />
                   <span>L</span>
                 </label>
-                <label class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-purple-200 cursor-pointer select-none">
+                <label
+                  class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-purple-200 cursor-pointer select-none">
                   <input type="checkbox" name="cloth_sizes" value="XL" checked class="accent-purple-700" />
                   <span>XL</span>
                 </label>
-                <label class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-purple-200 cursor-pointer select-none">
+                <label
+                  class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-purple-200 cursor-pointer select-none">
                   <input type="checkbox" name="cloth_sizes" value="XXL" class="accent-purple-700" />
                   <span>XXL</span>
                 </label>
-                <label class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-purple-200 cursor-pointer select-none">
+                <label
+                  class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-purple-200 cursor-pointer select-none">
                   <input type="checkbox" name="cloth_sizes" value="All Size" class="accent-purple-700" />
                   <span>All Size</span>
                 </label>
@@ -1852,7 +1905,8 @@
             </div>
             <div>
               <label class="block text-xs font-bold text-purple-900 mb-1">Panduan Potongan (Fitting Guide)</label>
-              <select id="cloth-size-guide" class="w-full px-3 py-2 text-xs rounded-xl border border-purple-200 bg-white focus:ring-2 focus:ring-purple-500 outline-none">
+              <select id="cloth-size-guide"
+                class="w-full px-3 py-2 text-xs rounded-xl border border-purple-200 bg-white focus:ring-2 focus:ring-purple-500 outline-none">
                 <option value="Regular Fit" selected>Regular Fit (Potongan Standar Nyaman)</option>
                 <option value="Slim Fit">Slim Fit (Pas Badan)</option>
                 <option value="Oversized">Oversized / Loose Cut</option>
@@ -2430,14 +2484,38 @@
       </div>
       <div class="modal-body">
         <dl class="space-y-3 text-xs">
-          <div><dt class="text-slate-500">Klien</dt><dd id="booking-detail-client" class="mt-1 font-semibold text-slate-900"></dd></div>
-          <div><dt class="text-slate-500">Jasa</dt><dd id="booking-detail-service" class="mt-1 font-semibold text-slate-900"></dd></div>
-          <div><dt class="text-slate-500">Tanggal</dt><dd id="booking-detail-date" class="mt-1 font-semibold text-slate-900"></dd></div>
-          <div><dt class="text-slate-500">Status Booking</dt><dd id="booking-detail-status" class="mt-1 font-semibold text-slate-900"></dd></div>
-          <div><dt class="text-slate-500">Total</dt><dd id="booking-detail-total" class="mt-1 font-semibold text-slate-900"></dd></div>
-          <div><dt class="text-slate-500">Waktu pilihan</dt><dd id="booking-detail-time" class="mt-1 font-semibold text-slate-900"></dd></div>
-          <div><dt class="text-slate-500">Lokasi</dt><dd id="booking-detail-location" class="mt-1 font-semibold text-slate-900"></dd></div>
-          <div><dt class="text-slate-500">Catatan klien</dt><dd id="booking-detail-note" class="mt-1 whitespace-pre-wrap font-semibold text-slate-900"></dd></div>
+          <div>
+            <dt class="text-slate-500">Klien</dt>
+            <dd id="booking-detail-client" class="mt-1 font-semibold text-slate-900"></dd>
+          </div>
+          <div>
+            <dt class="text-slate-500">Jasa</dt>
+            <dd id="booking-detail-service" class="mt-1 font-semibold text-slate-900"></dd>
+          </div>
+          <div>
+            <dt class="text-slate-500">Tanggal</dt>
+            <dd id="booking-detail-date" class="mt-1 font-semibold text-slate-900"></dd>
+          </div>
+          <div>
+            <dt class="text-slate-500">Status Booking</dt>
+            <dd id="booking-detail-status" class="mt-1 font-semibold text-slate-900"></dd>
+          </div>
+          <div>
+            <dt class="text-slate-500">Total</dt>
+            <dd id="booking-detail-total" class="mt-1 font-semibold text-slate-900"></dd>
+          </div>
+          <div>
+            <dt class="text-slate-500">Waktu pilihan</dt>
+            <dd id="booking-detail-time" class="mt-1 font-semibold text-slate-900"></dd>
+          </div>
+          <div>
+            <dt class="text-slate-500">Lokasi</dt>
+            <dd id="booking-detail-location" class="mt-1 font-semibold text-slate-900"></dd>
+          </div>
+          <div>
+            <dt class="text-slate-500">Catatan klien</dt>
+            <dd id="booking-detail-note" class="mt-1 whitespace-pre-wrap font-semibold text-slate-900"></dd>
+          </div>
         </dl>
         <p class="mt-4 rounded-lg bg-amber-50 p-3 text-[11px] leading-5 text-amber-900">
           Status pembayaran belum tersedia pada data booking saat ini.
@@ -2709,7 +2787,7 @@
             BobProductsStore.setFeatured(item.id, true, item.position);
           });
         }
-      } catch (e) {}
+      } catch (e) { }
 
       // Selesai menyimpan
       if (syncBadge) {

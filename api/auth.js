@@ -7,14 +7,14 @@
   var LOGIN_PAGE = 'login.html';
   var clientPromise = null;
   var REDIRECT_MAP = {
-    member: 'pages/main/dashboard.html',
-    penguna: 'pages/main/dashboard.html',
-    seller: 'pages/main/dashboard.html',
-    penjual: 'pages/main/dashboard.html',
-    mekanik: 'pages/main/dashboard.html',
-    penyedia_jasa: 'pages/main/dashboard.html',
-    admin: 'pages/main/dashboard.html',
-    master_admin: 'pages/main/dashboard.html'
+    member: 'dashboard/main/index.html',
+    penguna: 'dashboard/main/index.html',
+    seller: 'dashboard/seller/index.html',
+    penjual: 'dashboard/seller/index.html',
+    mekanik: 'dashboard/seller/index.html',
+    penyedia_jasa: 'dashboard/seller/index.html',
+    admin: 'dashboard/admin/index.html',
+    master_admin: 'dashboard/master-admin/index.html'
   };
 
   function rootPrefix() {
@@ -111,6 +111,11 @@
     sessionStorage.setItem('bob_user_email', hint.email);
     sessionStorage.setItem('bob_user_role', hint.role);
     sessionStorage.setItem('bob_user_city', hint.city);
+    global.localStorage.setItem('isLoggedIn', 'true');
+    global.localStorage.setItem('user_role', hint.role);
+    if (typeof global.syncRacikLogo === 'function') {
+      global.syncRacikLogo(hint.role);
+    }
     return hint;
   }
 
@@ -152,6 +157,11 @@
     ['bob_user_id', 'bob_user_name', 'bob_user_email', 'bob_user_role', 'bob_user_city'].forEach(function (key) {
       sessionStorage.removeItem(key);
     });
+    global.localStorage.removeItem('isLoggedIn');
+    global.localStorage.removeItem('user_role');
+    if (typeof global.syncRacikLogo === 'function') {
+      global.syncRacikLogo(null);
+    }
   }
 
   async function verifiedContext() {
@@ -167,13 +177,25 @@
     return { client: client, user: auth.data.user, profile: profile.data };
   }
 
+  var AUTH_DISABLED = true; // ⚠️ Ubah ke false jika selesai edit dan ingin mengaktifkan proteksi auth kembali
+
   var BobAuth = {
     getClient: getClient,
 
     getSession: function () {
       try {
         var hint = JSON.parse(sessionStorage.getItem(SESSION_KEY) || 'null');
-        return hint && typeof hint === 'object' ? hint : null;
+        if (hint && typeof hint === 'object') return hint;
+        if (AUTH_DISABLED) {
+          return {
+            id: 'dev-user-id',
+            name: 'Mode Edit / Developer',
+            email: 'dev@racikmedia.com',
+            role: global.localStorage.getItem('user_role') || 'master_admin',
+            city: 'Indonesia'
+          };
+        }
+        return null;
       } catch (error) {
         console.warn('Ignoring malformed cached profile data.');
         clearProfileHint();
@@ -182,6 +204,10 @@
     },
 
     requireAuth: async function () {
+      if (AUTH_DISABLED) {
+        console.warn('⚠️ [DEV MODE] Proteksi BobAuth.requireAuth dinonaktifkan sementara untuk edit manual.');
+        return true;
+      }
       try {
         var context = await verifiedContext();
         if (!context) {
@@ -200,6 +226,9 @@
     },
 
     redirectIfAuthenticated: async function () {
+      if (AUTH_DISABLED) {
+        return false;
+      }
       try {
         var client = await getClient();
         var auth = await client.auth.getUser();
@@ -229,6 +258,10 @@
     },
 
     requireRole: async function (allowedRoles) {
+      if (AUTH_DISABLED) {
+        console.warn('⚠️ [DEV MODE] Proteksi BobAuth.requireRole dinonaktifkan sementara untuk akses:', allowedRoles);
+        return true;
+      }
       try {
         var context = await verifiedContext();
         if (!context) {
@@ -380,6 +413,17 @@
 
     getAccountHistory: getAccountHistory,
     rememberAccount: rememberAccount,
+    getDashboardPath: function (role) {
+      var r = role;
+      if (!r) {
+        var session = BobAuth.getSession();
+        r = (session && session.role) || global.localStorage.getItem('user_role') || 'member';
+      }
+      return REDIRECT_MAP[r] || REDIRECT_MAP.member;
+    },
+    getDashboardUrl: function (role) {
+      return rootPrefix() + BobAuth.getDashboardPath(role);
+    },
 
     logout: async function (options) {
       if (!(options && options.confirmed)

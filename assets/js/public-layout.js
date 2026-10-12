@@ -1,6 +1,78 @@
 (function () {
   'use strict';
 
+  var applicationRoot = null;
+
+  function getRoleDashboardPath(role) {
+    switch (role) {
+      case 'master_admin':
+        return 'pages/master-admin/dashboard.html';
+      case 'admin':
+        return 'pages/admin/dashboard.html';
+      case 'seller':
+      case 'penjual':
+      case 'penyedia_jasa':
+      case 'mekanik':
+        return 'pages/seller/seller-dashboard.html';
+      case 'member':
+      case 'pengguna':
+      default:
+        return 'pages/main/dashboard.html';
+    }
+  }
+
+  function getActiveRole() {
+    var isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+    var userRole = localStorage.getItem('user_role') || sessionStorage.getItem('bob_user_role');
+    if (!userRole) {
+      try {
+        var hint = JSON.parse(sessionStorage.getItem('bob_profile_hint'));
+        if (hint && (hint.role || hint.email)) {
+          userRole = hint.role || 'member';
+          isLoggedIn = true;
+        }
+      } catch (e) {}
+    }
+    return isLoggedIn ? (userRole || 'member') : null;
+  }
+
+  function syncRacikLogo(forcedRole) {
+    var role = typeof forcedRole !== 'undefined' ? forcedRole : getActiveRole();
+    var logoLinks = document.querySelectorAll('.rm-public-header__logo, a.site-header__logo, a.nav-brand-logo, [data-racik-logo]');
+
+    logoLinks.forEach(function (logoLink) {
+      if (role) {
+        var targetPath = getRoleDashboardPath(role);
+        var targetUrl = applicationRoot ? new URL(targetPath, applicationRoot).href : ('/' + targetPath);
+        logoLink.href = targetUrl;
+        logoLink.setAttribute('aria-label', 'Racik Media — Dashboard ' + role);
+        logoLink.title = 'Kembali ke Dashboard';
+      } else {
+        var homeUrl = applicationRoot ? new URL('index.html', applicationRoot).href : '/index.html';
+        logoLink.href = homeUrl;
+        logoLink.setAttribute('aria-label', 'Racik Media — Beranda');
+        logoLink.title = 'Halaman Utama';
+      }
+    });
+  }
+
+  window.syncRacikLogo = syncRacikLogo;
+
+  document.addEventListener('click', function (event) {
+    var logoLink = event.target.closest('.rm-public-header__logo, a.site-header__logo, a.nav-brand-logo, [data-racik-logo]');
+    if (!logoLink) return;
+    var role = getActiveRole();
+    event.preventDefault();
+    if (role) {
+      var targetPath = getRoleDashboardPath(role);
+      var targetUrl = applicationRoot ? new URL(targetPath, applicationRoot).href : ('/' + targetPath);
+      window.location.href = targetUrl;
+    } else {
+      var homeUrl = applicationRoot ? new URL('index.html', applicationRoot).href : '/index.html';
+      window.location.href = homeUrl;
+    }
+  });
+
   function syncPublicMotion() {
     var startTime = document.timeline.currentTime;
 
@@ -48,6 +120,7 @@
         }
         if (containerId === 'rm-navbar-root') {
           syncPublicMotion();
+          syncRacikLogo();
         }
       })
       .catch(function (error) {
@@ -131,7 +204,8 @@
   }
 
   var layoutUrl = new URL('../../layouts/', scriptUrl);
-  var applicationRoot = new URL('../../', scriptUrl);
+  applicationRoot = new URL('../../', scriptUrl);
+  syncRacikLogo();
   var navbarPromise = loadPartial(
     'rm-navbar-root',
     new URL('_public-navbar.html', layoutUrl),

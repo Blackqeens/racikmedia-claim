@@ -164,8 +164,36 @@
     var result = await client.auth.getUser();
     if (result.error) throw result.error;
     currentUser = result.data.user || null;
-    if (currentUser) window.BobAuth.rememberAccount(currentUser);
-    setLoginState(Boolean(currentUser));
+    if (currentUser) {
+      window.BobAuth.rememberAccount(currentUser);
+      var role = sessionStorage.getItem('bob_user_role') || localStorage.getItem('user_role');
+      if (!role) {
+        try {
+          var profileRes = await client.from('profiles').select('display_name, role, city').eq('id', currentUser.id).single();
+          if (profileRes.data) {
+            role = profileRes.data.role || 'member';
+            window.sessionStorage.setItem('bob_user_role', role);
+            window.localStorage.setItem('user_role', role);
+          }
+        } catch (e) {
+          console.warn('Gagal memuat role profil akun:', e.message);
+        }
+      }
+      role = role || 'member';
+      window.localStorage.setItem('isLoggedIn', 'true');
+      window.localStorage.setItem('user_role', role);
+      setLoginState(true);
+      if (typeof window.syncRacikLogo === 'function') {
+        window.syncRacikLogo(role);
+      }
+    } else {
+      window.localStorage.removeItem('isLoggedIn');
+      window.localStorage.removeItem('user_role');
+      setLoginState(false);
+      if (typeof window.syncRacikLogo === 'function') {
+        window.syncRacikLogo(null);
+      }
+    }
     createDialog();
   }
 

@@ -1,0 +1,12 @@
+racikmedia-claims/
+├── dashboard/
+│   ├── main/
+│   │   ├── index.html        <-- Pindahan dari pages/main/dashboard.html
+│   │   ├── article.html      <-- Halaman saat pengguna membuka artikel di dashboard
+│   │   └── settings.html     <-- Pengaturan umum pengguna
+│   ├── seller/
+│   │   └── index.html        <-- Pindahan dari pages/seller/seller-dashboard.html
+│   ├── admin/
+│   │   └── index.html        <-- Pindahan dari pages/admin/dashboard.html
+│   └── master-admin/
+│       └── index.html        <-- Pindahan dari pages/master-admin/dashboard.html
